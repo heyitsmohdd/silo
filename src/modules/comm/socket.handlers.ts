@@ -1,0 +1,162 @@
+/**
+ * Socket.io Event Handlers
+ * Real-time communication with batch isolation
+ */
+
+import { Server, Socket } from 'socket.io';
+import { createMessage, getRoomMessages } from './message.service.js';
+import {
+    AuthenticatedSocket,
+    verifySocketToken,
+    extractSocketToken,
+    generateRoomId,
+} from '../../shared/lib/socket-auth.js';
+
+/**
+ * Initialize Socket.io handlers
+ */
+export const initializeSocketHandlers = (io: Server) => {
+    // Middleware: Authenticate socket connections
+    io.use((socket: Socket, next) => {
+        const token = extractSocketToken(socket);
+
+        if (!token) {
+            return next(new Error('Authentication token required'));
+        }
+
+        const user = verifySocketToken(token);
+
+        if (!user) {
+            return next(new Error('Invalid or expired token'));
+        }
+
+        // Attach user to socket
+        (socket as AuthenticatedSocket).user = user;
+        next();
+    });
+
+    // Connection handler
+    io.on('connection', (socket: Socket) => {
+        const authSocket = socket as AuthenticatedSocket;
+        const user = authSocket.user;
+
+        if (!user) {
+            socket.disconnect();
+            return;
+        }
+
+        console.log(`✅ User connected: ${user.email} (${user.year} ${user.branch})`);
+
+        // Auto-join room based on batch context
+        const roomId = generateRoomId(user.year, user.branch);
+        authSocket.roomId = roomId;
+        socket.join(roomId);
+
+        console.log(`📍 User joined room: ${roomId}`);
+
+        // Send welcome message
+        socket.emit('connected', {
+            message: 'Connected to chat',
+            roomId,
+            user: {
+                userId: user.userId,
+                email: user.email,
+                role: user.role,
+            },
+        });
+
+        // Handle: Send message
+        socket.on('sendMessage', async (data: { content: string }) => {
+            try {
+                if (!user || !roomId) {
+                    socket.emit('error', { message: 'Not authenticated' });
+                    return;
+                }
+
+                if (!data.content || data.content.trim().length === 0) {
+                    socket.emit('error', { message: 'Message content is required' });
+                    return;
+                }
+
+                // Save message to database
+                const message = await createMessage({
+                    content: data.content.trim(),
+                    roomId,
+                    senderId: user.userId,
+                    year: user.year,
+                    branch: user.branch,
+                });
+
+                // Broadcast to room (including sender)
+                io.to(roomId).emit('newMessage', {
+                    id: message.id,
+                    content: message.content,
+                    roomId: message.roomId,
+                    sender: {
+                        id: message.sender.id,
+                        firstName: message.sender.firstName,
+                        lastName: message.sender.lastName,
+                        role: message.sender.role,
+                    },
+                    createdAt: message.createdAt,
+                });
+
+                console.log(`💬 Message sent to ${roomId}: ${message.content.substring(0, 50)}...`);
+            } catch (error) {
+                console.error('Error sending message:', error);
+                socket.emit('error', { message: 'Failed to send message' });
+            }
+        });
+
+        // Handle: Get message history
+        socket.on('getMessages', async (data: { limit?: number }) => {
+            try {
+                if (!user || !roomId) {
+                    socket.emit('error', { message: 'Not authenticated' });
+                    return;
+                }
+
+                const messages = await getRoomMessages(
+                    roomId,
+                    user.year,
+                    user.branch,
+                    data.limit ?? 50
+                );
+
+                socket.emit('messageHistory', {
+                    roomId,
+                    messages: messages.map((msg) => ({
+                        id: msg.id,
+                        content: msg.content,
+                        sender: {
+                            id: msg.sender.id,
+                            firstName: msg.sender.firstName,
+                            lastName: msg.sender.lastName,
+                            role: msg.sender.role,
+                        },
+                        createdAt: msg.createdAt,
+                    })),
+                });
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+                socket.emit('error', { message: 'Failed to fetch messages' });
+            }
+        });
+
+        // Handle: User typing indicator
+        socket.on('typing', (data: { isTyping: boolean }) => {
+            if (!roomId) return;
+
+            socket.to(roomId).emit('userTyping', {
+                userId: user?.userId,
+                firstName: user?.email.split('@')[0],
+                isTyping: data.isTyping,
+            });
+        });
+
+        // Handle: Disconnect
+        socket.on('disconnect', () => {
+            console.log(`❌ User disconnected: ${user.email}`);
+        });
+    });
+};

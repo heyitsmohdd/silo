@@ -5,26 +5,51 @@
 
 import 'dotenv/config';
 import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 import { errorHandler, notFoundHandler } from './shared/middleware/error.middleware.js';
 import authRoutes from './modules/identity/auth.routes.js';
 import academicRoutes from './modules/academic/notes.routes.js';
+import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env['PORT'] ?? 3000;
 
 // ============================================================================
-// MIDDLEWARE
+// CORS CONFIGURATION
 // ============================================================================
 
-// CORS Configuration
-const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') ?? ['http://localhost:3000'];
+const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') ?? [
+    'http://localhost:3000',
+    'http://localhost:5173',
+];
+
 app.use(
     cors({
         origin: allowedOrigins,
         credentials: true,
     })
 );
+
+// ============================================================================
+// SOCKET.IO SETUP
+// ============================================================================
+
+const io = new Server(httpServer, {
+    cors: {
+        origin: allowedOrigins,
+        credentials: true,
+    },
+});
+
+// Initialize socket handlers
+initializeSocketHandlers(io);
+
+// ============================================================================
+// MIDDLEWARE
+// ============================================================================
 
 // Body Parsing
 app.use(express.json({ limit: '10mb' }));
@@ -61,10 +86,11 @@ app.use(errorHandler);
 // SERVER START
 // ============================================================================
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`🚀 Academic Vault API running on port ${PORT}`);
     console.log(`📍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
     console.log(`🔒 JWT Secret: ${process.env['JWT_SECRET'] ? 'Configured' : 'MISSING!'}`);
+    console.log(`💬 Socket.io: Enabled with JWT authentication`);
 });
 
 export default app;
