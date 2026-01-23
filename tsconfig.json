@@ -1,0 +1,61 @@
+{
+    "compilerOptions": {
+        /* Language and Environment */
+        "target": "ES2022",
+        "lib": [
+            "ES2022"
+        ],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        /* Modules */
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/modules/*": [
+                "src/modules/*"
+            ],
+            "@/shared/*": [
+                "src/shared/*"
+            ]
+        },
+        /* Emit */
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "sourceMap": true,
+        "removeComments": true,
+        "noEmit": false,
+        /* Interop Constraints */
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        /* Type Checking - STRICT MODE */
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": true,
+        /* Completeness */
+        "skipLibCheck": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts"
+    ]
+}

@@ -1,0 +1,128 @@
+// Prisma Schema for The Academic Vault
+// Strict Multi-Tenant Batch Isolation: (year, branch)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum Role {
+  SUPER_ADMIN
+  PROFESSOR
+  STUDENT
+}
+
+// ============================================================================
+// USER MODEL
+// ============================================================================
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String   // bcrypt hashed
+  
+  // Batch Context
+  year      Int
+  branch    String   // e.g., "CS", "Mech", "ECE"
+  
+  // RBAC
+  role      Role     @default(STUDENT)
+  
+  // Metadata
+  firstName String?
+  lastName  String?
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  notes     Note[]
+  messages  Message[]
+  
+  @@index([year, branch])
+  @@index([email])
+  @@map("users")
+}
+
+// ============================================================================
+// NOTE MODEL (Academic Content)
+// ============================================================================
+
+model Note {
+  id        String   @id @default(uuid()) @db.Uuid
+  
+  // Content
+  title     String
+  content   String   @db.Text
+  subject   String
+  
+  // Batch Context (Enforced Isolation)
+  year      Int
+  branch    String
+  
+  // Ownership
+  authorId  String   @map("author_id") @db.Uuid
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // File Metadata (Optional)
+  fileUrl   String?  @map("file_url")
+  fileType  String?  @map("file_type")
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([year, branch])
+  @@index([subject])
+  @@index([authorId])
+  @@map("notes")
+}
+
+// ============================================================================
+// MESSAGE MODEL (Real-time Chat)
+// ============================================================================
+
+model Message {
+  id        String   @id @default(uuid()) @db.Uuid
+  
+  // Content
+  content   String   @db.Text
+  
+  // Chat Room Identifier
+  roomId    String   @map("room_id")
+  
+  // Batch Context (Enforced Isolation)
+  year      Int
+  branch    String
+  
+  // Anonymous Sender Tracking
+  // Students are anonymous to each other, but not to SUPER_ADMIN
+  senderId  String   @map("sender_id") @db.Uuid
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([year, branch, roomId])
+  @@index([senderId])
+  @@map("messages")
+}
