@@ -58,7 +58,7 @@ const RegisterForm = () => {
                 email,
                 password,
                 role,
-                year,
+                year: Number(year), // Explicit number conversion
                 branch,
             };
 
