@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/useAuthStore';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import LoginPlaceholder from '@/features/auth/LoginPlaceholder';
+import LoginForm from '@/features/auth/LoginForm';
+import RegisterForm from '@/features/auth/RegisterForm';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 
 // Create React Query client
@@ -27,7 +28,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
-          <Route path="/login" element={<LoginPlaceholder />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
 
           {/* Protected Routes */}
           <Route
@@ -52,3 +54,4 @@ function App() {
 }
 
 export default App;
+
