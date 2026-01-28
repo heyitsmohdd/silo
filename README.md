@@ -1,4 +1,4 @@
-# The Academic Vault
+# Silo
 
 **Strict Multi-Tenant Academic Platform** with Domain-Driven Design (DDD) architecture.
 
