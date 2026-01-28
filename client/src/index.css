@@ -1,54 +1,66 @@
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Digital Brutalism - Global Styles */
+@theme {
+  /* Colors */
+  --color-dark-bg: #000000;
+  --color-dark-text: #FFFFFF;
+  --color-dark-border: #333333;
+  --color-bright-bg: #FFFFFF;
+  --color-bright-text: #000000;
+  --color-bright-border: #E5E5E5;
+  --color-danger: #FF0000;
 
-@layer base {
-  /* Digital Brutalism - Default Dark Mode */
-  :root {
-    color-scheme: dark;
-  }
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 
-  html {
-    @apply font-sans antialiased;
-  }
-
-  body {
-    @apply m-0 min-h-screen bg-dark-bg text-dark-text;
-  }
-
-  /* Bright Mode Override */
-  .light body {
-    @apply bg-bright-bg text-bright-text;
-  }
-
-  /* Remove default focus outlines, we'll handle via borders */
-  *:focus {
-    outline: none;
-  }
-
-  /* Sharp focus indicators */
-  button:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible {
-    @apply ring-2 ring-dark-text ring-offset-0;
-  }
-
-  .light button:focus-visible,
-  .light input:focus-visible,
-  .light textarea:focus-visible {
-    @apply ring-bright-text;
-  }
+  /* Border Radius - Max 4px */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius: 4px;
 }
 
-@layer components {
-  /* Brutalist utility classes */
-  .border-brutalist {
-    @apply border-2 border-dark-border;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  .light .border-brutalist {
-    @apply border-bright-border;
-  }
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-dark-bg);
+  color: var(--color-dark-text);
+}
+
+/* Bright Mode */
+.light body {
+  background-color: var(--color-bright-bg);
+  color: var(--color-bright-text);
+}
+
+/* Focus Styles */
+*:focus {
+  outline: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-dark-text);
+  outline-offset: 0;
+}
+
+.light button:focus-visible,
+.light input:focus-visible,
+.light textarea:focus-visible {
+  outline-color: var(--color-bright-text);
 }
