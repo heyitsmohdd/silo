@@ -30,7 +30,7 @@ class SocketService {
         }
 
         this.socket = io('http://localhost:3000', {
-            auth: {
+            query: {
                 token,
             },
         });

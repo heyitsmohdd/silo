@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { useAuthStore, type User } from '@/stores/useAuthStore';
 import socketService from '@/lib/socket';
+
+// Re-export User type for convenience
+export type { User };
 
 export interface Message {
     id: string;
     content: string;
-    senderId: string;
-    senderName: string;
-    timestamp: string;
+    roomId: string;
+    sender: {
+        id: string;
+        firstName: string | null;
+        lastName: string | null;
+        role: string;
+    };
+    createdAt: string;
 }
 
 /**
@@ -20,22 +28,43 @@ export const useChat = () => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        if (!token) return;
+        if (!token) {
+            return;
+        }
 
         // Connect socket with token
-        const socket = socketService.connect(token);
+        const socket = socketService.getSocket();
+
+        // If socket already exists, just use it
+        if (socket?.connected) {
+            setIsConnected(true);
+            return;
+        }
+
+        // Connect fresh
+        const newSocket = socketService.connect(token);
+
+        // Remove any existing listeners to prevent duplicates
+        newSocket.removeAllListeners('connect');
+        newSocket.removeAllListeners('disconnect');
+        newSocket.removeAllListeners('connect_error');
+        newSocket.removeAllListeners('newMessage');
 
         // Connection state handlers
-        socket.on('connect', () => {
+        newSocket.on('connect', () => {
             setIsConnected(true);
         });
 
-        socket.on('disconnect', () => {
+        newSocket.on('disconnect', () => {
             setIsConnected(false);
         });
 
+        newSocket.on('connect_error', (error) => {
+            console.error('[Chat] Connection error:', error);
+        });
+
         // Message handlers
-        socket.on('receive_message', (message: Message) => {
+        newSocket.on('newMessage', (message: Message) => {
             setMessages((prev) => [...prev, message]);
         });
 
@@ -53,7 +82,7 @@ export const useChat = () => {
         const socket = socketService.getSocket();
         if (!socket || !content.trim()) return;
 
-        socket.emit('send_message', {
+        socket.emit('sendMessage', {
             content: content.trim(),
         });
     };

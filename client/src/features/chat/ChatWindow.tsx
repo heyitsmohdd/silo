@@ -1,12 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { useChat, type Message } from '@/hooks/useChat';
+import type { Message, User } from '@/hooks/useChat';
+
+interface ChatWindowProps {
+    messages: Message[];
+    isConnected: boolean;
+    currentUser: User | null;
+}
 
 /**
  * ChatWindow Component
  * Displays scrollable list of chat messages with message bubbles
  */
-const ChatWindow = () => {
-    const { messages, currentUser, isConnected } = useChat();
+const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom on new messages
@@ -38,7 +43,7 @@ const ChatWindow = () => {
                     </div>
                 ) : (
                     messages.map((message: Message) => {
-                        const isMe = message.senderId === currentUser?.userId;
+                        const isMe = message.sender.id === currentUser?.userId;
 
                         return (
                             <div
@@ -54,7 +59,10 @@ const ChatWindow = () => {
                                     {/* Sender Info */}
                                     {!isMe && (
                                         <div className="px-4 pt-3 pb-1 font-mono text-xs opacity-60 uppercase">
-                                            {message.senderName}
+                                            {message.sender.firstName || message.sender.lastName
+                                                ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
+                                                : 'Unknown User'
+                                            }
                                         </div>
                                     )}
 
@@ -65,7 +73,7 @@ const ChatWindow = () => {
 
                                     {/* Timestamp */}
                                     <div className="px-4 pb-2 font-mono text-[10px] opacity-40 text-right">
-                                        {new Date(message.timestamp).toLocaleTimeString()}
+                                        {new Date(message.createdAt).toLocaleTimeString()}
                                     </div>
                                 </div>
                             </div>

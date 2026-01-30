@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from 'react';
-import { useChat } from '@/hooks/useChat';
+
+interface ChatInputProps {
+    sendMessage: (content: string) => void;
+    isConnected: boolean;
+}
 
 /**
  * ChatInput Component
  * Fixed bottom input bar for sending messages
  */
-const ChatInput = () => {
-    const { sendMessage, isConnected } = useChat();
+const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
     const [input, setInput] = useState('');
 
     const handleSubmit = (e: FormEvent) => {
