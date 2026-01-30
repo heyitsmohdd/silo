@@ -22,7 +22,7 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
     return (
         <div className="flex flex-col h-screen">
             {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 z-10">
+            <div className="sticky top-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 z-10 pr-20">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="font-bold text-lg text-neutral-900 dark:text-neutral-50">
@@ -60,8 +60,8 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                             >
                                 <div
                                     className={`max-w-[70%] rounded-lg shadow-sm ${isMe
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 border border-neutral-200 dark:border-neutral-700'
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 border border-neutral-200 dark:border-neutral-700'
                                         }`}
                                 >
                                     {/* Sender Info */}

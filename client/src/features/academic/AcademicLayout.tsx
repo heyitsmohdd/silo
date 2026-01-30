@@ -9,16 +9,16 @@ const AcademicLayout = ({ children }: AcademicLayoutProps) => {
     const { user } = useAuthStore();
 
     return (
-        <div className="w-full max-w-4xl mx-auto min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans">
-            {/* Sticky Header */}
-            <header className="sticky top-0 z-10 bg-white dark:bg-black border-b-4 border-black dark:border-white pb-4 pt-10 mb-8">
+        <div className="w-full max-w-4xl mx-auto min-h-screen p-6">
+            {/* Header */}
+            <header className="sticky top-0 z-10 bg-neutral-50 dark:bg-neutral-900 pb-6 pt-4 mb-8">
                 <div className="flex justify-between items-end">
-                    <h1 className="text-4xl font-black uppercase tracking-tighter leading-none">
-                        ACADEMIC_LOGS
+                    <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
+                        Academic Notes
                     </h1>
                     {user && (
-                        <div className="text-right font-mono text-xs opacity-70">
-                            BATCH_{user.year} :: {user.branch}
+                        <div className="text-right text-sm text-neutral-600 dark:text-neutral-400">
+                            {user.year} • {user.branch}
                         </div>
                     )}
                 </div>
