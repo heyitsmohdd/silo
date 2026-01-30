@@ -74,8 +74,8 @@ const RegisterForm = () => {
             navigate('/');
         } catch (err: any) {
             const errorMessage =
-                err.response?.data?.message || err.message || 'REGISTRATION FAILED. TRY AGAIN.';
-            setError(errorMessage.toUpperCase());
+                err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -83,11 +83,11 @@ const RegisterForm = () => {
 
     return (
         <AuthLayout title="Create New Account">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Global Error */}
                 {error && (
-                    <div className="p-4 border-2 border-danger bg-transparent">
-                        <p className="text-xs font-mono text-danger uppercase tracking-wider">
+                    <div className="p-3 border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 rounded-lg">
+                        <p className="text-sm text-red-600 dark:text-red-400">
                             {error}
                         </p>
                     </div>
@@ -155,20 +155,18 @@ const RegisterForm = () => {
 
                 {/* Submit */}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'CREATING ACCOUNT...' : 'REGISTER'}
+                    {isLoading ? 'Creating account...' : 'Create Account'}
                 </Button>
 
                 {/* Login Link */}
-                <div className="pt-4 border-t-2 border-dark-border light:border-bright-border">
-                    <p className="text-xs font-mono text-center">
-                        <span className="text-dark-border light:text-bright-border uppercase tracking-wider">
-                            Have an Account?{' '}
-                        </span>
+                <div className="pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground text-center">
+                        Already have an account?{' '}
                         <Link
                             to="/login"
-                            className="underline hover:no-underline font-medium"
+                            className="text-foreground font-medium hover:underline"
                         >
-                            LOGIN
+                            Sign In
                         </Link>
                     </p>
                 </div>
