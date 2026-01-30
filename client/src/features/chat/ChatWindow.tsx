@@ -20,7 +20,7 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-[calc(100vh-theme(spacing.14))]">
             {/* Header */}
             <div className="sticky top-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 z-10 pr-20">
                 <div className="flex items-center justify-between">
@@ -42,10 +42,10 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
             </div>
 
             {/* Messages List */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-neutral-50 dark:bg-neutral-950">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-sm text-neutral-400 dark:text-neutral-600">
+                        <p className="text-sm text-muted-foreground">
                             No messages yet. Start the conversation!
                         </p>
                     </div>
@@ -59,14 +59,14 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`max-w-[70%] rounded-lg shadow-sm ${isMe
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 border border-neutral-200 dark:border-neutral-700'
+                                    className={`max-w-[70%] rounded-lg ${isMe
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-background border border-border text-foreground shadow-sm'
                                         }`}
                                 >
                                     {/* Sender Info */}
                                     {!isMe && (
-                                        <div className="px-4 pt-3 pb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                                        <div className="px-4 pt-3 pb-1 text-xs font-medium text-muted-foreground">
                                             {message.sender.firstName || message.sender.lastName
                                                 ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
                                                 : 'Unknown User'
@@ -80,7 +80,7 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                                     </div>
 
                                     {/* Timestamp */}
-                                    <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-blue-100' : 'text-neutral-500 dark:text-neutral-500'}`}>
+                                    <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-blue-100' : 'text-muted-foreground'}`}>
                                         {new Date(message.createdAt).toLocaleTimeString()}
                                     </div>
                                 </div>
