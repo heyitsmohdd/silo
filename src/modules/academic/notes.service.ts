@@ -26,8 +26,8 @@ export const createNote = async (data: {
             content: data.content,
             subject: data.subject,
             authorId: data.authorId,
-            year: data.year,
-            branch: data.branch,
+            year: data.year,         // Explicitly mapped
+            branch: data.branch,     // Explicitly mapped
             fileUrl: data.fileUrl ?? null,
             fileType: data.fileType ?? null,
         },
