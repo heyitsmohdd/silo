@@ -22,23 +22,31 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
     return (
         <div className="flex flex-col h-screen">
             {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-black border-b-4 border-black dark:border-white p-4 z-10">
+            <div className="sticky top-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 z-10">
                 <div className="flex items-center justify-between">
-                    <h1 className="font-black text-xl uppercase">
-                        BATCH_CHANNEL :: {isConnected ? 'ONLINE' : 'OFFLINE'}
-                    </h1>
-                    <div className="font-mono text-xs opacity-50">
-                        {currentUser?.year} - {currentUser?.branch}
+                    <div>
+                        <h1 className="font-bold text-lg text-neutral-900 dark:text-neutral-50">
+                            Batch Channel
+                        </h1>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
+                            {currentUser?.year} • {currentUser?.branch}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                            {isConnected ? 'Online' : 'Offline'}
+                        </span>
                     </div>
                 </div>
             </div>
 
             {/* Messages List */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-neutral-50 dark:bg-neutral-950">
                 {messages.length === 0 ? (
-                    <div className="flex items-center justify-center h-full opacity-30">
-                        <p className="font-mono text-sm uppercase">
-                            &gt; NO_MESSAGES_YET
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-sm text-neutral-400 dark:text-neutral-600">
+                            No messages yet. Start the conversation!
                         </p>
                     </div>
                 ) : (
@@ -51,14 +59,14 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`max-w-[70%] ${isMe
-                                        ? 'ml-auto bg-black text-white border border-black'
-                                        : 'mr-auto bg-white text-black border border-black'
+                                    className={`max-w-[70%] rounded-lg shadow-sm ${isMe
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 border border-neutral-200 dark:border-neutral-700'
                                         }`}
                                 >
                                     {/* Sender Info */}
                                     {!isMe && (
-                                        <div className="px-4 pt-3 pb-1 font-mono text-xs opacity-60 uppercase">
+                                        <div className="px-4 pt-3 pb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
                                             {message.sender.firstName || message.sender.lastName
                                                 ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
                                                 : 'Unknown User'
@@ -67,12 +75,12 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                                     )}
 
                                     {/* Message Content */}
-                                    <div className="px-4 py-3 break-words">
+                                    <div className="px-4 py-2 break-words">
                                         {message.content}
                                     </div>
 
                                     {/* Timestamp */}
-                                    <div className="px-4 pb-2 font-mono text-[10px] opacity-40 text-right">
+                                    <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-blue-100' : 'text-neutral-500 dark:text-neutral-500'}`}>
                                         {new Date(message.createdAt).toLocaleTimeString()}
                                     </div>
                                 </div>
