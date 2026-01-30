@@ -10,24 +10,26 @@ import { Prisma } from '@prisma/client';
 /**
  * Create a new note (batch-scoped)
  */
-export const createNote = async (data: {
-    title: string;
-    content: string;
-    subject: string;
-    authorId: string;
-    year: number;
-    branch: string;
-    fileUrl?: string;
-    fileType?: string;
-}) => {
+export const createNote = async (
+    data: {
+        title: string;
+        content: string;
+        subject: string;
+        authorId: string;
+        fileUrl?: string;
+        fileType?: string;
+    },
+    year: number,
+    branch: string
+) => {
     const note = await prisma.note.create({
         data: {
             title: data.title,
             content: data.content,
             subject: data.subject,
             authorId: data.authorId,
-            year: data.year,         // Explicitly mapped
-            branch: data.branch,     // Explicitly mapped
+            year: year,
+            branch: branch,
             fileUrl: data.fileUrl ?? null,
             fileType: data.fileType ?? null,
         },

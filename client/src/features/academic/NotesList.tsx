@@ -18,8 +18,8 @@ const NotesList = () => {
         },
     });
 
-    // Handle array or wrapped response
-    const notesList = Array.isArray(notes) ? notes : (notes?.data || []);
+    // Handle array or wrapped response - API returns { notes: [], total, limit, offset }
+    const notesList = Array.isArray(notes) ? notes : (notes?.notes || []);
 
     if (isLoading) {
         return (

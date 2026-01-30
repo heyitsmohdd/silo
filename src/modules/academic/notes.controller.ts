@@ -65,15 +65,17 @@ export const createNoteHandler = async (
     }
 
     const data = parseCreateNote(req.body);
-    // Explicitly using req.user to guarantee the source of truth from the token
-    const { year, branch } = req.user;
+    // Explicitly using req.context for batch consistency
+    const { year, branch } = req.context;
 
-    const note = await createNote({
-        ...data,
-        authorId: req.user.userId,
+    const note = await createNote(
+        {
+            ...data,
+            authorId: req.user.userId,
+        },
         year,
-        branch,
-    });
+        branch
+    );
 
     res.status(201).json({
         message: 'Note created successfully',
