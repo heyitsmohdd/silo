@@ -8,6 +8,7 @@ import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 import AcademicLayout from '@/features/academic/AcademicLayout';
 import NotesList from '@/features/academic/NotesList';
 import ChatPage from '@/features/chat/ChatPage';
+import ProfilePage from '@/features/profile/ProfilePage';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -45,7 +46,7 @@ function App() {
           >
             <Route index element={<DashboardPlaceholder />} />
             <Route path="chat" element={<ChatPage />} />
-            <Route path="profile" element={<DashboardPlaceholder />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route
               path="notes"
               element={
@@ -65,4 +66,3 @@ function App() {
 }
 
 export default App;
-
