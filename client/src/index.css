@@ -1,25 +1,10 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Digital Brutalism - Global Styles */
+/* Production-Grade Design System */
 @theme {
-  /* Colors */
-  --color-dark-bg: #000000;
-  --color-dark-text: #FFFFFF;
-  --color-dark-border: #333333;
-  --color-bright-bg: #FFFFFF;
-  --color-bright-text: #000000;
-  --color-bright-border: #E5E5E5;
-  --color-danger: #FF0000;
-
   /* Fonts */
   --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'Roboto Mono', monospace;
-
-  /* Border Radius - Max 4px */
-  --radius-none: 0;
-  --radius-sm: 2px;
-  --radius: 4px;
 }
 
 * {
@@ -32,19 +17,22 @@ html {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color-scheme: dark;
 }
 
 body {
   min-height: 100vh;
-  background-color: var(--color-dark-bg);
-  color: var(--color-dark-text);
+  background-color: white;
+  color: rgb(23 23 23);
+  /* neutral-900 */
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* Bright Mode */
-.light body {
-  background-color: var(--color-bright-bg);
-  color: var(--color-bright-text);
+/* Dark Mode */
+.dark body {
+  background-color: rgb(10 10 10);
+  /* neutral-950 */
+  color: rgb(250 250 250);
+  /* neutral-50 */
 }
 
 /* Focus Styles */
@@ -54,13 +42,17 @@ body {
 
 button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--color-dark-text);
-  outline-offset: 0;
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  /* blue-500 */
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.light button:focus-visible,
-.light input:focus-visible,
-.light textarea:focus-visible {
-  outline-color: var(--color-bright-text);
+/* Smooth Transitions */
+* {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }

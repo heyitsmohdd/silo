@@ -11,34 +11,35 @@ const ThemeToggle = () => {
         const prefersDark = savedTheme === 'dark' || savedTheme === null;
 
         setIsDark(prefersDark);
-        document.documentElement.classList.toggle('light', !prefersDark);
+        document.documentElement.classList.toggle('dark', prefersDark);
     }, []);
 
     const toggleTheme = () => {
         const newTheme = isDark ? 'light' : 'dark';
         setIsDark(!isDark);
         localStorage.setItem(THEME_KEY, newTheme);
-        document.documentElement.classList.toggle('light', newTheme === 'light');
+        document.documentElement.classList.toggle('dark', newTheme === 'dark');
     };
 
     return (
         <button
             onClick={toggleTheme}
-            className="fixed top-4 right-4 z-50 p-2 border-2 border-dark-border light:border-bright-border bg-dark-bg light:bg-bright-bg transition-all duration-75 hover:bg-dark-text hover:text-dark-bg light:hover:bg-bright-text light:hover:text-bright-bg"
+            className="fixed top-4 right-4 z-50 p-2.5 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all shadow-soft"
             aria-label="Toggle theme"
         >
             {isDark ? (
                 // Sun icon for dark mode
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    strokeLinecap="square"
-                    strokeLinejoin="miter"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-neutral-700 dark:text-neutral-300"
                 >
                     <circle cx="12" cy="12" r="5" />
                     <line x1="12" y1="1" x2="12" y2="3" />
@@ -54,14 +55,15 @@ const ThemeToggle = () => {
                 // Moon icon for light mode
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="18"
+                    height="18"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    strokeLinecap="square"
-                    strokeLinejoin="miter"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-neutral-700 dark:text-neutral-300"
                 >
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
