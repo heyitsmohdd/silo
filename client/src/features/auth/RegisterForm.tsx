@@ -74,7 +74,7 @@ const RegisterForm = () => {
             navigate('/');
         } catch (err: any) {
             const errorMessage =
-                err.response?.data?.message || 'REGISTRATION FAILED. TRY AGAIN.';
+                err.response?.data?.message || err.message || 'REGISTRATION FAILED. TRY AGAIN.';
             setError(errorMessage.toUpperCase());
         } finally {
             setIsLoading(false);

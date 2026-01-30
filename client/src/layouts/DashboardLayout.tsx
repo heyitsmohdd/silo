@@ -24,14 +24,14 @@ const DashboardLayout = () => {
                     {user && (
                         <div className="mt-2 text-xs font-mono text-dark-border light:text-bright-border">
                             <p className="uppercase">{user.role}</p>
-                            <p>{user.batch}</p>
+                            <p>{user.year} :: {user.branch}</p>
                         </div>
                     )}
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 p-4 space-y-2">
-                    <NavLink to="/" icon="📝" label="Notes" />
+                    <NavLink to="/notes" icon="📝" label="Notes" />
                     <NavLink to="/chat" icon="💬" label="Chat" />
                     <NavLink to="/profile" icon="👤" label="Profile" />
                 </nav>

@@ -5,6 +5,8 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import LoginForm from '@/features/auth/LoginForm';
 import RegisterForm from '@/features/auth/RegisterForm';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
+import AcademicLayout from '@/features/academic/AcademicLayout';
+import NotesList from '@/features/academic/NotesList';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -43,6 +45,14 @@ function App() {
             <Route index element={<DashboardPlaceholder />} />
             <Route path="chat" element={<DashboardPlaceholder />} />
             <Route path="profile" element={<DashboardPlaceholder />} />
+            <Route
+              path="notes"
+              element={
+                <AcademicLayout>
+                  <NotesList />
+                </AcademicLayout>
+              }
+            />
           </Route>
 
           {/* Catch-all redirect */}

@@ -4,7 +4,8 @@ import { create } from 'zustand';
 interface JWTPayload {
     userId: string;
     role: 'STUDENT' | 'PROFESSOR';
-    batch: string; // e.g., "2026-CS"
+    year: number;
+    branch: string;
     exp: number;
     iat: number;
 }
@@ -13,7 +14,8 @@ interface JWTPayload {
 export interface User {
     userId: string;
     role: 'STUDENT' | 'PROFESSOR';
-    batch: string;
+    year: number;
+    branch: string;
 }
 
 // Auth store state
@@ -82,7 +84,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         const user: User = {
             userId: payload.userId,
             role: payload.role,
-            batch: payload.batch,
+            year: payload.year,
+            branch: payload.branch,
         };
 
         // Store in localStorage

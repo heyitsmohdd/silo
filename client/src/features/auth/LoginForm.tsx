@@ -42,7 +42,7 @@ const LoginForm = () => {
             navigate('/');
         } catch (err: any) {
             const errorMessage =
-                err.response?.data?.message || 'LOGIN FAILED. CHECK CREDENTIALS.';
+                err.response?.data?.message || err.message || 'LOGIN FAILED. CHECK CREDENTIALS.';
             setError(errorMessage.toUpperCase());
         } finally {
             setIsLoading(false);
