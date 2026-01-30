@@ -22,7 +22,7 @@ const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
     };
 
     return (
-        <div className="sticky bottom-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 p-4">
+        <div className="sticky bottom-0 bg-background border-t border-border p-4">
             <form onSubmit={handleSubmit} className="flex gap-3">
                 <input
                     type="text"
@@ -30,7 +30,7 @@ const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={isConnected ? 'Type a message...' : 'Connecting...'}
                     disabled={!isConnected}
-                    className="flex-1 px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                     type="submit"
