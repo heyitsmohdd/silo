@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axiosClient from '@/lib/axios';
@@ -7,10 +7,15 @@ import CreateNoteForm from './CreateNoteForm';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import EmptyState from '@/components/ui/EmptyState';
 import { FileText, Plus } from 'lucide-react';
+import NoteFilters from './NoteFilters';
 
 const NotesList = () => {
   const { isProfessor } = useAuthStore();
   const [showForm, setShowForm] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
 
   const { data: notes, isLoading, isError, refetch } = useQuery({
     queryKey: ['notes'],
@@ -21,6 +26,55 @@ const NotesList = () => {
   });
 
   const notesList = Array.isArray(notes) ? notes : (notes?.notes || []);
+
+  const filteredNotes = useMemo(() => {
+    let filtered = [...notesList];
+
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter((note: any) =>
+        note.title.toLowerCase().includes(lowerSearch) ||
+        note.content.toLowerCase().includes(lowerSearch)
+      );
+    }
+
+    if (subjectFilter) {
+      filtered = filtered.filter((note: any) => note.subject === subjectFilter);
+    }
+
+    switch (sortBy) {
+      case 'newest':
+        filtered.sort((a: any, b: any) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
+      case 'oldest':
+        filtered.sort((a: any, b: any) => 
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        break;
+      case 'title':
+        filtered.sort((a: any, b: any) => 
+          a.title.localeCompare(b.title)
+        );
+        break;
+    }
+
+    return filtered;
+  }, [notesList, searchTerm, subjectFilter, sortBy]);
+
+  const subjectOptions: string[] = useMemo(() => {
+    const subjects = new Set(notesList.map((note: any) => note.subject));
+    return Array.from(subjects) as string[];
+  }, [notesList]);
+
+  const hasFilters = Boolean(searchTerm || subjectFilter || sortBy !== 'newest');
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSubjectFilter('');
+    setSortBy('newest');
+  };
 
   if (isLoading) {
     return (
@@ -80,23 +134,65 @@ const NotesList = () => {
         </div>
       )}
 
+      {/* Filters */}
+      {notesList.length > 0 && (
+        <NoteFilters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          subjectFilter={subjectFilter}
+          onSubjectFilterChange={setSubjectFilter}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          subjectOptions={subjectOptions}
+          hasFilters={hasFilters}
+          onClearFilters={handleClearFilters}
+        />
+      )}
+
       {/* Notes Grid */}
-      {notesList.length === 0 ? (
+      {filteredNotes.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="No notes yet"
-          description={isProfessor ? "Upload your first note to share with your batch." : "Check back later for new notes from your professors."}
-          action={isProfessor ? {
-            label: 'Create Note',
-            onClick: () => setShowForm(true),
-          } : undefined}
+          title={
+            hasFilters
+              ? 'No notes match your filters'
+              : 'No notes yet'
+          }
+          description={
+            hasFilters
+              ? 'Try adjusting your search or filters.'
+              : isProfessor
+              ? 'Upload your first note to share with your batch.'
+              : 'Check back later for new notes from your professors.'
+          }
+          action={
+            isProfessor && !hasFilters
+              ? {
+                  label: 'Create Note',
+                  onClick: () => setShowForm(true),
+                }
+              : undefined
+          }
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {notesList.map((note: any) => (
-            <NoteCard key={note.id} note={note} />
+          {filteredNotes.map((note: any) => (
+            <NoteCard
+              key={note.id}
+              note={note}
+              onUpdate={refetch}
+              onDelete={refetch}
+            />
           ))}
         </div>
+      )}
+
+      {/* Results Count */}
+      {filteredNotes.length > 0 && (
+        <p className="text-sm text-muted-foreground text-center">
+          Showing {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''}
+          {hasFilters && ` (filtered from ${notesList.length} total)`}
+        </p>
       )}
     </div>
   );
