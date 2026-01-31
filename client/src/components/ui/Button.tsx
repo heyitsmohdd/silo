@@ -2,31 +2,41 @@ import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'destructive';
-    children: React.ReactNode;
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+  size?: 'default' | 'sm' | 'lg';
+  children: React.ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = 'primary', children, disabled, ...props }, ref) => {
-        const baseStyles = 'px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2';
-
-        const variantStyles = {
-            primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 border border-transparent',
-            secondary: 'bg-transparent text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 focus:ring-neutral-500',
-            destructive: 'bg-transparent text-red-600 dark:text-red-500 border border-red-300 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950 focus:ring-red-500',
-        };
-
-        return (
-            <button
-                ref={ref}
-                className={cn(baseStyles, variantStyles[variant], className)}
-                disabled={disabled}
-                {...props}
-            >
-                {children}
-            </button>
-        );
-    }
+  ({ className, variant = 'default', size = 'default', children, disabled, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'disabled:pointer-events-none disabled:opacity-50',
+          {
+            'bg-primary text-primary-foreground hover:bg-primary/90': variant === 'default',
+            'bg-secondary text-secondary-foreground hover:bg-secondary/80': variant === 'secondary',
+            'border border-input bg-background hover:bg-accent hover:text-accent-foreground': variant === 'outline',
+            'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
+            'bg-destructive text-destructive-foreground hover:bg-destructive/90': variant === 'destructive',
+          },
+          {
+            'h-10 px-4 py-2': size === 'default',
+            'h-9 px-3 text-sm': size === 'sm',
+            'h-11 px-8': size === 'lg',
+          },
+          className
+        )}
+        disabled={disabled}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
 );
 
 Button.displayName = 'Button';

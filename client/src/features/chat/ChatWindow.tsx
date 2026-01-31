@@ -1,17 +1,19 @@
 import { useEffect, useRef } from 'react';
 import type { Message, User } from '@/hooks/useChat';
+import ChatInput from './ChatInput';
 
 interface ChatWindowProps {
     messages: Message[];
     isConnected: boolean;
     currentUser: User | null;
+    sendMessage: (content: string) => void;
 }
 
 /**
  * ChatWindow Component
  * Displays scrollable list of chat messages with message bubbles
  */
-const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => {
+const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWindowProps) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom on new messages
@@ -20,28 +22,28 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-[calc(100vh-theme(spacing.14))]">
-            {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 z-10 pr-20">
+        <div className="flex flex-col h-full">
+            {/* Header - Fixed */}
+            <div className="flex-shrink-0 bg-background border-b border-border px-6 py-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="font-bold text-lg text-neutral-900 dark:text-neutral-50">
+                        <h1 className="font-semibold text-lg text-foreground">
                             Batch Channel
                         </h1>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-0.5">
+                        <p className="text-sm text-muted-foreground mt-0.5">
                             {currentUser?.year} • {currentUser?.branch}
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-                        <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                        <span className="text-sm font-medium text-muted-foreground">
                             {isConnected ? 'Online' : 'Offline'}
                         </span>
                     </div>
                 </div>
             </div>
 
-            {/* Messages List */}
+            {/* Messages List - Scrollable */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full">
@@ -69,8 +71,7 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                                         <div className="px-4 pt-3 pb-1 text-xs font-medium text-muted-foreground">
                                             {message.sender.firstName || message.sender.lastName
                                                 ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
-                                                : 'Unknown User'
-                                            }
+                                                : 'Unknown User'}
                                         </div>
                                     )}
 
@@ -90,6 +91,9 @@ const ChatWindow = ({ messages, isConnected, currentUser }: ChatWindowProps) => 
                 )}
                 <div ref={messagesEndRef} />
             </div>
+
+            {/* Input - Fixed at Bottom */}
+            <ChatInput sendMessage={sendMessage} isConnected={isConnected} />
         </div>
     );
 };

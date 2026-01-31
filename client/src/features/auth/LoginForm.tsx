@@ -7,102 +7,99 @@ import Input from '@/components/ui/Input';
 import AuthLayout from './AuthLayout';
 
 interface LoginResponse {
-    token: string;
-    user: {
-        id: string;
-        email: string;
-        role: 'STUDENT' | 'PROFESSOR';
-    };
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    role: 'STUDENT' | 'PROFESSOR';
+  };
 }
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-    const navigate = useNavigate();
-    const { login } = useAuthStore();
+  const navigate = useNavigate();
+  const { login } = useAuthStore();
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsLoading(true);
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-        try {
-            const response = await axiosClient.post<LoginResponse>('/auth/login', {
-                email,
-                password,
-            });
+    try {
+      const response = await axiosClient.post<LoginResponse>('/auth/login', {
+        email,
+        password,
+      });
 
-            // Store token in auth store
-            login(response.data.token);
+      login(response.data.token);
+      navigate('/');
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || err.message || 'Login failed. Please check your credentials.';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-            // Redirect to dashboard
-            navigate('/');
-        } catch (err: any) {
-            const errorMessage =
-                err.response?.data?.message || err.message || 'Login failed. Please check your credentials.';
-            setError(errorMessage);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  return (
+    <AuthLayout title="Sign in to your account">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Global Error */}
+        {error && (
+          <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+            <p className="text-sm text-destructive">
+              {error}
+            </p>
+          </div>
+        )}
 
-    return (
-        <AuthLayout title="Batch-Isolated Academic Vault">
-            <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Global Error */}
-                {error && (
-                    <div className="p-3 border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                        <p className="text-sm text-red-600 dark:text-red-400">
-                            {error}
-                        </p>
-                    </div>
-                )}
+        {/* Email */}
+        <Input
+          label="Email Address"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="student@university.edu"
+          required
+          disabled={isLoading}
+        />
 
-                {/* Email */}
-                <Input
-                    label="Email Address"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@university.edu"
-                    required
-                    disabled={isLoading}
-                />
+        {/* Password */}
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          required
+          disabled={isLoading}
+        />
 
-                {/* Password */}
-                <Input
-                    label="Password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    disabled={isLoading}
-                />
+        {/* Submit */}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Sign In'}
+        </Button>
 
-                {/* Submit */}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
-                </Button>
-
-                {/* Register Link */}
-                <div className="pt-4 border-t border-border">
-                    <p className="text-sm text-muted-foreground text-center">
-                        Don't have an account?{' '}
-                        <Link
-                            to="/register"
-                            className="text-foreground font-medium hover:underline"
-                        >
-                            Register
-                        </Link>
-                    </p>
-                </div>
-            </form>
-        </AuthLayout>
-    );
+        {/* Register Link */}
+        <div className="pt-4 border-t border-border">
+          <p className="text-sm text-muted-foreground text-center">
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              className="text-foreground font-medium hover:underline"
+            >
+              Register
+            </Link>
+          </p>
+        </div>
+      </form>
+    </AuthLayout>
+  );
 };
 
 export default LoginForm;

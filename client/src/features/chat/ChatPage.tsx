@@ -1,21 +1,23 @@
-import ChatWindow from './ChatWindow';
-import ChatInput from './ChatInput';
 import { useChat } from '@/hooks/useChat';
+import ChatWindow from './ChatWindow';
 
 /**
- * Main Chat Page Component
- * Combines ChatWindow and ChatInput
+ * ChatPage Component
+ * Main page that orchestrates the chat functionality
  */
 const ChatPage = () => {
-    // Single useChat hook call to prevent duplicate listeners
-    const chatHook = useChat();
+  const { messages, sendMessage, isConnected, currentUser } = useChat();
 
-    return (
-        <div className="h-screen flex flex-col">
-            <ChatWindow {...chatHook} />
-            <ChatInput {...chatHook} />
-        </div>
-    );
+  return (
+    <div className="h-full flex flex-col">
+      <ChatWindow
+        messages={messages}
+        sendMessage={sendMessage}
+        isConnected={isConnected}
+        currentUser={currentUser}
+      />
+    </div>
+  );
 };
 
 export default ChatPage;
