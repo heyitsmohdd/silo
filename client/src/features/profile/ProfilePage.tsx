@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
-import { LogOut, Mail, Shield, Calendar, GitBranch } from 'lucide-react';
+import { LogOut, Mail, Shield, Calendar, GitBranch, Edit2, Lock, Trash2 } from 'lucide-react';
+import EditProfile from './EditProfile';
+import ChangePassword from './ChangePassword';
+import axiosClient from '@/lib/axios';
 
 /**
  * ProfilePage Component
- * Displays user information and provides logout functionality
+ * Displays user information and provides account management
  */
 const ProfilePage = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<'profile' | 'edit' | 'password' | 'delete'>('profile');
 
   if (!user) {
     return null;
@@ -18,6 +23,29 @@ const ProfilePage = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.'
+    )) {
+      return;
+    }
+
+    if (!window.confirm(
+      'This is your last chance! Are you absolutely sure you want to delete your account?'
+    )) {
+      return;
+    }
+
+    try {
+      await axiosClient.delete('/auth/account');
+      logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      alert('Failed to delete account. Please try again.');
+    }
   };
 
   const getInitials = () => {
@@ -45,6 +73,103 @@ const ProfilePage = () => {
     }
     return str;
   };
+
+  if (activeView === 'edit') {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <EditProfile
+          user={user}
+          onCancel={() => setActiveView('profile')}
+          onSuccess={() => {
+            setActiveView('profile');
+            window.location.reload();
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (activeView === 'password') {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <ChangePassword
+          onCancel={() => setActiveView('profile')}
+          onSuccess={() => {
+            setActiveView('profile');
+            alert('Password changed successfully!');
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (activeView === 'delete') {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-card border border-destructive rounded-lg shadow-soft-lg overflow-hidden">
+          <div className="p-6 md:p-8 border-b border-border">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-destructive/10 rounded-lg">
+                <Trash2 className="w-6 h-6 text-destructive" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-card-foreground">
+                  Delete Account
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  This action is permanent and cannot be undone
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 md:p-8 space-y-6">
+            <div className="space-y-3">
+              <h3 className="font-medium text-card-foreground">
+                What happens when you delete your account?
+              </h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-1">•</span>
+                  <span>All your notes and content will be permanently deleted</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-1">•</span>
+                  <span>Your chat messages will be deleted</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-1">•</span>
+                  <span>Your account information will be removed</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-1">•</span>
+                  <span>You will be logged out immediately</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setActiveView('profile')}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteAccount}
+                className="flex-1"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Account
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -102,7 +227,39 @@ const ProfilePage = () => {
           />
         </div>
 
-        {/* Actions */}
+        {/* Quick Actions */}
+        <div className="p-6 border-t border-border bg-muted/30 space-y-3">
+          <Button
+            variant="outline"
+            onClick={() => setActiveView('edit')}
+            className="w-full justify-start"
+          >
+            <Edit2 className="w-4 h-4 mr-2" />
+            Edit Profile
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setActiveView('password')}
+            className="w-full justify-start"
+          >
+            <Lock className="w-4 h-4 mr-2" />
+            Change Password
+          </Button>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="p-6 border-t border-destructive/20 bg-destructive/5">
+          <Button
+            variant="ghost"
+            onClick={() => setActiveView('delete')}
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Account
+          </Button>
+        </div>
+
+        {/* Sign Out */}
         <div className="p-6 border-t border-border bg-muted/30">
           <Button
             variant="destructive"
