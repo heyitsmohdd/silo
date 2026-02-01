@@ -5,7 +5,7 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
-import { registerUser, loginUser } from './auth.service.js';
+import { registerUser, loginUser, handleForgotPassword } from './auth.service.js';
 import { parseRegisterUser, parseLoginRequest } from '../../shared/schemas/auth.schema.js';
 
 /**
@@ -52,5 +52,36 @@ export const getCurrentUser = async (req: AuthenticatedRequest, res: Response): 
 
     res.status(200).json({
         user: req.user,
+    });
+};
+
+/**
+ * POST /auth/forgot-password
+ * Send password reset link to email
+ */
+export const forgotPassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const { email } = req.body;
+
+    if (!email || typeof email !== 'string') {
+        res.status(400).json({ error: 'Email is required' });
+        return;
+    }
+
+    const result = await handleForgotPassword(email);
+
+    if (!result.success) {
+        res.status(400).json({ error: result.error });
+        return;
+    }
+
+    // In production, send email with reset token
+    // For now, just return the token (for development)
+    res.status(200).json({
+        message: 'Password reset link sent to your email',
+        // In development, include the token for testing
+        ...(process.env['NODE_ENV'] === 'development' && {
+            resetToken: result.token,
+            resetUrl: `${process.env['FRONTEND_URL'] || 'http://localhost:5173'}/reset-password?token=${result.token}`,
+        }),
     });
 };

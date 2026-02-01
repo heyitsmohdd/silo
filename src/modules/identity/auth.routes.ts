@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { register, login, getCurrentUser } from './auth.controller.js';
+import { register, login, getCurrentUser, forgotPassword } from './auth.controller.js';
 import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
@@ -35,13 +35,25 @@ router.post('/login', async (req, res, next) => {
 });
 
 /**
- * GET /auth/me
+ * POST /auth/me
  * Get current authenticated user
  * Requires JWT token
  */
 router.get('/me', verifyJWT, async (req, res, next) => {
     try {
         await getCurrentUser(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * POST /auth/forgot-password
+ * Request password reset link
+ */
+router.post('/forgot-password', async (req, res, next) => {
+    try {
+        await forgotPassword(req, res);
     } catch (error) {
         next(error);
     }

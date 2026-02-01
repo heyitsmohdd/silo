@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '../../shared/lib/prisma.js';
 import { Role, JWTPayload, SafeUser } from '../../shared/types/auth.types.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
+import { generateResetToken } from '../../shared/lib/resetToken.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'];
 
@@ -121,4 +122,40 @@ const generateToken = (user: {
     };
 
     return jwt.sign(payload, JWT_SECRET!, { expiresIn: JWT_EXPIRES_IN });
+};
+
+/**
+ * Handle forgot password request
+ */
+export const handleForgotPassword = async (email: string): Promise<{
+    success: boolean;
+    token?: string;
+    error?: string;
+}> => {
+    // Find user by email
+    const user = await prisma.user.findUnique({
+        where: { email },
+    });
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+        return { success: true };
+    }
+
+    // Check if user is soft-deleted
+    if (user.isDeleted) {
+        return { success: true };
+    }
+
+    // Generate reset token
+    const { token } = generateResetToken(email);
+
+    // In production, send email with reset token
+    // For now, store in database or send via email service
+    console.log(`Password reset token for ${email}: ${token}`);
+
+    // TODO: Integrate with email service (Nodemailer/SendGrid)
+    // await sendPasswordResetEmail(email, token);
+
+    return { success: true, token };
 };
