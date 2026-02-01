@@ -4,6 +4,8 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import LoginForm from '@/features/auth/LoginForm';
 import RegisterForm from '@/features/auth/RegisterForm';
+import ForgotPassword from '@/features/auth/ForgotPassword';
+import ResetPassword from '@/features/auth/ResetPassword';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 import AcademicLayout from '@/features/academic/AcademicLayout';
 import NotesList from '@/features/academic/NotesList';
@@ -34,6 +36,8 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route

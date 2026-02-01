@@ -87,15 +87,25 @@ const LoginForm = () => {
 
         {/* Register Link */}
         <div className="pt-4 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            Don't have an account?{' '}
-            <Link
-              to="/register"
-              className="text-foreground font-medium hover:underline"
-            >
-              Register
-            </Link>
-          </p>
+          <div className="flex justify-between gap-4">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <Link
+                to="/register"
+                className="text-foreground font-medium hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+            <p className="text-sm text-muted-foreground">
+              <Link
+                to="/forgot-password"
+                className="text-foreground font-medium hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </p>
+          </div>
         </div>
       </form>
     </AuthLayout>
