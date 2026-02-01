@@ -5,7 +5,7 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
-import { registerUser, loginUser, handleForgotPassword } from './auth.service.js';
+import { registerUser, loginUser, handleForgotPassword, handleVerifyResetToken, handleResetPassword } from './auth.service.js';
 import { parseRegisterUser, parseLoginRequest } from '../../shared/schemas/auth.schema.js';
 
 /**
@@ -75,13 +75,72 @@ export const forgotPassword = async (req: AuthenticatedRequest, res: Response): 
     }
 
     // In production, send email with reset token
-    // For now, just return the token (for development)
+    // For now, just return token (for development)
     res.status(200).json({
         message: 'Password reset link sent to your email',
-        // In development, include the token for testing
+        // In development, include token for testing
         ...(process.env['NODE_ENV'] === 'development' && {
             resetToken: result.token,
             resetUrl: `${process.env['FRONTEND_URL'] || 'http://localhost:5173'}/reset-password?token=${result.token}`,
         }),
+    });
+};
+
+/**
+ * POST /auth/verify-reset-token
+ * Verify password reset token validity
+ */
+export const verifyResetToken = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const { token } = req.body;
+
+    if (!token || typeof token !== 'string') {
+        res.status(400).json({ error: 'Token is required' });
+        return;
+    }
+
+    const result = await handleVerifyResetToken(token);
+
+    if (!result.valid) {
+        res.status(400).json({ error: 'Invalid or expired reset token' });
+        return;
+    }
+
+    res.status(200).json({
+        message: 'Token is valid',
+        email: result.email,
+    });
+};
+
+/**
+ * POST /auth/reset-password
+ * Reset password with valid token
+ */
+export const resetPassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const { token, newPassword } = req.body;
+
+    if (!token || typeof token !== 'string') {
+        res.status(400).json({ error: 'Token is required' });
+        return;
+    }
+
+    if (!newPassword || typeof newPassword !== 'string') {
+        res.status(400).json({ error: 'New password is required' });
+        return;
+    }
+
+    if (newPassword.length < 8) {
+        res.status(400).json({ error: 'Password must be at least 8 characters' });
+        return;
+    }
+
+    const result = await handleResetPassword(token, newPassword);
+
+    if (!result.success) {
+        res.status(400).json({ error: result.error });
+        return;
+    }
+
+    res.status(200).json({
+        message: 'Password reset successful',
     });
 };

@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { register, login, getCurrentUser, forgotPassword } from './auth.controller.js';
+import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword } from './auth.controller.js';
 import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
@@ -54,6 +54,30 @@ router.get('/me', verifyJWT, async (req, res, next) => {
 router.post('/forgot-password', async (req, res, next) => {
     try {
         await forgotPassword(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * POST /auth/verify-reset-token
+ * Verify password reset token
+ */
+router.post('/verify-reset-token', async (req, res, next) => {
+    try {
+        await verifyResetToken(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * POST /auth/reset-password
+ * Reset password with valid token
+ */
+router.post('/reset-password', async (req, res, next) => {
+    try {
+        await resetPassword(req, res);
     } catch (error) {
         next(error);
     }

@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '../../shared/lib/prisma.js';
 import { Role, JWTPayload, SafeUser } from '../../shared/types/auth.types.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
-import { generateResetToken } from '../../shared/lib/resetToken.js';
+import { generateResetToken, verifyResetToken } from '../../shared/lib/resetToken.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'];
 
@@ -158,4 +158,58 @@ export const handleForgotPassword = async (email: string): Promise<{
     // await sendPasswordResetEmail(email, token);
 
     return { success: true, token };
+};
+
+/**
+ * Handle verify reset token
+ */
+export const handleVerifyResetToken = async (token: string): Promise<{
+    valid: boolean;
+    email?: string;
+}> => {
+    const result = verifyResetToken(token);
+
+    if (!result.valid || !result.email) {
+        return { valid: false };
+    }
+
+    return { valid: true, email: result.email };
+};
+
+/**
+ * Handle reset password
+ */
+export const handleResetPassword = async (token: string, newPassword: string): Promise<{
+    success: boolean;
+    error?: string;
+}> => {
+    const result = verifyResetToken(token);
+
+    if (!result.valid || !result.email) {
+        return { success: false, error: 'Invalid or expired reset token' };
+    }
+
+    // Find user by email
+    const user = await prisma.user.findUnique({
+        where: { email: result.email },
+    });
+
+    if (!user) {
+        return { success: false, error: 'User not found' };
+    }
+
+    if (user.isDeleted) {
+        return { success: false, error: 'This account has been deactivated' };
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+    });
+
+    return { success: true };
 };
