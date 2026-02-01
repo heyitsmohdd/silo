@@ -9,6 +9,8 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import { errorHandler, notFoundHandler } from './shared/middleware/error.middleware.js';
+import { authRateLimit, generalRateLimit } from './shared/middleware/rateLimit.middleware.js';
+import { sanitizeBody, sanitizeQuery } from './shared/middleware/sanitize.middleware.js';
 import authRoutes from './modules/identity/auth.routes.js';
 import academicRoutes from './modules/academic/notes.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
@@ -50,6 +52,24 @@ initializeSocketHandlers(io);
 // ============================================================================
 // MIDDLEWARE
 // ============================================================================
+
+// Security Headers
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
+// Input Sanitization
+app.use(sanitizeBody);
+app.use(sanitizeQuery);
+
+// Rate Limiting
+app.use('/auth/login', authRateLimit);
+app.use('/auth/register', authRateLimit);
+app.use('/auth/change-password', authRateLimit);
+app.use(generalRateLimit);
 
 // Body Parsing
 app.use(express.json({ limit: '10mb' }));
