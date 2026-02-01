@@ -8,6 +8,7 @@ import { ListSkeleton } from '@/components/ui/Skeleton';
 import EmptyState from '@/components/ui/EmptyState';
 import { FileText, Plus } from 'lucide-react';
 import NoteFilters from './NoteFilters';
+import Pagination from '@/components/ui/Pagination';
 
 const NotesList = () => {
   const { isProfessor } = useAuthStore();
@@ -16,6 +17,9 @@ const NotesList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 6;
 
   const { data: notes, isLoading, isError, refetch } = useQuery({
     queryKey: ['notes'],
@@ -70,10 +74,32 @@ const NotesList = () => {
 
   const hasFilters = Boolean(searchTerm || subjectFilter || sortBy !== 'newest');
 
+  const paginatedNotes = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredNotes.slice(startIndex, endIndex);
+  }, [filteredNotes, currentPage]);
+
   const handleClearFilters = () => {
     setSearchTerm('');
     setSubjectFilter('');
     setSortBy('newest');
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleSubjectFilterChange = (value: string) => {
+    setSubjectFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setCurrentPage(1);
   };
 
   if (isLoading) {
@@ -138,11 +164,11 @@ const NotesList = () => {
       {notesList.length > 0 && (
         <NoteFilters
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={handleSearchChange}
           subjectFilter={subjectFilter}
-          onSubjectFilterChange={setSubjectFilter}
+          onSubjectFilterChange={handleSubjectFilterChange}
           sortBy={sortBy}
-          onSortChange={setSortBy}
+          onSortChange={handleSortChange}
           subjectOptions={subjectOptions}
           hasFilters={hasFilters}
           onClearFilters={handleClearFilters}
@@ -150,7 +176,7 @@ const NotesList = () => {
       )}
 
       {/* Notes Grid */}
-      {filteredNotes.length === 0 ? (
+      {paginatedNotes.length === 0 ? (
         <EmptyState
           icon={FileText}
           title={
@@ -175,24 +201,32 @@ const NotesList = () => {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredNotes.map((note: any) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              onUpdate={refetch}
-              onDelete={refetch}
-            />
-          ))}
-        </div>
-      )}
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {paginatedNotes.map((note: any) => (
+              <NoteCard
+                key={note.id}
+                note={note}
+                onUpdate={refetch}
+                onDelete={refetch}
+              />
+            ))}
+          </div>
 
-      {/* Results Count */}
-      {filteredNotes.length > 0 && (
-        <p className="text-sm text-muted-foreground text-center">
-          Showing {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''}
-          {hasFilters && ` (filtered from ${notesList.length} total)`}
-        </p>
+          {/* Pagination */}
+          <Pagination
+            totalItems={filteredNotes.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+
+          {/* Results Count */}
+          <p className="text-sm text-muted-foreground text-center">
+            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredNotes.length)} of {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''}
+            {hasFilters && ` (filtered from ${notesList.length} total)`}
+          </p>
+        </>
       )}
     </div>
   );
