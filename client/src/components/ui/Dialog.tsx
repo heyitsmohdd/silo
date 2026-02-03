@@ -35,15 +35,15 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center animate-in fade-in-0">
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in-0 duration-200"
                 onClick={() => onOpenChange(false)}
             />
 
             {/* Dialog Content */}
-            <div className="relative z-50 w-full max-w-md mx-4">
+            <div className="relative z-50 w-full max-w-md mx-4 animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4 duration-200">
                 {children}
             </div>
         </div>
@@ -57,7 +57,7 @@ interface DialogContentProps {
 
 export function DialogContent({ children, onClose }: DialogContentProps) {
     return (
-        <div className="bg-card border border-border rounded-lg shadow-lg animate-in fade-in-0 zoom-in-95">
+        <div className="bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
             {onClose && (
                 <button
                     onClick={onClose}
