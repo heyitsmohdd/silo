@@ -40,7 +40,7 @@ const LandingPage = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-muted/30 to-background">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 dark:from-slate-950 dark:via-blue-950/20 dark:to-slate-950">
       {/* Theme Toggle */}
       <div className="fixed top-4 right-4">
         <ThemeToggle />
@@ -48,15 +48,17 @@ const LandingPage = () => {
 
       {/* Hero Content */}
       <div className="text-center max-w-2xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="size-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-serif font-bold text-3xl">S</span>
+            <div className="size-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-xl shadow-blue-500/30 dark:shadow-blue-500/20">
+              <span className="text-white font-serif font-bold text-3xl">S</span>
             </div>
-            <span className="font-serif text-4xl font-bold text-foreground">Silo</span>
+            <span className="font-serif text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              Silo
+            </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Your Batch's Study Space
+            Your Batch&apos;s Study Space
           </h1>
           <p className="text-lg text-muted-foreground max-w-lg mx-auto">
             Share notes, ask questions, and collaborate with classmates from your exact year and branch.
@@ -65,12 +67,12 @@ const LandingPage = () => {
 
         <button
           onClick={() => setAuthModalOpen(true)}
-          className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg"
+          className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 active:scale-95"
         >
           Get Started
         </button>
 
-        <p className="text-xs text-muted-foreground mt-8">
+        <p className="text-xs text-muted-foreground mt-8 opacity-60">
           Batch-Isolated Academic Vault
         </p>
       </div>

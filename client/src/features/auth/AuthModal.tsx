@@ -143,12 +143,12 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 <DialogHeader>
                     {/* Logo */}
                     <div className="flex items-center gap-2 mb-2">
-                        <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground font-serif font-bold text-lg">
+                        <div className="size-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg">
+                            <span className="text-white font-serif font-bold text-lg">
                                 S
                             </span>
                         </div>
-                        <span className="font-serif text-xl font-semibold text-foreground">
+                        <span className="font-serif text-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                             Silo
                         </span>
                     </div>
