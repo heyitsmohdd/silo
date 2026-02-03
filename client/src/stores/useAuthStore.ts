@@ -16,6 +16,8 @@ export interface User {
     role: 'STUDENT' | 'PROFESSOR';
     year: number;
     branch: string;
+    firstName?: string | null;
+    lastName?: string | null;
 }
 
 // Auth store state

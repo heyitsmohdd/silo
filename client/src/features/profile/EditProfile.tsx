@@ -10,6 +10,8 @@ interface EditProfileProps {
     role: string;
     year: number;
     branch: string;
+    firstName?: string | null;
+    lastName?: string | null;
   };
   onCancel: () => void;
   onSuccess: () => void;
@@ -17,8 +19,8 @@ interface EditProfileProps {
 
 const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
   const [email, setEmail] = useState(user.userId);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState(user.firstName || '');
+  const [lastName, setLastName] = useState(user.lastName || '');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

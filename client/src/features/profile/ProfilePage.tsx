@@ -49,12 +49,30 @@ const ProfilePage = () => {
   };
 
   const getInitials = () => {
+    // Use firstName and lastName if available
+    if (user.firstName && user.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    }
+    if (user.firstName) {
+      return user.firstName.substring(0, 2).toUpperCase();
+    }
+    // Fall back to email
     const email = user.userId || '';
     const parts = email.split('@')[0].split(/[._-]/);
     if (parts.length >= 2) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return email.substring(0, 2).toUpperCase();
+  };
+
+  const getDisplayName = () => {
+    if (user.firstName && user.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    if (user.firstName) {
+      return user.firstName;
+    }
+    return getTruncatedId(user.userId);
   };
 
   const getAvatarGradient = () => {
@@ -188,8 +206,14 @@ const ProfilePage = () => {
             {/* User Info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-semibold text-card-foreground mb-3">
-                {getTruncatedId(user.userId)}
+                {getDisplayName()}
               </h2>
+
+              {(user.firstName || user.lastName) && (
+                <p className="text-sm text-muted-foreground mb-2">
+                  {getTruncatedId(user.userId)}
+                </p>
+              )}
 
               {/* Status Badge */}
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
@@ -296,9 +320,8 @@ const DetailRow = ({ icon: Icon, label, value, truncate }: DetailRowProps) => {
           {label}
         </span>
       </div>
-      <span className={`text-sm font-semibold text-card-foreground capitalize ${
-        truncate ? 'max-w-[150px] truncate' : ''
-      }`}>
+      <span className={`text-sm font-semibold text-card-foreground capitalize ${truncate ? 'max-w-[150px] truncate' : ''
+        }`}>
         {value.toLowerCase()}
       </span>
     </div>
