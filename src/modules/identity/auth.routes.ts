@@ -1,9 +1,5 @@
-/**
- * Authentication Routes
- */
-
 import { Router } from 'express';
-import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword } from './auth.controller.js';
+import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword, updateProfile, changePassword } from './auth.controller.js';
 import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
@@ -78,6 +74,32 @@ router.post('/verify-reset-token', async (req, res, next) => {
 router.post('/reset-password', async (req, res, next) => {
     try {
         await resetPassword(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * PUT /auth/profile
+ * Update user profile (email, firstName, lastName)
+ * Requires JWT token
+ */
+router.put('/profile', verifyJWT, async (req, res, next) => {
+    try {
+        await updateProfile(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * PUT /auth/change-password
+ * Change user password
+ * Requires JWT token
+ */
+router.put('/change-password', verifyJWT, async (req, res, next) => {
+    try {
+        await changePassword(req, res);
     } catch (error) {
         next(error);
     }

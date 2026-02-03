@@ -5,7 +5,7 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
-import { registerUser, loginUser, handleForgotPassword, handleVerifyResetToken, handleResetPassword } from './auth.service.js';
+import { registerUser, loginUser, handleForgotPassword, handleVerifyResetToken, handleResetPassword, updateUserProfile, changeUserPassword } from './auth.service.js';
 import { parseRegisterUser, parseLoginRequest } from '../../shared/schemas/auth.schema.js';
 
 /**
@@ -144,3 +144,79 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response): P
         message: 'Password reset successful',
     });
 };
+
+/**
+ * PUT /auth/profile
+ * Update user profile (email, firstName, lastName)
+ */
+export const updateProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    if (!req.user) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+    }
+
+    const { email, firstName, lastName } = req.body;
+
+    try {
+        const updatedUser = await updateUserProfile(req.user.userId, {
+            email,
+            firstName,
+            lastName,
+        });
+
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user: updatedUser,
+        });
+    } catch (error: any) {
+        if (error.statusCode) {
+            res.status(error.statusCode).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'Failed to update profile' });
+        }
+    }
+};
+
+/**
+ * PUT /auth/change-password
+ * Change user password
+ */
+export const changePassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    if (!req.user) {
+        res.status(401).json({ error: 'Not authenticated' });
+        return;
+    }
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || typeof currentPassword !== 'string') {
+        res.status(400).json({ error: 'Current password is required' });
+        return;
+    }
+
+    if (!newPassword || typeof newPassword !== 'string') {
+        res.status(400).json({ error: 'New password is required' });
+        return;
+    }
+
+    if (newPassword.length < 8) {
+        res.status(400).json({ error: 'New password must be at least 8 characters' });
+        return;
+    }
+
+    try {
+        const result = await changeUserPassword(req.user.userId, currentPassword, newPassword);
+
+        if (!result.success) {
+            res.status(400).json({ error: result.error });
+            return;
+        }
+
+        res.status(200).json({
+            message: 'Password changed successfully',
+        });
+    } catch (error: any) {
+        res.status(500).json({ error: 'Failed to change password' });
+    }
+};
+

@@ -213,3 +213,101 @@ export const handleResetPassword = async (token: string, newPassword: string): P
 
     return { success: true };
 };
+
+/**
+ * Update user profile
+ */
+export const updateUserProfile = async (
+    userId: string,
+    data: {
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+    }
+): Promise<SafeUser> => {
+    // Find user
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!user) {
+        throw new AppError(404, 'User not found');
+    }
+
+    if (user.isDeleted) {
+        throw new AppError(403, 'This account has been deactivated');
+    }
+
+    // If email is being updated, check if it's already taken
+    if (data.email && data.email !== user.email) {
+        const existingUser = await prisma.user.findUnique({
+            where: { email: data.email },
+        });
+
+        if (existingUser) {
+            throw new AppError(409, 'Email is already in use');
+        }
+    }
+
+    // Update user
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            email: data.email || user.email,
+            firstName: data.firstName !== undefined ? data.firstName : user.firstName,
+            lastName: data.lastName !== undefined ? data.lastName : user.lastName,
+        },
+    });
+
+    // Return user without password
+    const { password: _, ...safeUser } = updatedUser;
+    return safeUser;
+};
+
+/**
+ * Change user password
+ */
+export const changeUserPassword = async (
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+): Promise<{ success: boolean; error?: string }> => {
+    // Find user
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!user) {
+        return { success: false, error: 'User not found' };
+    }
+
+    if (user.isDeleted) {
+        return { success: false, error: 'This account has been deactivated' };
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isPasswordValid) {
+        return { success: false, error: 'Current password is incorrect' };
+    }
+
+    // Check if new password is same as current
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+    if (isSamePassword) {
+        return { success: false, error: 'New password must be different from current password' };
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword },
+    });
+
+    return { success: true };
+};
+
