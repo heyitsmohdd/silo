@@ -12,7 +12,8 @@ import { errorHandler, notFoundHandler } from './shared/middleware/error.middlew
 import { authRateLimit, generalRateLimit } from './shared/middleware/rateLimit.middleware.js';
 import { sanitizeBody, sanitizeQuery } from './shared/middleware/sanitize.middleware.js';
 import authRoutes from './modules/identity/auth.routes.js';
-import academicRoutes from './modules/academic/notes.routes.js';
+import notesRoutes from './modules/academic/notes.routes.js';
+import questionsRoutes from './modules/academic/questions.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 
 const app = express();
@@ -55,10 +56,10 @@ initializeSocketHandlers(io);
 
 // Security Headers
 app.use((_req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  next();
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
 });
 
 // Input Sanitization
@@ -92,8 +93,8 @@ app.get('/health', (_req, res) => {
 // ============================================================================
 
 app.use('/auth', authRoutes);
-app.use('/academic', academicRoutes);
-// app.use('/qna', qnaRoutes);
+app.use('/academic', notesRoutes);
+app.use('/academic', questionsRoutes);
 
 // ============================================================================
 // ERROR HANDLING
