@@ -1,174 +1,78 @@
 import { useState, useMemo } from 'react';
 import { Search, Plus } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import QuestionCard from './QuestionCard';
-import CreateQuestionForm from './CreateQuestionForm';
-import EmptyState from '@/components/ui/EmptyState';
-import Skeleton from '@/components/ui/Skeleton';
-import type { Question } from '@/modules/qna/qna.api';
 
 const QuestionList = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [tagFilter, setTagFilter] = useState('');
-  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'title'>('newest');
-
-  const { data: questions = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ['questions'],
-    queryFn: async () => {
-      const response = await fetch('/academic/questions');
-      return response.json();
-    },
-  });
-
-  const filteredQuestions = useMemo(() => {
-    let filtered = [...questions];
-
-    if (searchTerm) {
-      const lowerSearch = searchTerm.toLowerCase();
-      filtered = filtered.filter((q: Question) =>
-        q.title.toLowerCase().includes(lowerSearch) ||
-        q.content.toLowerCase().includes(lowerSearch)
-      );
-    }
-
-    if (tagFilter) {
-      filtered = filtered.filter((q: Question) => q.tags.includes(tagFilter));
-    }
-
-    switch (sortBy) {
-      case 'newest':
-        filtered.sort((a: Question, b: Question) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        );
-      case 'oldest':
-        filtered.sort((a: Question, b: Question) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        );
-      case 'title':
-        filtered.sort((a: Question, b: Question) =>
-          a.title.localeCompare(b.title);
-        );
-    }
-
-    return filtered;
-  }, [questions, searchTerm, tagFilter, sortBy, refetch]);
+  const [questions, setQuestions] = useState<any[]>([]);
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
-    questions.forEach((q: Question) => q.tags.forEach(tag => tags.add(tag)));
+    questions.forEach((q) => q.tags?.forEach(tag => tags.add(tag)));
     return Array.from(tags);
   }, [questions]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuestions(
+      questions.filter((q) =>
+        q.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        q.content.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    );
+  };
+
+  const handleClearFilters = () => {
+    setQuestions(questions);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-foreground">Questions</h1>
         <p className="text-sm text-muted-foreground">
-          {filteredQuestions.length} question{filteredQuestions.length !== 1 ? 's' : ''}
+          {questions.length} question{questions.length !== 1 ? 's' : ''}
         </p>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex-1 gap-3">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search questions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-3 py-2 w-full rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            />
-          </div>
-
-          <select
-            value={tagFilter}
-            onChange={(e) => setTagFilter(e.target.value)}
-            className="h-10 px-4 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      <div className="flex gap-3">
+        <div className="relative w-full max-w-md">
+          <Search className="w-full" />
+          <button
+            onClick={handleClearFilters}
+            className="px-4 py-2 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
           >
-            <option value="">All Tags</option>
-            {allTags.map((tag) => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'title')}
-            className="h-10 px-4 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="title">Title (A-Z)</option>
-          </select>
-
-          {(searchTerm || tagFilter || sortBy !== 'newest') && (
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setTagFilter('');
-                setSortBy('newest');
-              }}
-              className="px-4 py-2 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
-            >
-              Clear Filters
-            </button>
-          )}
+            Clear
+          </button>
         </div>
+
+        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+          <Plus className="w-4 h-4" />
+          <span>Ask Question</span>
+        </button>
       </div>
 
-      <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-        <Plus className="w-4 h-4" />
-        <span>Ask Question</span>
-      </button>
-    </div>
-
-    {isLoading ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-4 p-6 border border-border rounded-lg bg-card">
-            <div className="space-y-3">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-16 w-2/3" />
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : isError ? (
-      <EmptyState
-        icon={Search}
-        title="Unable to load questions"
-        description="There was an error loading questions. Please try again."
-        action={{
-          label: 'Try Again',
-          onClick: () => refetch(),
-        }}
-      />
-    ) : filteredQuestions.length === 0 ? (
-      <EmptyState
-        icon={Search}
-        title="No questions found"
-        description={
-          searchTerm || tagFilter || sortBy !== 'newest'
-            ? 'Try adjusting your search or filters, or select "Newest First" to see all questions.'
-            : 'Be the first to ask a question in your batch!'}
-        />
+      {questions.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-sm text-muted-foreground">No questions found. Be the first to ask a question!</p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredQuestions.map((question) => (
-            <QuestionCard key={question.id} question={question} onVote={() => {}} />
+        <div className="space-y-4">
+          {questions.map((question: any, idx: number) => (
+            <div key={idx} className="border border-border rounded-lg bg-card p-6 hover:shadow-lg transition-all duration-200">
+              <h3 className="font-semibold text-lg text-foreground mb-2">
+                {question.title}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                {question.content}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Asked {new Date(question.createdAt).toLocaleDateString()}
+              </p>
+              <div className="flex gap-2 text-sm text-muted-foreground">
+                <span>{question.upvotes || 0} upvotes</span>
+                <span>{question.downvotes || 0} downvotes</span>
+              </div>
+            </div>
           ))}
         </div>
-      )}
-
-      {filteredQuestions.length > 0 && (
-        <p className="text-sm text-muted-foreground text-center pt-4">
-          Showing {filteredQuestions.length} question{filteredQuestions.length !== 1 ? 's' : ''}
-          {searchTerm || tagFilter || sortBy !== 'newest' && (
-            <span> (filtered from {questions.length} total)</span>
-          )}
-        </p>
       )}
     </div>
   );
