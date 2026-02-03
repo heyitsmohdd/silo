@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import axiosClient from '@/lib/axios';
@@ -9,7 +8,7 @@ interface CreateQuestionFormProps {
 }
 
 const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
-    const { user } = useAuthStore();
+
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState('');

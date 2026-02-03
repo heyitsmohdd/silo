@@ -1,4 +1,4 @@
-import { MessageSquare, ArrowUp, ArrowDown, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, ArrowUp, CheckCircle2 } from 'lucide-react';
 
 interface QuestionCardProps {
     question: {
