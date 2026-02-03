@@ -242,7 +242,11 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                     )}
 
                     {/* Submit Button */}
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40"
+                        disabled={loading}
+                    >
                         {loading
                             ? 'Please wait...'
                             : mode === 'signup'
