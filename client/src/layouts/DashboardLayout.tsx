@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, User, Menu, X } from 'lucide-react';
+import { FileText, MessageSquare, User, Menu, X, HelpCircle } from 'lucide-react';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useState } from 'react';
@@ -106,6 +106,7 @@ const SidebarContent = ({ user, onNavigate, isMobile }: SidebarContentProps) => 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
+        <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
         <NavLink to="/chat" icon={MessageSquare} label="Chat" onClick={onNavigate} />
         <NavLink to="/profile" icon={User} label="Profile" onClick={onNavigate} />
       </nav>
@@ -143,11 +144,10 @@ const NavLink = ({ to, icon: Icon, label, onClick }: NavLinkProps) => {
     <Link
       to={to}
       onClick={onClick}
-      className={`relative flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-        isActive
-          ? 'bg-accent text-accent-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-      }`}
+      className={`relative flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+        ? 'bg-accent text-accent-foreground'
+        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+        }`}
     >
       <Icon className="w-4 h-4" />
       <span>{label}</span>

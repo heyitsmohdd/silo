@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageSquare } from 'lucide-react';
-import { useAuthStore } from '@/stores/useAuthStore';
 import VotingButtons from './VotingButtons';
 import AnswerCard from './AnswerCard';
 import AnswerForm from './AnswerForm';
@@ -12,7 +11,6 @@ import axiosClient from '@/lib/axios';
 const QuestionDetail = () => {
     const { questionId } = useParams<{ questionId: string }>();
     const navigate = useNavigate();
-    const { user } = useAuthStore();
 
     const { data, isLoading, isError, refetch } = useQuery({
         queryKey: ['question', questionId],

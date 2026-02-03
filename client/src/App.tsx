@@ -9,6 +9,8 @@ import ResetPassword from '@/features/auth/ResetPassword';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 import AcademicLayout from '@/features/academic/AcademicLayout';
 import NotesList from '@/features/academic/NotesList';
+import QuestionList from '@/features/qna/QuestionList';
+import QuestionDetail from '@/features/qna/QuestionDetail';
 import ChatPage from '@/features/chat/ChatPage';
 import ProfilePage from '@/features/profile/ProfilePage';
 
@@ -56,6 +58,22 @@ function App() {
               element={
                 <AcademicLayout>
                   <NotesList />
+                </AcademicLayout>
+              }
+            />
+            <Route
+              path="qna"
+              element={
+                <AcademicLayout>
+                  <QuestionList />
+                </AcademicLayout>
+              }
+            />
+            <Route
+              path="qna/:questionId"
+              element={
+                <AcademicLayout>
+                  <QuestionDetail />
                 </AcademicLayout>
               }
             />
