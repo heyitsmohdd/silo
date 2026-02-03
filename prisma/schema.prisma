@@ -50,6 +50,8 @@ model User {
   // Relations
   notes     Note[]
   messages  Message[]
+  questions Question[]
+  answers   Answer[]
   
   @@index([year, branch])
   @@index([email])
@@ -125,4 +127,92 @@ model Message {
   @@index([year, branch, roomId])
   @@index([senderId])
   @@map("messages")
+}
+
+// ============================================================================
+// QUESTION MODEL (Q&A Feature)
+// ============================================================================
+
+model Question {
+  id        String   @id @default(uuid()) @db.Uuid
+  
+  // Content
+  title     String
+  content   String   @db.Text
+  tags      String[] // Array of tags for categorization
+  
+  // Batch Context (Enforced Isolation)
+  year      Int
+  branch    String
+  
+  // Ownership
+  authorId  String   @map("author_id") @db.Uuid
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Voting
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+  
+  // Best Answer Selection (One-to-One)
+  bestAnswerId String? @unique @map("best_answer_id") @db.Uuid
+  bestAnswer   Answer? @relation("BestAnswer", fields: [bestAnswerId], references: [id], onDelete: SetNull)
+  
+  // Relations
+  answers   Answer[] @relation("QuestionAnswers")
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([year, branch])
+  @@index([authorId])
+  @@index([bestAnswerId])
+  @@map("questions")
+}
+
+// ============================================================================
+// ANSWER MODEL (Q&A Feature)
+// ============================================================================
+
+model Answer {
+  id        String   @id @default(uuid()) @db.Uuid
+  
+  // Content
+  content   String   @db.Text
+  
+  // Question Relation
+  questionId String  @map("question_id") @db.Uuid
+  question   Question @relation("QuestionAnswers", fields: [questionId], references: [id], onDelete: Cascade)
+  
+  // Batch Context (Enforced Isolation)
+  year      Int
+  branch    String
+  
+  // Ownership
+  authorId  String   @map("author_id") @db.Uuid
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Voting
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+  
+  // Best Answer Back-Relation
+  bestQuestionId String?   @unique @map("best_question_id") @db.Uuid
+  bestQuestion   Question? @relation("BestAnswer")
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([year, branch])
+  @@index([questionId])
+  @@index([authorId])
+  @@index([bestQuestionId])
+  @@map("answers")
 }
