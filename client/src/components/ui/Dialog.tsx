@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface DialogProps {
     open: boolean;
@@ -82,16 +83,18 @@ export function DialogHeader({ children }: DialogHeaderProps) {
 
 interface DialogTitleProps {
     children: ReactNode;
+    className?: string;
 }
 
-export function DialogTitle({ children }: DialogTitleProps) {
-    return <h2 className="text-xl font-semibold text-card-foreground">{children}</h2>;
+export function DialogTitle({ children, className }: DialogTitleProps) {
+    return <h2 className={cn("text-xl font-semibold text-card-foreground", className)}>{children}</h2>;
 }
 
 interface DialogDescriptionProps {
     children: ReactNode;
+    className?: string;
 }
 
-export function DialogDescription({ children }: DialogDescriptionProps) {
-    return <p className="text-sm text-muted-foreground">{children}</p>;
+export function DialogDescription({ children, className }: DialogDescriptionProps) {
+    return <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>;
 }

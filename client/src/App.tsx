@@ -40,39 +40,41 @@ const LandingPage = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 dark:from-slate-950 dark:via-blue-950/20 dark:to-slate-950">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       {/* Theme Toggle */}
-      <div className="fixed top-4 right-4">
+      <div className="fixed top-6 right-6 z-10">
         <ThemeToggle />
       </div>
 
       {/* Hero Content */}
-      <div className="text-center max-w-2xl mx-auto">
-        <div className="mb-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="size-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-xl shadow-blue-500/30 dark:shadow-blue-500/20">
-              <span className="text-white font-serif font-bold text-3xl">S</span>
+      <div className="text-center max-w-xl mx-auto">
+        {/* Logo Section */}
+        <div className="mb-12">
+          <div className="inline-flex items-center justify-center gap-3 mb-8">
+            <div className="size-20 rounded-2xl bg-primary/10 dark:bg-primary/20 border-2 border-primary/20 flex items-center justify-center">
+              <span className="text-primary font-serif font-bold text-4xl">S</span>
             </div>
-            <span className="font-serif text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              Silo
-            </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Your Batch&apos;s Study Space
+          <h1 className="text-5xl font-bold text-foreground mb-4 tracking-tight">
+            Silo
           </h1>
-          <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+          <p className="text-xl text-muted-foreground font-medium mb-2">
+            Your Batch&apos;s Study Space
+          </p>
+          <p className="text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
             Share notes, ask questions, and collaborate with classmates from your exact year and branch.
           </p>
         </div>
 
+        {/* CTA Button */}
         <button
           onClick={() => setAuthModalOpen(true)}
-          className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105 active:scale-95"
+          className="px-8 py-3.5 bg-primary text-primary-foreground rounded-md font-semibold hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl active:scale-[0.98] text-base"
         >
           Get Started
         </button>
 
-        <p className="text-xs text-muted-foreground mt-8 opacity-60">
+        <p className="text-xs text-muted-foreground mt-12 opacity-50">
           Batch-Isolated Academic Vault
         </p>
       </div>

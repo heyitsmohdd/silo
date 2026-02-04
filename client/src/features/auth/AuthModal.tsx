@@ -142,28 +142,28 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <DialogContent>
                 <DialogHeader>
                     {/* Logo */}
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="size-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg">
-                            <span className="text-white font-serif font-bold text-lg">
+                    <div className="flex items-center gap-2.5 mb-6">
+                        <div className="size-10 rounded-lg bg-primary/10 dark:bg-primary/20 border border-primary/20 flex items-center justify-center">
+                            <span className="text-primary font-serif font-bold text-xl">
                                 S
                             </span>
                         </div>
-                        <span className="font-serif text-xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                        <span className="font-serif text-2xl font-bold text-foreground">
                             Silo
                         </span>
                     </div>
 
-                    <DialogTitle>
-                        {mode === 'signup' ? 'Join your batch' : 'Welcome back'}
+                    <DialogTitle className="text-2xl">
+                        {mode === 'signup' ? 'Create your account' : 'Welcome back'}
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-base">
                         {mode === 'signup'
-                            ? "You'll be placed with students from your exact year and branch."
+                            ? "Join your batch to collaborate with classmates."
                             : "Sign in to access your batch's study space."}
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                <form onSubmit={handleSubmit} className="space-y-5 mt-6">
                     {/* Global Error */}
                     {error && (
                         <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
