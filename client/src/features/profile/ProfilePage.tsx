@@ -3,150 +3,147 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
 import { LogOut, Mail, Shield, Calendar, GitBranch, Edit2, Lock, Trash2 } from 'lucide-react';
+import DetailRow from '@/components/ui/DetailRow';
 import EditProfile from './EditProfile';
 import ChangePassword from './ChangePassword';
-import axiosClient from '@/lib/axios';
 
-/**
- * ProfilePage Component
- * Displays user information and provides account management
- */
 const ProfilePage = () => {
   const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
   const [activeView, setActiveView] = useState<'profile' | 'edit' | 'password' | 'delete'>('profile');
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to log out?')) {
+      logout();
+      window.location.reload();
+    }
+  };
 
   if (!user) {
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!window.confirm(
-      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.'
-    )) {
-      return;
-    }
-
-    if (!window.confirm(
-      'This is your last chance! Are you absolutely sure you want to delete your account?'
-    )) {
-      return;
-    }
-
-    try {
-      await axiosClient.delete('/auth/account');
-      logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Failed to delete account:', error);
-      alert('Failed to delete account. Please try again.');
-    }
-  };
-
-  const getInitials = () => {
-    // Use firstName and lastName if available
-    if (user.firstName && user.lastName) {
-      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-    }
-    if (user.firstName) {
-      return user.firstName.substring(0, 2).toUpperCase();
-    }
-    // Fall back to email
-    const email = user.userId || '';
-    const parts = email.split('@')[0].split(/[._-]/);
-    if (parts.length >= 2) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-    return email.substring(0, 2).toUpperCase();
-  };
-
-  const getDisplayName = () => {
-    if (user.firstName && user.lastName) {
-      return `${user.firstName} ${user.lastName}`;
-    }
-    if (user.firstName) {
-      return user.firstName;
-    }
-    return getTruncatedId(user.userId);
-  };
-
-  const getAvatarGradient = () => {
-    const str = user.userId || 'default';
-    const hash = str.split('').reduce((acc: number, char: string) => {
-      return char.charCodeAt(0) + ((acc << 5) - acc);
-    }, 0);
-
-    const hue = Math.abs(hash % 360);
-    return `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 60) % 360}, 70%, 60%))`;
-  };
-
-  const getTruncatedId = (str: string) => {
-    if (str.length > 20) {
-      return `${str.substring(0, 8)}...${str.substring(str.length - 8)}`;
-    }
-    return str;
-  };
-
-  if (activeView === 'edit') {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <EditProfile
-          user={user}
-          onCancel={() => setActiveView('profile')}
-          onSuccess={() => {
-            setActiveView('profile');
-            window.location.reload();
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (activeView === 'password') {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <ChangePassword
-          onCancel={() => setActiveView('profile')}
-          onSuccess={() => {
-            setActiveView('profile');
-            alert('Password changed successfully!');
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (activeView === 'delete') {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-card border border-destructive rounded-lg shadow-soft-lg overflow-hidden">
-          <div className="p-6 md:p-8 border-b border-border">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-destructive/10 rounded-lg">
-                <Trash2 className="w-6 h-6 text-destructive" />
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold text-card-foreground">
-                  Delete Account
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  This action is permanent and cannot be undone
-                </p>
-              </div>
-            </div>
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="bg-card border border-border rounded-lg shadow-soft-lg p-6">
+        <div className="flex items-center gap-6">
+          {/* Avatar */}
+          <div
+            style={{ background: getAvatarGradient(user.userId) }}
+            className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md"
+          >
+            {getInitials()}
           </div>
 
-          <div className="p-6 md:p-8 space-y-6">
-            <div className="space-y-3">
-              <h3 className="font-medium text-card-foreground">
-                What happens when you delete your account?
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+          {/* User Info */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold text-card-foreground mb-2">
+              {getDisplayName()}
+            </h1>
+
+            {/* Status Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                {user.role === 'STUDENT' ? 'Active Student' : 'Professor'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Profile Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => setActiveView('edit')}
+            className={`flex-1 items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+              activeView === 'edit'
+                ? 'bg-accent text-accent-foreground shadow-lg'
+                : 'text-muted-foreground hover:bg-muted'
+            }`}
+          >
+            <Edit2 className="w-4 h-4" />
+            <span>Edit Profile</span>
+          </button>
+
+          <button
+            onClick={() => setActiveView('password')}
+            className={`flex-1 items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+              activeView === 'password'
+                ? 'bg-accent text-accent-foreground shadow-lg'
+                : 'text-muted-foreground hover:bg-muted'
+            }`}
+          >
+            <Lock className="w-4 h-4" />
+            <span>Change Password</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="space-y-6">
+        {activeView === 'profile' && (
+          <div className="bg-card border border-border rounded-lg shadow-soft-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-card-foreground">Edit Profile</h2>
+              <button
+                onClick={() => setActiveView('profile')}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <EditProfile
+              user={user}
+              onCancel={() => setActiveView('profile')}
+              onSuccess={() => {
+                setActiveView('profile');
+                window.location.reload();
+              }}
+            />
+          </div>
+        )}
+
+        {activeView === 'password' && (
+          <div className="bg-card border border-border rounded-lg shadow-soft-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-card-foreground">Change Password</h2>
+              <button
+                onClick={() => setActiveView('profile')}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <ChangePassword
+              onCancel={() => setActiveView('profile')}
+              onSuccess={() => {
+                setActiveView('profile');
+                alert('Password changed successfully!');
+              }}
+            />
+          </div>
+        )}
+
+        {activeView === 'delete' && (
+          <div className="bg-card border border-destructive/20 rounded-lg shadow-soft-lg p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-destructive">Delete Account</h2>
+              <button
+                onClick={() => setActiveView('profile')}
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <p className="text-sm text-destructive mb-4">
+                This action is permanent and cannot be undone. Please confirm carefully.
+              </p>
+
+              <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-destructive mt-1">•</span>
                   <span>All your notes and content will be permanently deleted</span>
@@ -164,166 +161,79 @@ const ProfilePage = () => {
                   <span>You will be logged out immediately</span>
                 </li>
               </ul>
-            </div>
 
-            <div className="flex gap-3 pt-4">
               <Button
-                variant="outline"
-                onClick={() => setActiveView('profile')}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
                 onClick={handleDeleteAccount}
-                className="flex-1"
+                variant="destructive"
+                className="w-full mt-4"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
                 Delete Account
               </Button>
             </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-card border border-border rounded-lg shadow-soft-lg overflow-hidden">
-        {/* Header */}
-        <div className="p-6 md:p-8 border-b border-border">
-          <div className="flex items-start gap-6">
-            {/* Avatar */}
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-md"
-              style={{ background: getAvatarGradient() }}
-            >
-              {getInitials()}
+            <Button
+              onClick={() => setActiveView('profile')}
+              variant="outline"
+              className="w-full mt-2"
+              disabled={handleDeleteAccount === undefined}
+              >
+                Cancel
+              </Button>
             </div>
-
-            {/* User Info */}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-2xl font-semibold text-card-foreground mb-3">
-                {getDisplayName()}
-              </h2>
-
-              {(user.firstName || user.lastName) && (
-                <p className="text-sm text-muted-foreground mb-2">
-                  {getTruncatedId(user.userId)}
-                </p>
-              )}
-
-              {/* Status Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                  {user.role === 'STUDENT' ? 'Active Student' : 'Professor'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Details Grid */}
-        <div className="p-6 md:p-8 space-y-2">
-          <DetailRow
-            icon={Mail}
-            label="Email"
-            value={user.userId}
-            truncate
-          />
-          <DetailRow
-            icon={Shield}
-            label="Role"
-            value={user.role.toLowerCase()}
-          />
-          <DetailRow
-            icon={Calendar}
-            label="Year"
-            value={user.year.toString()}
-          />
-          <DetailRow
-            icon={GitBranch}
-            label="Branch"
-            value={user.branch}
-          />
-        </div>
-
-        {/* Quick Actions */}
-        <div className="p-6 border-t border-border bg-muted/30 space-y-3">
-          <Button
-            variant="outline"
-            onClick={() => setActiveView('edit')}
-            className="w-full justify-start"
-          >
-            <Edit2 className="w-4 h-4 mr-2" />
-            Edit Profile
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setActiveView('password')}
-            className="w-full justify-start"
-          >
-            <Lock className="w-4 h-4 mr-2" />
-            Change Password
-          </Button>
-        </div>
-
-        {/* Danger Zone */}
-        <div className="p-6 border-t border-destructive/20 bg-destructive/5">
-          <Button
-            variant="ghost"
-            onClick={() => setActiveView('delete')}
-            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Delete Account
-          </Button>
-        </div>
-
-        {/* Sign Out */}
-        <div className="p-6 border-t border-border bg-muted/30">
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            className="w-full"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
-
-          <p className="text-xs text-muted-foreground text-center mt-4">
-            Logged in to Silo
-          </p>
-        </div>
+        )}
       </div>
-    </div>
-  );
-};
 
-// Detail Row Component
-interface DetailRowProps {
-  icon: any;
-  label: string;
-  value: string;
-  truncate?: boolean;
-}
-
-const DetailRow = ({ icon: Icon, label, value, truncate }: DetailRowProps) => {
-  return (
-    <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-muted/50 transition-colors">
-      <div className="flex items-center gap-3">
-        <Icon className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">
-          {label}
-        </span>
+      {/* Details Section */}
+      <div className="space-y-2">
+        <DetailRow
+          icon={Mail}
+          label="Email"
+          value={user.userId}
+          truncate
+        />
+        <DetailRow
+          icon={Shield}
+          label="Role"
+          value={user.role.toLowerCase()}
+        />
+        <DetailRow
+          icon={Calendar}
+          label="Year"
+          value={user.year.toString()}
+        />
+        <DetailRow
+          icon={GitBranch}
+          label="Branch"
+          value={user.branch}
+        />
       </div>
-      <span className={`text-sm font-semibold text-card-foreground capitalize ${truncate ? 'max-w-[150px] truncate' : ''
-        }`}>
-        {value.toLowerCase()}
-      </span>
+
+      {/* Quick Actions */}
+      <div className="p-6 border-t border-border bg-muted/30">
+        <Button
+          onClick={() => setActiveView('delete')}
+          variant="ghost"
+          className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          <span>Delete Account</span>
+        </Button>
+      </div>
+
+      {/* Sign Out */}
+      <div className="p-6 border-t border-border bg-muted/30">
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          className="w-full"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          <span>Sign Out</span>
+        </Button>
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          Logged in to Silo
+        </p>
+      </div>
     </div>
   );
 };
