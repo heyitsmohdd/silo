@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
 import { LogOut, Mail, Shield, Calendar, GitBranch, Edit2, Lock, User, Trash2 } from 'lucide-react';
 import axiosClient from '@/lib/axios';
 import EditProfile from './EditProfile';
@@ -11,6 +9,11 @@ import ChangePassword from './ChangePassword';
 const ProfilePage = () => {
   const { user, logout } = useAuthStore();
   const [activeView, setActiveView] = useState<'profile' | 'edit' | 'password' | 'delete'>('profile');
+
+  // Guard: don't render if user is null
+  if (!user) {
+    return null;
+  }
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to log out?')) {
@@ -31,45 +34,7 @@ const ProfilePage = () => {
       logout();
       window.location.href = '/login';
     } catch (error) {
-      console.error('Failed to delete account:', error);
       alert('Failed to delete account. Please try again.');
-    }
-  };
-
-  const handleEditProfile = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData = {
-      email: user.userId,
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-    };
-
-    try {
-      await axiosClient.put('/auth/profile', formData);
-      window.location.reload();
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      alert('Failed to update profile. Please try again.');
-    }
-  };
-
-  const handleChangePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData = {
-      currentPassword: e.target.value,
-      newPassword: '',
-      confirmPassword: '',
-    };
-
-    try {
-      await axiosClient.put('/auth/change-password', formData);
-      window.location.reload();
-      alert('Password changed successfully!');
-    } catch (error) {
-      console.error('Failed to change password:', error);
-      alert('Failed to change password. Please try again.');
     }
   };
 
@@ -168,21 +133,19 @@ const ProfilePage = () => {
               </p>
             </div>
 
-              <div className="flex gap-3 pt-6">
-                <button
-                  onClick={() => setActiveView('profile')}
-                  className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDeleteAccount}
-                  variant="destructive"
-                  className="flex-1 px-4 py-2 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
-                >
-                  Delete Account
-                </button>
-              </div>
+            <div className="flex gap-3 pt-6">
+              <button
+                onClick={() => setActiveView('profile')}
+                className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                className="flex-1 px-4 py-2 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+              >
+                Delete Account
+              </button>
             </div>
           </div>
         )}
@@ -204,41 +167,37 @@ const ProfilePage = () => {
                     <p className="text-sm text-muted-foreground">{user.userId}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* Role */}
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-muted-foreground" />
+                {/* Role */}
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Role</p>
                     <p className="text-sm text-muted-foreground capitalize">{user.role.toLowerCase()}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* Year */}
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
+                {/* Year */}
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Year</p>
                     <p className="text-sm text-muted-foreground">{user.year}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* Branch */}
-              <div className="flex items-center gap-2">
-                <GitBranch className="w-4 h-4 text-muted-foreground" />
+                {/* Branch */}
+                <div className="flex items-center gap-2">
+                  <GitBranch className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Branch</p>
                     <p className="text-sm text-muted-foreground">{user.branch}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* Name */}
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-muted-foreground" />
+                {/* Name */}
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Name</p>
                     <p className="text-sm text-muted-foreground">
@@ -297,7 +256,7 @@ const ProfilePage = () => {
           Logged in to Silo
         </p>
       </div>
-    </div>
+    </div >
   );
 };
 

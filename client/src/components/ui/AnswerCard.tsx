@@ -1,5 +1,3 @@
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
-import Button from '@/components/ui/Button';
 
 interface AnswerProps {
   id: string;
@@ -16,13 +14,13 @@ interface AnswerProps {
   };
 }
 
-const AnswerCard = ({ answer }: AnswerProps) => {
+const AnswerCard = ({ answer }: { answer: AnswerProps }) => {
   return (
     <div className="border border-border rounded-lg bg-card p-6 hover:shadow-lg transition-all duration-200">
       <div className="flex items-start gap-4">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
           <span className="text-white text-lg">
-            {answer.author.firstName ? answer.author.firstName[0] : answer.email.split('@')[0][0].toUpperCase()}
+            {answer.author.firstName ? answer.author.firstName[0] : answer.author.email.split('@')[0][0].toUpperCase()}
           </span>
         </div>
 
