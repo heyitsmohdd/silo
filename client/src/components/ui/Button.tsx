@@ -20,20 +20,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'disabled:pointer-events-none disabled:opacity-50',
           // Variant styles
           {
-            // Default - solid primary button
-            'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.98]':
+            // Default - violet primary button
+            'bg-violet-500 text-white shadow-lg hover:bg-violet-600 active:scale-[0.98] shadow-violet-500/20':
               variant === 'default',
-            // Secondary - subtle background
-            'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80':
+            // Secondary - glass effect
+            'bg-zinc-800/40 backdrop-blur-sm text-zinc-100 border border-white/10 shadow-sm hover:bg-zinc-800/60':
               variant === 'secondary',
             // Outline - bordered button
-            'border-2 border-input bg-transparent hover:bg-accent hover:text-accent-foreground':
+            'border-2 border-zinc-700 bg-transparent text-zinc-100 hover:bg-zinc-800/40 hover:border-zinc-600':
               variant === 'outline',
-            // Ghost - minimal button
-            'hover:bg-accent hover:text-accent-foreground':
+            // Ghost - violet hover
+            'text-zinc-300 hover:bg-violet-500/10 hover:text-violet-400':
               variant === 'ghost',
-            // Destructive - danger button
-            'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 active:scale-[0.98]':
+            // Destructive - red with glass
+            'bg-red-500/90 backdrop-blur-sm text-white shadow-lg hover:bg-red-600 active:scale-[0.98] shadow-red-500/20':
               variant === 'destructive',
           },
           // Size styles - perfect padding

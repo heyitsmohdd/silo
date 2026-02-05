@@ -12,7 +12,7 @@ interface ChatWindowProps {
 
 /**
  * ChatWindow Component
- * Displays scrollable list of chat messages with message bubbles
+ * Displays scrollable list of chat messages with iMessage-style bubbles
  */
 const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -26,23 +26,23 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
     const messageElement = document.getElementById(`message-${messageId}`);
     if (messageElement) {
       messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      messageElement.classList.add('ring-2', 'ring-primary');
+      messageElement.classList.add('ring-2', 'ring-violet-500');
       setTimeout(() => {
-        messageElement.classList.remove('ring-2', 'ring-primary');
+        messageElement.classList.remove('ring-2', 'ring-violet-500');
       }, 2000);
     }
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header - Fixed */}
-      <div className="flex-shrink-0 bg-background border-b border-border px-6 py-4">
+      {/* Header - Transparent Glass */}
+      <div className="flex-shrink-0 glass-header border-b border-white/5 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-semibold text-lg text-foreground">
+            <h1 className="font-semibold text-lg text-white">
               Batch Channel
             </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="text-sm text-zinc-400 mt-0.5">
               {currentUser?.year} • {currentUser?.branch}
             </p>
           </div>
@@ -56,7 +56,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
             {/* Connection Status */}
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm font-medium text-muted-foreground">
+              <span className="text-sm font-medium text-zinc-400">
                 {isConnected ? 'Online' : 'Offline'}
               </span>
             </div>
@@ -65,32 +65,35 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
       </div>
 
       {/* Messages List - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-3">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-zinc-500">
               No messages yet. Start the conversation!
             </p>
           </div>
         ) : (
-          messages.map((message: Message) => {
+          messages.map((message: Message, index: number) => {
             const isMe = message.sender.id === currentUser?.userId;
+            const prevMessage = index > 0 ? messages[index - 1] : null;
+            const isNewSender = !prevMessage || prevMessage.sender.id !== message.sender.id;
 
             return (
               <div
                 key={message.id}
                 id={`message-${message.id}`}
-                className={`flex transition-all duration-300 ${isMe ? 'justify-end' : 'justify-start'}`}
+                className={`flex transition-all duration-300 ${isMe ? 'justify-end' : 'justify-start'
+                  } ${isNewSender ? 'mt-4' : 'mt-1'}`}
               >
                 <div
-                  className={`max-w-[70%] rounded-lg ${isMe
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-background border border-border text-foreground shadow-sm'
+                  className={`max-w-[75%] ${isMe
+                      ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white rounded-2xl rounded-br-md shadow-lg shadow-violet-500/20'
+                      : 'bg-zinc-900/60 backdrop-blur-sm border border-white/10 text-zinc-100 rounded-2xl rounded-bl-md'
                     }`}
                 >
-                  {/* Sender Info */}
-                  {!isMe && (
-                    <div className="px-4 pt-3 pb-1 text-xs font-medium text-muted-foreground">
+                  {/* Sender Info - Only for others and only on first message in sequence */}
+                  {!isMe && isNewSender && (
+                    <div className="px-4 pt-3 pb-1 text-xs font-medium text-zinc-400">
                       {message.sender.firstName || message.sender.lastName
                         ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
                         : 'Unknown User'}
@@ -98,13 +101,17 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                   )}
 
                   {/* Message Content */}
-                  <div className="px-4 py-2 break-words">
+                  <div className={`px-4 ${!isMe && isNewSender ? 'py-2' : 'py-3'} break-words`}>
                     {message.content}
                   </div>
 
                   {/* Timestamp */}
-                  <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-blue-100' : 'text-muted-foreground'}`}>
-                    {new Date(message.createdAt).toLocaleTimeString()}
+                  <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-violet-100' : 'text-zinc-500'
+                    }`}>
+                    {new Date(message.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </div>
                 </div>
               </div>

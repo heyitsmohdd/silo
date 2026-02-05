@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
-import { LogOut, Mail, Shield, Calendar, GitBranch, Edit2, Lock, User, Trash2 } from 'lucide-react';
+import { Mail, Shield, Calendar, GitBranch, Edit2, Lock, User, Trash2 } from 'lucide-react';
 import axiosClient from '@/lib/axios';
 import EditProfile from './EditProfile';
 import ChangePassword from './ChangePassword';
@@ -39,30 +39,28 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Header Card */}
-      <div className="bg-card border border-border rounded-lg shadow-soft-lg overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b">
-          <div className="flex items-center gap-4">
-            <div
-              className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-md"
-            >
-              {user.firstName
-                ? user.firstName[0]
-                : user.userId[0]?.toUpperCase() || 'U'}
-            </div>
+      <div className="glass-card p-8 overflow-hidden">
+        <div className="flex items-center gap-6">
+          <div
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-violet-500/20 flex-shrink-0"
+          >
+            {user.firstName
+              ? user.firstName[0]
+              : user.userId[0]?.toUpperCase() || 'U'}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-2xl font-bold text-white">
               {user.firstName
                 ? `${user.firstName} ${user.lastName || ''}`
                 : user.userId}
             </h1>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mt-2 rounded-full bg-green-500/10 border border-green-500/20">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm font-medium text-green-700 dark:text-green-400">
+              <span className="text-sm font-medium text-green-400">
                 {user.role === 'STUDENT' ? 'Active Student' : 'Professor'}
               </span>
             </div>
@@ -70,7 +68,7 @@ const ProfilePage = () => {
 
           <button
             onClick={handleLogout}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-zinc-400 hover:text-white transition-colors"
           >
             Sign Out
           </button>
@@ -104,7 +102,7 @@ const ProfilePage = () => {
 
         {/* Delete Account Section */}
         {activeView === 'delete' && (
-          <div className="bg-card border border-destructive/20 rounded-lg shadow-soft-lg p-6 mt-6">
+          <div className="glass-card border-red-500/20 bg-red-500/5 p-6 mt-6">
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-destructive/10 rounded-full">
@@ -136,13 +134,13 @@ const ProfilePage = () => {
             <div className="flex gap-3 pt-6">
               <button
                 onClick={() => setActiveView('profile')}
-                className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg border border-zinc-700 hover:bg-zinc-800/40 transition-colors text-zinc-100"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
-                className="flex-1 px-4 py-2 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg bg-red-500/90 backdrop-blur-sm text-white hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
               >
                 Delete Account
               </button>
@@ -152,7 +150,7 @@ const ProfilePage = () => {
 
         {/* Default View - Profile Details */}
         {activeView === 'profile' && (
-          <div className="bg-card border border-border rounded-lg shadow-soft-lg p-6">
+          <div className="glass-card p-6">
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-xl font-bold text-foreground">Your Profile</h2>
@@ -209,19 +207,21 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between pt-4">
+              <div className="flex gap-3 pt-4">
                 <Button
                   onClick={() => setActiveView('edit')}
-                  className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors"
+                  variant="ghost"
+                  className="flex-1"
                 >
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
                 <Button
                   onClick={() => setActiveView('password')}
-                  className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors"
+                  variant="ghost"
+                  className="flex-1"
                 >
-                  <Lock className="w-4 h-4" />
+                  <Lock className="w-4 h-4 mr-2" />
                   Change Password
                 </Button>
               </div>
@@ -235,27 +235,14 @@ const ProfilePage = () => {
         <Button
           onClick={() => setActiveView('delete')}
           variant="ghost"
-          className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+          className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
         >
           <Trash2 className="w-4 h-4 mr-2" />
           Delete Account
         </Button>
       </div>
 
-      {/* Sign Out */}
-      <div className="p-6 border-t border-border bg-muted/30">
-        <Button
-          onClick={handleLogout}
-          variant="destructive"
-          className="w-full"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Sign Out
-        </Button>
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          Logged in to Silo
-        </p>
-      </div>
+
     </div >
   );
 };
