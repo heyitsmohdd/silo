@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { Message, User } from '@/hooks/useChat';
 import ChatInput from './ChatInput';
 import ChatSearch from './ChatSearch';
+import { getIdentity } from '@/lib/identity';
 
 interface ChatWindowProps {
   messages: Message[];
@@ -12,7 +13,7 @@ interface ChatWindowProps {
 
 /**
  * ChatWindow Component
- * Displays scrollable list of chat messages with iMessage-style bubbles
+ * GitHub Discussions / Discord style message list with avatars
  */
 const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
       </div>
 
       {/* Messages List - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-3">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-sm text-zinc-500">
@@ -75,6 +76,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
         ) : (
           messages.map((message: Message, index: number) => {
             const isMe = message.sender.id === currentUser?.userId;
+            const identity = getIdentity(message.sender.id);
             const prevMessage = index > 0 ? messages[index - 1] : null;
             const isNewSender = !prevMessage || prevMessage.sender.id !== message.sender.id;
 
@@ -82,36 +84,52 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
               <div
                 key={message.id}
                 id={`message-${message.id}`}
-                className={`flex transition-all duration-300 ${isMe ? 'justify-end' : 'justify-start'
-                  } ${isNewSender ? 'mt-4' : 'mt-1'}`}
+                className={`flex gap-3 transition-all duration-300 ${isNewSender ? 'mt-4' : 'mt-1'
+                  }`}
               >
-                <div
-                  className={`max-w-[75%] ${isMe
-                      ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white rounded-2xl rounded-br-md shadow-lg shadow-violet-500/20'
-                      : 'bg-zinc-900/60 backdrop-blur-sm border border-white/10 text-zinc-100 rounded-2xl rounded-bl-md'
-                    }`}
-                >
-                  {/* Sender Info - Only for others and only on first message in sequence */}
-                  {!isMe && isNewSender && (
-                    <div className="px-4 pt-3 pb-1 text-xs font-medium text-zinc-400">
-                      {message.sender.firstName || message.sender.lastName
-                        ? `${message.sender.firstName || ''} ${message.sender.lastName || ''}`.trim()
-                        : 'Unknown User'}
+                {/* Avatar - Left Side */}
+                {isNewSender ? (
+                  <img
+                    src={identity.avatar}
+                    alt={identity.name}
+                    className="w-10 h-10 rounded-full bg-zinc-900 ring-2 ring-zinc-800 flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-10 flex-shrink-0" />
+                )}
+
+                {/* Message Block - Right Side */}
+                <div className="flex-1 min-w-0">
+                  {/* Header: Name + Timestamp */}
+                  {isNewSender && (
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="font-bold text-sm text-zinc-200">
+                        {identity.name}
+                      </span>
+                      {isMe && (
+                        <span className="text-xs text-violet-400 font-medium">
+                          (You)
+                        </span>
+                      )}
+                      <span className="text-xs text-zinc-500">
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
                     </div>
                   )}
 
                   {/* Message Content */}
-                  <div className={`px-4 ${!isMe && isNewSender ? 'py-2' : 'py-3'} break-words`}>
-                    {message.content}
-                  </div>
-
-                  {/* Timestamp */}
-                  <div className={`px-4 pb-2 text-[10px] text-right ${isMe ? 'text-violet-100' : 'text-zinc-500'
-                    }`}>
-                    {new Date(message.createdAt).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
+                  <div
+                    className={`rounded-lg px-3 py-2 break-words ${isMe
+                        ? 'bg-zinc-800/30 border border-zinc-700/50'
+                        : 'bg-transparent'
+                      }`}
+                  >
+                    <p className="text-sm text-zinc-100 leading-relaxed">
+                      {message.content}
+                    </p>
                   </div>
                 </div>
               </div>

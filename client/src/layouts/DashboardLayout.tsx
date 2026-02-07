@@ -1,6 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FileText, MessageSquare, Menu, X, HelpCircle } from 'lucide-react';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
 
@@ -56,13 +55,8 @@ const DashboardLayout = () => {
               </div>
             </div>
 
-            {/* Right Side: User Menu & Theme Toggle */}
+            {/* Right Side: User Menu */}
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                <span className="text-xs text-zinc-400">Online</span>
-              </div>
-              <ThemeToggle />
               <UserMenu />
             </div>
           </div>

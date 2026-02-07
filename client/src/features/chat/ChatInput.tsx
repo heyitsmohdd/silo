@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Send } from 'lucide-react';
 
 interface ChatInputProps {
     sendMessage: (content: string) => void;
@@ -7,7 +8,7 @@ interface ChatInputProps {
 
 /**
  * ChatInput Component
- * Fixed bottom input bar for sending messages
+ * Floating input bar with icon-only send button
  */
 const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
     const [input, setInput] = useState('');
@@ -22,22 +23,23 @@ const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
     };
 
     return (
-        <div className="flex-shrink-0 bg-background border-t border-border p-4">
-            <form onSubmit={handleSubmit} className="flex gap-3 max-w-full">
+        <div className="flex-shrink-0 p-4 bg-zinc-950 border-t border-zinc-800">
+            <form onSubmit={handleSubmit} className="relative max-w-full">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={isConnected ? 'Type a message...' : 'Connecting...'}
                     disabled={!isConnected}
-                    className="flex-1 px-4 py-2.5 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 pr-12 rounded-lg border border-zinc-700 bg-zinc-900 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 />
                 <button
                     type="submit"
                     disabled={!isConnected || !input.trim()}
-                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex-shrink-0"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-violet-500 text-white hover:bg-violet-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-violet-500 flex items-center justify-center"
+                    aria-label="Send message"
                 >
-                    Send
+                    <Send className="w-4 h-4" />
                 </button>
             </form>
         </div>
