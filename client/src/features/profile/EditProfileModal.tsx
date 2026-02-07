@@ -23,7 +23,6 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
     const [username, setUsername] = useState(''); // For future username editing
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [showUsernameWarning, setShowUsernameWarning] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
