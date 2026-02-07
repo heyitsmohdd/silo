@@ -69,13 +69,13 @@ const VotingButtons = ({
                 }}
                 disabled={isVoting}
                 className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'upvote'
-                        ? 'bg-orange-500/10 hover:bg-orange-500/20'
+                        ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
                         : 'hover:bg-zinc-800'
                     }`}
                 aria-label="Upvote"
             >
                 <ArrowUp
-                    className={`${iconSize} transition-colors ${userVote === 'upvote' ? 'text-orange-500' : 'text-zinc-500 hover:text-zinc-300'
+                    className={`${iconSize} transition-colors ${userVote === 'upvote' ? 'text-emerald-500' : 'text-zinc-500 hover:text-zinc-300'
                         }`}
                     fill={userVote === 'upvote' ? 'currentColor' : 'none'}
                 />
@@ -101,13 +101,13 @@ const VotingButtons = ({
                 }}
                 disabled={isVoting}
                 className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'downvote'
-                        ? 'bg-violet-500/10 hover:bg-violet-500/20'
+                        ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
                         : 'hover:bg-zinc-800'
                     }`}
                 aria-label="Downvote"
             >
                 <ArrowDown
-                    className={`${iconSize} transition-colors ${userVote === 'downvote' ? 'text-violet-500' : 'text-zinc-500 hover:text-zinc-300'
+                    className={`${iconSize} transition-colors ${userVote === 'downvote' ? 'text-emerald-500' : 'text-zinc-500 hover:text-zinc-300'
                         }`}
                     fill={userVote === 'downvote' ? 'currentColor' : 'none'}
                 />

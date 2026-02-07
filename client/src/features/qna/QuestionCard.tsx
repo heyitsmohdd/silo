@@ -69,7 +69,7 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
             <div className="flex-1 min-w-0">
                 {/* Title */}
                 <div className="flex items-start gap-2 mb-2">
-                    <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-violet-400 transition-colors line-clamp-2 flex-1">
+                    <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-emerald-400 transition-colors line-clamp-2 flex-1">
                         {question.title}
                     </h3>
                     {hasBestAnswer && (
