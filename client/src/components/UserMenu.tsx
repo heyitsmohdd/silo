@@ -43,12 +43,12 @@ const UserMenu = () => {
             {/* Avatar Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 hover:ring-2 hover:ring-violet-500/20 transition-all group"
+                className="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 hover:ring-2 hover:ring-emerald-500/20 transition-all group"
             >
                 <img
                     src={identity.avatar}
                     alt={identity.name}
-                    className="w-8 h-8 rounded-full bg-zinc-900 ring-2 ring-zinc-700 group-hover:ring-violet-500/50 transition-all"
+                    className="w-8 h-8 rounded-full bg-zinc-900 ring-2 ring-zinc-700 group-hover:ring-emerald-500/50 transition-all"
                 />
                 <ChevronDown
                     className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${isOpen ? 'rotate-180' : ''
