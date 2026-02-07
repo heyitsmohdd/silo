@@ -125,7 +125,7 @@ const NavLink = ({ to, icon: Icon, label, onClick }: NavLinkProps) => {
       to={to}
       onClick={onClick}
       className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-        ? 'bg-violet-500/10 text-violet-400 border-l-2 border-violet-500 shadow-lg shadow-violet-500/10'
+        ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-500 shadow-lg shadow-emerald-500/10'
         : 'text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 border-l-2 border-transparent'
         }`}
     >
