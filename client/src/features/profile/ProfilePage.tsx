@@ -51,7 +51,7 @@ const ProfilePage = () => {
             <img
               src={identity.avatar}
               alt={identity.name}
-              className="w-20 h-20 rounded-full bg-zinc-900 ring-4 ring-zinc-800 shadow-2xl shadow-violet-500/10"
+              className="w-20 h-20 rounded-full bg-zinc-900 ring-4 ring-zinc-800 shadow-2xl shadow-emerald-500/10"
             />
             <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-green-500 ring-4 ring-zinc-950 animate-pulse" />
           </div>

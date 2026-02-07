@@ -81,8 +81,8 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-violet-500/10 rounded-lg">
-                                <User className="w-5 h-5 text-violet-400" />
+                            <div className="p-2 bg-emerald-500/10 rounded-lg">
+                                <User className="w-5 h-5 text-emerald-400" />
                             </div>
                             <div>
                                 <h2 className="text-lg font-semibold text-white">
@@ -199,7 +199,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             <Button
                                 type="submit"
                                 disabled={isLoading}
-                                className="flex-1 bg-violet-500 hover:bg-violet-600"
+                                className="flex-1 bg-emerald-500 hover:bg-emerald-600"
                             >
                                 <Save className="w-4 h-4 mr-2" />
                                 {isLoading ? 'Saving...' : 'Save Changes'}
