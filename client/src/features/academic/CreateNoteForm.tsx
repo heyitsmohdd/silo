@@ -67,7 +67,7 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                         onChange={(e) => setTitle(e.target.value)}
                         required
                         placeholder="e.g. Data Structures Lecture 1"
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 transition-all"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all"
                     />
                 </div>
 
@@ -80,7 +80,7 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                             onChange={(e) => setSubject(e.target.value)}
                             required
                             placeholder="e.g. CS101"
-                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 transition-all"
+                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all"
                         />
                     </div>
                     <div className="space-y-2">
@@ -89,7 +89,7 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                             value={fileUrl}
                             onChange={(e) => setFileUrl(e.target.value)}
                             placeholder="https://..."
-                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 transition-all"
+                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all"
                         />
                     </div>
                 </div>
@@ -100,7 +100,7 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/30 transition-all min-h-[120px] resize-y"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all min-h-[120px] resize-y"
                         placeholder="Brief detailed description of the note contents..."
                         required
                     />

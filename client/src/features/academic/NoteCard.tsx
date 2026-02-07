@@ -91,7 +91,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
 
   if (isEditing) {
     return (
-      <div className="group p-6 border border-violet-500 rounded-lg bg-zinc-900/50 shadow-md">
+      <div className="group p-6 border border-emerald-500 rounded-lg bg-zinc-900/50 shadow-md">
         <div className="space-y-4">
           <div>
             <Input
@@ -106,7 +106,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               placeholder="Note content"
-              className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
+              className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
               disabled={isSaving}
             />
           </div>
@@ -180,7 +180,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4 pr-8">
         <div className="space-y-2 flex-1 min-w-0">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <FileText className="w-3 h-3" />
             {note.subject}
           </span>
