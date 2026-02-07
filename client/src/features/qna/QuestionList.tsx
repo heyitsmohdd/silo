@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
-import CreateQuestionForm from './CreateQuestionForm';
+import AskQuestionModal from './AskQuestionModal';
 import QuestionFilters from './QuestionFilters';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
@@ -31,7 +31,7 @@ interface Question {
 
 const QuestionList = () => {
     const navigate = useNavigate();
-    const [showForm, setShowForm] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState('');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
@@ -103,8 +103,9 @@ const QuestionList = () => {
     if (isLoading) {
         return (
             <div className="space-y-6">
-                <div className="flex justify-end">
-                    <div className="h-10 w-32 rounded-lg bg-muted animate-pulse" />
+                <div className="flex justify-between items-center">
+                    <div className="h-8 w-32 rounded bg-zinc-800 animate-pulse" />
+                    <div className="h-10 w-40 rounded-lg bg-zinc-800 animate-pulse" />
                 </div>
                 <ListSkeleton count={3} />
             </div>
@@ -126,36 +127,23 @@ const QuestionList = () => {
     }
 
     return (
-        <div className="space-y-8">
-            {/* Ask Question Button */}
-            <div className="flex justify-end">
-                {!showForm ? (
-                    <button
-                        onClick={() => setShowForm(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Ask Question
-                    </button>
-                ) : (
-                    <button
-                        onClick={() => setShowForm(false)}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-input hover:bg-accent transition-colors"
-                    >
-                        Cancel
-                    </button>
-                )}
-            </div>
-
-            {/* Create Question Form */}
-            {showForm && (
-                <div className="animate-in slide-in-from-top-4 duration-300">
-                    <CreateQuestionForm onSuccess={() => {
-                        setShowForm(false);
-                        refetch();
-                    }} />
+        <div className="space-y-6">
+            {/* Header: Title + New Question Button */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-zinc-100">Course Q&A</h1>
+                    <p className="text-sm text-zinc-400 mt-1">
+                        {questionsList.length} {questionsList.length === 1 ? 'question' : 'questions'}
+                    </p>
                 </div>
-            )}
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg bg-zinc-100 text-zinc-950 hover:bg-white transition-colors shadow-lg"
+                >
+                    <Plus className="w-4 h-4" />
+                    New Question
+                </button>
+            </div>
 
             {/* Filters */}
             {questionsList.length > 0 && (
@@ -172,7 +160,7 @@ const QuestionList = () => {
                 />
             )}
 
-            {/* Questions Grid */}
+            {/* Questions List */}
             {filteredQuestions.length === 0 ? (
                 <EmptyState
                     icon={HelpCircle}
@@ -190,13 +178,13 @@ const QuestionList = () => {
                         !hasFilters
                             ? {
                                 label: 'Ask Question',
-                                onClick: () => setShowForm(true),
+                                onClick: () => setShowModal(true),
                             }
                             : undefined
                     }
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
                     {filteredQuestions.map((question: Question) => (
                         <QuestionCard
                             key={question.id}
@@ -207,6 +195,16 @@ const QuestionList = () => {
                         />
                     ))}
                 </div>
+            )}
+
+            {/* Modal */}
+            {showModal && (
+                <AskQuestionModal
+                    onClose={() => setShowModal(false)}
+                    onSuccess={() => {
+                        refetch();
+                    }}
+                />
             )}
         </div>
     );
