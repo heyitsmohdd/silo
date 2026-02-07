@@ -127,38 +127,75 @@ const QuestionList = () => {
     }
 
     return (
-        <div className="space-y-4">
-            {/* Header: Title + Filters + Action Button */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                {/* Left: Title */}
-                <h1 className="text-xl font-bold text-zinc-100 whitespace-nowrap">Course Q&A</h1>
-
-                {/* Right: Search + Filters + New Question Button */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
-                    {/* Search & Filter Section */}
-                    {questionsList.length > 0 && (
-                        <QuestionFilters
-                            searchTerm={searchTerm}
-                            onSearchChange={setSearchTerm}
-                            tagFilter={tagFilter}
-                            onTagFilterChange={setTagFilter}
-                            sortBy={sortBy}
-                            onSortChange={setSortBy}
-                            allTags={allTags}
-                            hasFilters={hasFilters}
-                            onClearFilters={handleClearFilters}
-                        />
-                    )}
-
-                    {/* New Question Button */}
+        <div>
+            {/* Header Container: Two Rows */}
+            <div className="flex flex-col gap-6 mb-8">
+                {/* Top Row: Title & New Question Button */}
+                <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Course Q&A</h1>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="inline-flex items-center justify-center gap-2 px-4 h-10 text-sm font-bold rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 transition-colors whitespace-nowrap"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
                         New Question
                     </button>
                 </div>
+
+                {/* Bottom Row: Search & Filters */}
+                {questionsList.length > 0 && (
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* Search Bar - Left */}
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                            <input
+                                type="text"
+                                placeholder="Search questions..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2.5 pl-10 pr-4 text-zinc-200 placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-600 transition-all"
+                            />
+                        </div>
+
+                        {/* Filters - Right */}
+                        <div className="flex items-center gap-2">
+                            {/* Tags Filter */}
+                            <select
+                                value={tagFilter}
+                                onChange={(e) => setTagFilter(e.target.value)}
+                                className="px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                            >
+                                <option value="">All Tags</option>
+                                {allTags.map((tag) => (
+                                    <option key={tag} value={tag}>
+                                        {tag}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* Sort Filter */}
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'upvotes')}
+                                className="px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                            >
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="upvotes">Top</option>
+                            </select>
+
+                            {/* Clear Filters */}
+                            {hasFilters && (
+                                <button
+                                    onClick={handleClearFilters}
+                                    className="px-3 py-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Questions List */}
