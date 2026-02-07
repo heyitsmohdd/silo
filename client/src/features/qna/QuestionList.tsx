@@ -146,13 +146,12 @@ const QuestionList = () => {
                     <div className="flex flex-col md:flex-row gap-4">
                         {/* Search Bar - Left */}
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
                             <input
                                 type="text"
                                 placeholder="Search questions..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2.5 pl-10 pr-4 text-zinc-200 placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-600 transition-all"
+                                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2.5 px-4 text-zinc-200 placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-600 transition-all"
                             />
                         </div>
 
