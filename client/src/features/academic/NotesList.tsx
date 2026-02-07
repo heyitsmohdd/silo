@@ -191,10 +191,12 @@ const NotesList = () => {
         )}
       </div>
 
-      {/* Create Form */}
+      {/* Create Form Modal */}
       {showForm && isProfessor && (
-        <div className="animate-in slide-in-from-top-4 duration-300 mb-8">
-          <CreateNoteForm onSuccess={() => setShowForm(false)} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl animate-in zoom-in-95 duration-200">
+            <CreateNoteForm onSuccess={() => setShowForm(false)} onClose={() => setShowForm(false)} />
+          </div>
         </div>
       )}
 
