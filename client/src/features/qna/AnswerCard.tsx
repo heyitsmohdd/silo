@@ -1,6 +1,7 @@
-import { CheckCircle2, Trash2 } from 'lucide-react';
+import { CheckCircle2, Trash2, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { getIdentity } from '@/lib/identity';
 import VotingButtons from './VotingButtons';
 import axiosClient from '@/lib/axios';
 
@@ -23,6 +24,7 @@ interface AnswerCardProps {
     questionAuthorId: string;
     isBest: boolean;
     onUpdate: () => void;
+    isLast?: boolean;
 }
 
 const AnswerCard = ({
@@ -31,30 +33,29 @@ const AnswerCard = ({
     questionAuthorId,
     isBest,
     onUpdate,
+    isLast = false,
 }: AnswerCardProps) => {
     const { user } = useAuthStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const [isMarkingBest, setIsMarkingBest] = useState(false);
 
-    const authorName =
-        answer.author.firstName && answer.author.lastName
-            ? `${answer.author.firstName} ${answer.author.lastName}`
-            : answer.author.email.split('@')[0];
-
+    const identity = getIdentity(answer.authorId);
     const canDelete = user?.userId === answer.authorId;
     const canMarkBest = user?.userId === questionAuthorId && !isBest;
 
     const voteCount = answer.upvotes - answer.downvotes;
 
-    const formatDate = (dateString: string) => {
+    const formatTimeAgo = (dateString: string) => {
         const date = new Date(dateString);
         const now = new Date();
         const diffMs = now.getTime() - date.getTime();
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 0) return 'Today';
-        if (diffDays === 1) return 'Yesterday';
-        if (diffDays < 7) return `${diffDays} days ago`;
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
         return date.toLocaleDateString();
     };
 
@@ -88,71 +89,82 @@ const AnswerCard = ({
         }
     };
 
+
     return (
-        <div
-            className={`p-6 border rounded-lg bg-card ${isBest ? 'border-green-500 shadow-md' : 'border-border'
-                }`}
-        >
-            <div className="flex gap-4">
-                {/* Voting Section */}
-                <div className="flex-shrink-0">
-                    <VotingButtons
-                        voteCount={voteCount}
-                        upvotes={answer.upvotes}
-                        downvotes={answer.downvotes}
-                        voteEndpoint={`/academic/questions/${questionId}/answers/${answer.id}/vote`}
-                        onVoteSuccess={onUpdate}
-                        size="md"
-                    />
+        <div className={`flex gap-4 py-4 ${!isLast ? 'border-b border-zinc-800' : ''}`}>
+            {/* Left: Voting + Avatar */}
+            <div className="flex gap-3">
+                {/* Voting Buttons */}
+                <VotingButtons
+                    voteCount={voteCount}
+                    upvotes={answer.upvotes}
+                    downvotes={answer.downvotes}
+                    voteEndpoint={`/academic/questions/${questionId}/answers/${answer.id}/vote`}
+                    itemId={answer.id}
+                    onVoteSuccess={onUpdate}
+                    size="sm"
+                />
+
+                {/* Avatar */}
+                <img
+                    src={identity.avatar}
+                    alt={identity.name}
+                    className="w-8 h-8 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                />
+            </div>
+
+            {/* Right: Content */}
+            <div className="flex-1 min-w-0">
+                {/* Author and Time */}
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-medium text-zinc-300">{identity.name}</span>
+                    <span className="text-xs text-zinc-500">•</span>
+                    <span className="text-xs text-zinc-500">{formatTimeAgo(answer.createdAt)}</span>
+                    {isBest && (
+                        <>
+                            <span className="text-xs text-zinc-500">•</span>
+                            <div className="flex items-center gap-1 text-green-500">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span className="text-xs font-medium">Best Answer</span>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Answer Content */}
-                <div className="flex-1 min-w-0">
-                    {/* Best Answer Badge */}
-                    {isBest && (
-                        <div className="flex items-center gap-1.5 mb-3 text-green-600 dark:text-green-400">
-                            <CheckCircle2 className="w-5 h-5" />
-                            <span className="text-sm font-medium">Best Answer</span>
-                        </div>
+                <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3">
+                    {answer.content}
+                </p>
+
+                {/* Actions Row */}
+                <div className="flex items-center gap-4">
+                    {/* Reply (placeholder) */}
+                    <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>Reply</span>
+                    </button>
+
+                    {/* Mark as Best */}
+                    {canMarkBest && (
+                        <button
+                            onClick={handleMarkBest}
+                            disabled={isMarkingBest}
+                            className="text-xs text-green-500 hover:text-green-400 transition-colors disabled:opacity-50"
+                        >
+                            {isMarkingBest ? 'Marking...' : 'Mark as Best'}
+                        </button>
                     )}
 
-                    {/* Answer Text */}
-                    <p className="text-sm text-card-foreground leading-relaxed whitespace-pre-wrap mb-4">
-                        {answer.content}
-                    </p>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-3 border-t border-border">
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                            <span>Answered by {authorName}</span>
-                            <span>•</span>
-                            <span>{formatDate(answer.createdAt)}</span>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-2">
-                            {canMarkBest && (
-                                <button
-                                    onClick={handleMarkBest}
-                                    disabled={isMarkingBest}
-                                    className="text-xs px-3 py-1.5 rounded-md border border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-colors disabled:opacity-50"
-                                >
-                                    {isMarkingBest ? 'Marking...' : 'Mark as Best'}
-                                </button>
-                            )}
-
-                            {canDelete && (
-                                <button
-                                    onClick={handleDelete}
-                                    disabled={isDeleting}
-                                    className="p-1.5 rounded-md hover:bg-destructive/10 text-destructive transition-colors disabled:opacity-50"
-                                    aria-label="Delete answer"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                    {/* Delete */}
+                    {canDelete && (
+                        <button
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="text-xs text-zinc-500 hover:text-red-400 transition-colors disabled:opacity-50 ml-auto"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

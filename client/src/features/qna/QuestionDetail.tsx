@@ -97,6 +97,7 @@ const QuestionDetail = () => {
                         upvotes={question.upvotes}
                         downvotes={question.downvotes}
                         voteEndpoint={`/academic/questions/${questionId}/vote`}
+                        itemId={questionId}
                         onVoteSuccess={refetch}
                         size="md"
                     />

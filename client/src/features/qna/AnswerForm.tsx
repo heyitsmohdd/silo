@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Button from '@/components/ui/Button';
 import axiosClient from '@/lib/axios';
 
 interface AnswerFormProps {
@@ -42,39 +41,54 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
         }
     };
 
-    return (
-        <div className="p-6 border border-border rounded-lg bg-card">
-            <h3 className="text-lg font-semibold mb-4">Your Answer</h3>
+    const hasContent = content.length > 0;
+    const isValid = content.trim().length >= 10;
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
+    return (
+        <div className="mt-6">
+            <h3 className="text-lg font-bold text-zinc-100 mb-3">Your Answer</h3>
+
+            <form onSubmit={handleSubmit}>
+                {/* Unified Container - Twitter/X Style */}
+                <div
+                    className={`bg-zinc-900 border rounded-xl overflow-hidden transition-all ${hasContent ? 'border-zinc-700' : 'border-zinc-800'
+                        } focus-within:ring-1 focus-within:ring-zinc-600`}
+                >
+                    {/* Textarea */}
                     <textarea
-                        placeholder="Write your answer here..."
+                        placeholder="Write your answer..."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         disabled={isSubmitting}
-                        className="w-full min-h-[150px] px-3 py-2 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
+                        className="w-full min-h-[120px] px-4 py-3 text-sm bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed resize-none"
                         maxLength={10000}
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
-                        {content.length}/10000 characters (minimum 10)
-                    </p>
+
+                    {/* Bottom Bar: Character Count + Button */}
+                    <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-800">
+                        <span className="text-xs text-zinc-500">
+                            {content.length}/10000
+                        </span>
+
+                        {/* Show button only when typing */}
+                        {hasContent && (
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || !isValid}
+                                className="px-4 py-1.5 text-sm font-bold rounded-full bg-white text-zinc-950 hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? 'Posting...' : 'Post Answer'}
+                            </button>
+                        )}
+                    </div>
                 </div>
 
+                {/* Error Message */}
                 {error && (
-                    <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+                    <div className="mt-2 px-3 py-2 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                         {error}
                     </div>
                 )}
-
-                <div className="flex justify-end">
-                    <Button
-                        type="submit"
-                        disabled={isSubmitting || content.trim().length < 10}
-                    >
-                        {isSubmitting ? 'Posting...' : 'Post Answer'}
-                    </Button>
-                </div>
             </form>
         </div>
     );

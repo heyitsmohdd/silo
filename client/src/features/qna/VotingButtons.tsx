@@ -1,5 +1,5 @@
 import { ArrowUp, ArrowDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axiosClient from '@/lib/axios';
 
 interface VotingButtonsProps {
@@ -8,6 +8,7 @@ interface VotingButtonsProps {
     downvotes: number;
     onVoteSuccess: () => void;
     voteEndpoint: string; // e.g., '/academic/questions/123/vote'
+    itemId: string; // For localStorage key
     size?: 'sm' | 'md';
 }
 
@@ -15,16 +16,38 @@ const VotingButtons = ({
     voteCount,
     onVoteSuccess,
     voteEndpoint,
+    itemId,
     size = 'md',
 }: VotingButtonsProps) => {
     const [isVoting, setIsVoting] = useState(false);
+    const [userVote, setUserVote] = useState<'upvote' | 'downvote' | null>(null);
+
+    // Load vote state from localStorage on mount
+    useEffect(() => {
+        const storedVote = localStorage.getItem(`vote_${itemId}`);
+        if (storedVote === 'upvote' || storedVote === 'downvote') {
+            setUserVote(storedVote);
+        }
+    }, [itemId]);
 
     const handleVote = async (voteType: 'upvote' | 'downvote') => {
         if (isVoting) return;
 
         setIsVoting(true);
         try {
-            await axiosClient.post(voteEndpoint, { voteType });
+            // Toggle logic: if clicking same vote, remove it
+            if (userVote === voteType) {
+                // Send opposite vote to cancel out
+                const cancelVote = voteType === 'upvote' ? 'downvote' : 'upvote';
+                await axiosClient.post(voteEndpoint, { voteType: cancelVote });
+                setUserVote(null);
+                localStorage.removeItem(`vote_${itemId}`);
+            } else {
+                // New vote or changing vote
+                await axiosClient.post(voteEndpoint, { voteType });
+                setUserVote(voteType);
+                localStorage.setItem(`vote_${itemId}`, voteType);
+            }
             onVoteSuccess();
         } catch (error) {
             console.error('Failed to vote:', error);
@@ -45,19 +68,26 @@ const VotingButtons = ({
                     handleVote('upvote');
                 }}
                 disabled={isVoting}
-                className={`${buttonSize} rounded-md hover:bg-green-100 dark:hover:bg-green-900/20 transition-colors flex items-center justify-center disabled:opacity-50`}
+                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'upvote'
+                        ? 'bg-orange-500/10 hover:bg-orange-500/20'
+                        : 'hover:bg-zinc-800'
+                    }`}
                 aria-label="Upvote"
             >
-                <ArrowUp className={`${iconSize} text-muted-foreground hover:text-green-600 dark:hover:text-green-400`} />
+                <ArrowUp
+                    className={`${iconSize} transition-colors ${userVote === 'upvote' ? 'text-orange-500' : 'text-zinc-500 hover:text-zinc-300'
+                        }`}
+                    fill={userVote === 'upvote' ? 'currentColor' : 'none'}
+                />
             </button>
 
             {/* Vote Count */}
             <span
-                className={`font-medium ${voteCount > 0
-                        ? 'text-green-600 dark:text-green-400'
+                className={`font-bold ${voteCount > 0
+                        ? 'text-green-500'
                         : voteCount < 0
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-muted-foreground'
+                            ? 'text-red-500'
+                            : 'text-zinc-400'
                     } ${size === 'sm' ? 'text-xs' : 'text-sm'}`}
             >
                 {voteCount}
@@ -70,10 +100,17 @@ const VotingButtons = ({
                     handleVote('downvote');
                 }}
                 disabled={isVoting}
-                className={`${buttonSize} rounded-md hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors flex items-center justify-center disabled:opacity-50`}
+                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'downvote'
+                        ? 'bg-violet-500/10 hover:bg-violet-500/20'
+                        : 'hover:bg-zinc-800'
+                    }`}
                 aria-label="Downvote"
             >
-                <ArrowDown className={`${iconSize} text-muted-foreground hover:text-red-600 dark:hover:text-red-400`} />
+                <ArrowDown
+                    className={`${iconSize} transition-colors ${userVote === 'downvote' ? 'text-violet-500' : 'text-zinc-500 hover:text-zinc-300'
+                        }`}
+                    fill={userVote === 'downvote' ? 'currentColor' : 'none'}
+                />
             </button>
         </div>
     );
