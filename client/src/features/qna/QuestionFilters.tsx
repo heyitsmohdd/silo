@@ -27,8 +27,8 @@ const QuestionFilters = ({
         <div className="space-y-3">
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                 {/* Search Input - Pill Shape */}
-                <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <div className="flex-1 sm:max-w-md relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
                     <input
                         type="text"
                         placeholder="Search..."

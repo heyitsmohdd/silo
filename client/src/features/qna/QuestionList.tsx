@@ -128,32 +128,38 @@ const QuestionList = () => {
 
     return (
         <div className="space-y-4">
-            {/* Header: Single Row */}
-            <div className="flex items-center justify-between">
-                <h1 className="text-xl font-bold text-zinc-100">Course Q&A</h1>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 transition-colors"
-                >
-                    <Plus className="w-4 h-4" />
-                    New Question
-                </button>
-            </div>
+            {/* Header: Title + Filters + Action Button */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                {/* Left: Title */}
+                <h1 className="text-xl font-bold text-zinc-100 whitespace-nowrap">Course Q&A</h1>
 
-            {/* Filters */}
-            {questionsList.length > 0 && (
-                <QuestionFilters
-                    searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
-                    tagFilter={tagFilter}
-                    onTagFilterChange={setTagFilter}
-                    sortBy={sortBy}
-                    onSortChange={setSortBy}
-                    allTags={allTags}
-                    hasFilters={hasFilters}
-                    onClearFilters={handleClearFilters}
-                />
-            )}
+                {/* Right: Search + Filters + New Question Button */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                    {/* Search & Filter Section */}
+                    {questionsList.length > 0 && (
+                        <QuestionFilters
+                            searchTerm={searchTerm}
+                            onSearchChange={setSearchTerm}
+                            tagFilter={tagFilter}
+                            onTagFilterChange={setTagFilter}
+                            sortBy={sortBy}
+                            onSortChange={setSortBy}
+                            allTags={allTags}
+                            hasFilters={hasFilters}
+                            onClearFilters={handleClearFilters}
+                        />
+                    )}
+
+                    {/* New Question Button */}
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="inline-flex items-center justify-center gap-2 px-4 h-10 text-sm font-bold rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 transition-colors whitespace-nowrap"
+                    >
+                        <Plus className="w-4 h-4" />
+                        New Question
+                    </button>
+                </div>
+            </div>
 
             {/* Questions List */}
             {filteredQuestions.length === 0 ? (
