@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { HelpCircle, Plus, Search } from 'lucide-react';
+import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
