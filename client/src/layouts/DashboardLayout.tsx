@@ -1,9 +1,9 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, User, Menu, X, HelpCircle, Settings } from 'lucide-react';
+import { FileText, MessageSquare, Menu, X, HelpCircle } from 'lucide-react';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useState } from 'react';
-import { getIdentity } from '@/lib/identity';
+import UserMenu from '@/components/UserMenu';
 
 const DashboardLayout = () => {
   const { user } = useAuthStore();
@@ -58,13 +58,14 @@ const DashboardLayout = () => {
               </div>
             </div>
 
-            {/* Status & Theme Toggle */}
-            <div className="flex items-center gap-6">
+            {/* Right Side: User Menu & Theme Toggle */}
+            <div className="flex items-center gap-3">
               <div className="hidden sm:flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-500"></span>
                 <span className="text-xs text-zinc-400">Online</span>
               </div>
               <ThemeToggle />
+              <UserMenu />
             </div>
           </div>
         </header>
@@ -109,42 +110,9 @@ const SidebarContent = ({ user, onNavigate, isMobile }: SidebarContentProps) => 
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
         <NavLink to="/chat" icon={MessageSquare} label="Chat" onClick={onNavigate} />
-        <NavLink to="/profile" icon={User} label="Profile" onClick={onNavigate} />
       </nav>
 
-      {/* Compact Profile Section */}
-      {user && (() => {
-        const identity = getIdentity(user.userId);
-        return (
-          <div className="p-4 border-t border-white/5">
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 p-2.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 transition-all group"
-              onClick={onNavigate}
-            >
-              {/* Robot Avatar */}
-              <img
-                src={identity.avatar}
-                alt={identity.name}
-                className="w-9 h-9 rounded-full bg-zinc-800 flex-shrink-0 ring-2 ring-zinc-700 group-hover:ring-violet-500/50 transition-all"
-              />
 
-              {/* Anonymous Identity */}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">
-                  {identity.name}
-                </p>
-                <p className="text-xs text-zinc-400 truncate">
-                  {user.year} • {user.branch}
-                </p>
-              </div>
-
-              {/* Settings Icon */}
-              <Settings className="w-4 h-4 text-zinc-500 group-hover:text-violet-400 transition-colors flex-shrink-0" />
-            </Link>
-          </div>
-        );
-      })()}
     </>
   );
 };
