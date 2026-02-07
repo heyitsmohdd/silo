@@ -33,6 +33,9 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
             await axiosClient.put('/auth/profile', {
                 email: email.trim(),
                 firstName: firstName.trim(),
+                // Note: Backend doesn't support username updates yet
+                // username field needs to be added to User model in schema.prisma
+                ...(username.trim() && { username: username.trim() }),
             });
             onSuccess();
         } catch (err: any) {
