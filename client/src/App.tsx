@@ -16,6 +16,7 @@ import ChatPage from '@/features/chat/ChatPage';
 import ProfilePage from '@/features/profile/ProfilePage';
 import { AuthModal } from '@/features/auth/AuthModal';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import NewLandingPage from '@/pages/LandingPage';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -97,7 +98,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Landing Page */}
-          <Route path="/welcome" element={<LandingPage />} />
+          <Route path="/welcome" element={<NewLandingPage />} />
 
           {/* Public Routes (kept for direct access) */}
           <Route path="/login" element={<LoginForm />} />
