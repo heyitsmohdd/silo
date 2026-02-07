@@ -1,12 +1,10 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FileText, MessageSquare, Menu, X, HelpCircle } from 'lucide-react';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
 
 const DashboardLayout = () => {
-  const { user } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -15,7 +13,7 @@ const DashboardLayout = () => {
     <div className="flex h-screen bg-zinc-950 relative">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex w-64 h-[calc(100vh-2rem)] m-4 glass-sidebar rounded-2xl flex-col">
-        <SidebarContent user={user} onNavigate={closeMobileMenu} />
+        <SidebarContent onNavigate={closeMobileMenu} />
       </aside>
 
       {/* Sidebar - Mobile Overlay */}
@@ -29,7 +27,7 @@ const DashboardLayout = () => {
 
           {/* Sidebar */}
           <aside className="fixed left-0 top-0 bottom-0 w-64 glass-sidebar z-50 md:hidden">
-            <SidebarContent user={user} onNavigate={closeMobileMenu} isMobile />
+            <SidebarContent onNavigate={closeMobileMenu} isMobile />
           </aside>
         </>
       )}
@@ -81,12 +79,11 @@ const DashboardLayout = () => {
 
 // Sidebar Content Component (shared between desktop and mobile)
 interface SidebarContentProps {
-  user: any;
   onNavigate: () => void;
   isMobile?: boolean;
 }
 
-const SidebarContent = ({ user, onNavigate, isMobile }: SidebarContentProps) => {
+const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
   return (
     <>
       {/* Logo */}
