@@ -93,21 +93,19 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             </div>
                         )}
 
-                        {/* Username Edit Button */}
+                        {/* Username */}
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-zinc-300">
-                                Username
-                            </label>
-                            <button
-                                type="button"
-                                onClick={() => setShowUsernameWarning(!showUsernameWarning)}
-                                className="w-full px-4 py-2 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-600 transition-colors text-left"
-                            >
-                                <span className="text-sm text-zinc-400">Click to edit username</span>
-                            </button>
+                            <Input
+                                label="Username"
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Click to edit username"
+                                disabled={isLoading}
+                            />
 
                             {/* 6-Month Warning */}
-                            {showUsernameWarning && (
+                            {username.length > 0 && (
                                 <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                                     <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
                                     <p className="text-xs text-amber-200">
