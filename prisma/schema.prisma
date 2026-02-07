@@ -29,6 +29,10 @@ model User {
   email     String   @unique
   password  String   // bcrypt hashed
   
+  // Username (can be changed once every 6 months)
+  username  String?  @unique
+  lastUsernameChange DateTime? @map("last_username_change")
+  
   // Batch Context
   year      Int
   branch    String   // e.g., "CS", "Mech", "ECE"

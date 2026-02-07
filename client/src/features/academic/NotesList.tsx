@@ -7,7 +7,6 @@ import CreateNoteForm from './CreateNoteForm';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import EmptyState from '@/components/ui/EmptyState';
 import { FileText, Plus } from 'lucide-react';
-import NoteFilters from './NoteFilters';
 import Pagination from '@/components/ui/Pagination';
 
 const NotesList = () => {
@@ -48,17 +47,17 @@ const NotesList = () => {
 
     switch (sortBy) {
       case 'newest':
-        filtered.sort((a: any, b: any) => 
+        filtered.sort((a: any, b: any) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         break;
       case 'oldest':
-        filtered.sort((a: any, b: any) => 
+        filtered.sort((a: any, b: any) =>
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
         break;
       case 'title':
-        filtered.sort((a: any, b: any) => 
+        filtered.sort((a: any, b: any) =>
           a.title.localeCompare(b.title)
         );
         break;
@@ -87,28 +86,12 @@ const NotesList = () => {
     setCurrentPage(1);
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-  };
-
-  const handleSubjectFilterChange = (value: string) => {
-    setSubjectFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleSortChange = (value: string) => {
-    setSortBy(value);
-    setCurrentPage(1);
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="flex justify-end">
-          {isProfessor && (
-            <div className="h-10 w-32 rounded-lg bg-muted animate-pulse" />
-          )}
+        <div className="flex justify-between items-center">
+          <div className="h-8 w-32 rounded bg-zinc-800 animate-pulse" />
+          <div className="h-10 w-40 rounded-lg bg-zinc-800 animate-pulse" />
         </div>
         <ListSkeleton count={3} />
       </div>
@@ -130,49 +113,89 @@ const NotesList = () => {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Professor Actions */}
-      {isProfessor && (
-        <div className="flex justify-end">
-          {!showForm ? (
-            <button
-              onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+    <div>
+      {/* Header: Title & Upload Button */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Academic Notes</h1>
+        {isProfessor && (
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            {showForm ? 'Cancel' : 'Upload Note'}
+          </button>
+        )}
+      </div>
+
+      {/* Toolbar: Search & Filters */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        {/* Search Bar - Left */}
+        {notesList.length > 0 && (
+          <input
+            type="text"
+            placeholder="Search notes..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="flex-1 w-full bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-lg px-4 py-2.5 placeholder-zinc-500 text-sm focus:ring-1 focus:ring-zinc-600 outline-none"
+          />
+        )}
+
+        {/* Filters - Center/Right */}
+        {notesList.length > 0 && (
+          <div className="flex gap-2">
+            {/* Subject Filter */}
+            <select
+              value={subjectFilter}
+              onChange={(e) => {
+                setSubjectFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg px-3 py-2 text-sm hover:text-zinc-100 hover:border-zinc-700 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-600"
             >
-              <Plus className="w-4 h-4" />
-              New Note
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowForm(false)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-input hover:bg-accent transition-colors"
+              <option value="">All Subjects</option>
+              {subjectOptions.map((subject) => (
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
+              ))}
+            </select>
+
+            {/* Sort Filter */}
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg px-3 py-2 text-sm hover:text-zinc-100 hover:border-zinc-700 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-600"
             >
-              Cancel
-            </button>
-          )}
-        </div>
-      )}
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="title">Title (A-Z)</option>
+            </select>
+
+            {/* Clear Filters */}
+            {hasFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="px-3 py-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Create Form */}
       {showForm && isProfessor && (
-        <div className="animate-in slide-in-from-top-4 duration-300">
+        <div className="animate-in slide-in-from-top-4 duration-300 mb-8">
           <CreateNoteForm onSuccess={() => setShowForm(false)} />
         </div>
-      )}
-
-      {/* Filters */}
-      {notesList.length > 0 && (
-        <NoteFilters
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-          subjectFilter={subjectFilter}
-          onSubjectFilterChange={handleSubjectFilterChange}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-          subjectOptions={subjectOptions}
-          hasFilters={hasFilters}
-          onClearFilters={handleClearFilters}
-        />
       )}
 
       {/* Notes Grid */}
@@ -188,21 +211,21 @@ const NotesList = () => {
             hasFilters
               ? 'Try adjusting your search or filters.'
               : isProfessor
-              ? 'Upload your first note to share with your batch.'
-              : 'Check back later for new notes from your professors.'
+                ? 'Upload your first note to share with your batch.'
+                : 'Check back later for new notes from your professors.'
           }
           action={
             isProfessor && !hasFilters
               ? {
-                  label: 'Create Note',
-                  onClick: () => setShowForm(true),
-                }
+                label: 'Upload Note',
+                onClick: () => setShowForm(true),
+              }
               : undefined
           }
         />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {paginatedNotes.map((note: any) => (
               <NoteCard
                 key={note.id}
@@ -222,7 +245,7 @@ const NotesList = () => {
           />
 
           {/* Results Count */}
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-sm text-zinc-400 text-center">
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredNotes.length)} of {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''}
             {hasFilters && ` (filtered from ${notesList.length} total)`}
           </p>

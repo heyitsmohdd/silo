@@ -249,6 +249,34 @@ export const updateUserProfile = async (
         }
     }
 
+    // If username is being updated, validate restrictions
+    if (data.username && data.username !== (user as any).username) {
+        // Check if username is already taken
+        const existingUser = await prisma.user.findUnique({
+            where: { username: data.username },
+        });
+
+        if (existingUser) {
+            throw new AppError(409, 'Username is already taken');
+        }
+
+        // Check 6-month restriction
+        const lastChange = (user as any).lastUsernameChange;
+        if (lastChange) {
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+            if (new Date(lastChange) > sixMonthsAgo) {
+                const nextChangeDate = new Date(lastChange);
+                nextChangeDate.setMonth(nextChangeDate.getMonth() + 6);
+                throw new AppError(
+                    400,
+                    `Username can only be changed once every 6 months. Next change available on ${nextChangeDate.toLocaleDateString()}`
+                );
+            }
+        }
+    }
+
     // Update user
     const updatedUser = await prisma.user.update({
         where: { id: userId },
@@ -256,6 +284,10 @@ export const updateUserProfile = async (
             email: data.email || user.email,
             firstName: data.firstName !== undefined ? data.firstName : user.firstName,
             lastName: data.lastName !== undefined ? data.lastName : user.lastName,
+            ...(data.username && data.username !== (user as any).username && {
+                username: data.username,
+                lastUsernameChange: new Date(),
+            }),
         },
     });
 

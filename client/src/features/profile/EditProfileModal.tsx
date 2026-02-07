@@ -12,6 +12,8 @@ interface EditProfileModalProps {
         year: number;
         branch: string;
         firstName?: string | null;
+        username?: string | null;
+        lastUsernameChange?: string | null;
     };
     onClose: () => void;
     onSuccess: () => void;
@@ -20,9 +22,24 @@ interface EditProfileModalProps {
 const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) => {
     const [email, setEmail] = useState(user.email);
     const [firstName, setFirstName] = useState(user.firstName || '');
-    const [username, setUsername] = useState(''); // For future username editing
+    const [username, setUsername] = useState(user.username || '');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    // Calculate if username can be changed
+    const canChangeUsername = !user.lastUsernameChange || (() => {
+        const lastChange = new Date(user.lastUsernameChange);
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        return lastChange <= sixMonthsAgo;
+    })();
+
+    const nextChangeDate = user.lastUsernameChange ? (() => {
+        const lastChange = new Date(user.lastUsernameChange);
+        const nextDate = new Date(lastChange);
+        nextDate.setMonth(nextDate.getMonth() + 6);
+        return nextDate.toLocaleDateString();
+    })() : null;
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -102,16 +119,24 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Click to edit username"
-                                disabled={isLoading}
+                                placeholder={user.username || "Set your username"}
+                                disabled={isLoading || !canChangeUsername}
                             />
 
                             {/* 6-Month Warning */}
-                            {username.length > 0 && (
+                            {!canChangeUsername && nextChangeDate && (
                                 <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                                     <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
                                     <p className="text-xs text-amber-200">
-                                        Usernames can only be changed once every 6 months. Last changed: Never
+                                        Username can only be changed once every 6 months. Next change available on {nextChangeDate}
+                                    </p>
+                                </div>
+                            )}
+                            {canChangeUsername && username && username !== user.username && (
+                                <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                                    <AlertTriangle className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                                    <p className="text-xs text-blue-200">
+                                        After changing, you won't be able to change your username again for 6 months.
                                     </p>
                                 </div>
                             )}

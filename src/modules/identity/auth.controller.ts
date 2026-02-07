@@ -147,7 +147,7 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response): P
 
 /**
  * PUT /auth/profile
- * Update user profile (email, firstName, lastName)
+ * Update user profile (email, firstName, lastName, username)
  */
 export const updateProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     if (!req.user) {
@@ -155,13 +155,14 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
         return;
     }
 
-    const { email, firstName, lastName } = req.body;
+    const { email, firstName, lastName, username } = req.body;
 
     try {
         const updatedUser = await updateUserProfile(req.user.userId, {
             email,
             firstName,
             lastName,
+            username,
         });
 
         res.status(200).json({

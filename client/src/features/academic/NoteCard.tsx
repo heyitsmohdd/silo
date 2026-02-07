@@ -91,7 +91,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
 
   if (isEditing) {
     return (
-      <div className="group p-6 border border-primary rounded-lg bg-card shadow-md">
+      <div className="group p-6 border border-violet-500 rounded-lg bg-zinc-900/50 shadow-md">
         <div className="space-y-4">
           <div>
             <Input
@@ -106,7 +106,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               placeholder="Note content"
-              className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
+              className="w-full min-h-[100px] px-3 py-2 text-sm rounded-md border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
               disabled={isSaving}
             />
           </div>
@@ -131,16 +131,16 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
   }
 
   return (
-    <div className="group p-6 border border-border rounded-lg bg-card hover:shadow-md transition-all duration-200 hover:border-primary/50 relative">
+    <div className="group p-6 border border-zinc-800 rounded-lg bg-zinc-900/50 hover:border-zinc-600 transition-all duration-200 relative">
       {/* Menu Button */}
       {canEdit && (
         <div className="absolute top-4 right-4">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors"
             aria-label="More options"
           >
-            <MoreVertical className="w-4 h-4 text-muted-foreground" />
+            <MoreVertical className="w-4 h-4 text-zinc-400" />
           </button>
 
           {/* Dropdown Menu */}
@@ -150,13 +150,13 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowMenu(false)}
               />
-              <div className="absolute right-0 top-8 z-20 min-w-[150px] bg-popover border border-border rounded-md shadow-soft-lg py-1">
+              <div className="absolute right-0 top-8 z-20 min-w-[150px] bg-zinc-900 border border-zinc-800 rounded-md shadow-lg py-1">
                 <button
                   onClick={() => {
                     setIsEditing(true);
                     setShowMenu(false);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent text-left transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 text-left transition-colors"
                 >
                   <Edit className="w-4 h-4" />
                   Edit
@@ -166,7 +166,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
                     handleDelete();
                     setShowMenu(false);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-destructive/10 text-left transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 text-left transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete
@@ -180,28 +180,28 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4 pr-8">
         <div className="space-y-2 flex-1 min-w-0">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
             <FileText className="w-3 h-3" />
             {note.subject}
           </span>
-          <h3 className="font-semibold text-lg text-card-foreground leading-tight group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-lg text-white leading-tight line-clamp-1">
             {note.title}
           </h3>
         </div>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
+        <div className="flex items-center gap-1 text-xs text-zinc-400 whitespace-nowrap">
           <Clock className="w-3.5 h-3.5" />
           <span>{formatDate(note.createdAt)}</span>
         </div>
       </div>
 
       {/* Body */}
-      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-4">
+      <p className="text-sm text-zinc-400 line-clamp-2 leading-relaxed mb-4">
         {note.content}
       </p>
 
       {/* Footer */}
-      <div className="pt-4 border-t border-border flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <div className="pt-3 mt-3 border-t border-zinc-800/50 flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-xs text-zinc-500">
           <UserIcon className="w-3.5 h-3.5" />
           <span className="truncate max-w-[150px]">{authorName}</span>
         </div>
@@ -211,7 +211,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
             href={note.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-800 bg-zinc-950 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 hover:border-zinc-700 transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             View File
