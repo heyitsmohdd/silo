@@ -3,6 +3,7 @@ import { create } from 'zustand';
 // JWT payload structure
 interface JWTPayload {
     userId: string;
+    email: string;
     role: 'STUDENT' | 'PROFESSOR';
     year: number;
     branch: string;
@@ -13,6 +14,7 @@ interface JWTPayload {
 // User type
 export interface User {
     userId: string;
+    email: string;
     role: 'STUDENT' | 'PROFESSOR';
     year: number;
     branch: string;
@@ -85,6 +87,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
         const user: User = {
             userId: payload.userId,
+            email: payload.email,
             role: payload.role,
             year: payload.year,
             branch: payload.branch,

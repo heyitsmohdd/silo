@@ -180,7 +180,7 @@ const ProfilePage = () => {
                   <Mail className="w-4 h-4 text-zinc-500 mt-0.5" />
                   <div className="flex-1">
                     <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Email Address</p>
-                    <p className="text-sm text-zinc-200 font-mono">{user.userId}</p>
+                    <p className="text-sm text-zinc-200 font-mono">{user.email}</p>
                   </div>
                 </div>
 

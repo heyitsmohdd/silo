@@ -7,6 +7,7 @@ import axiosClient from '@/lib/axios';
 interface EditProfileProps {
   user: {
     userId: string;
+    email: string;
     role: string;
     year: number;
     branch: string;
@@ -18,7 +19,7 @@ interface EditProfileProps {
 }
 
 const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
-  const [email, setEmail] = useState(user.userId);
+  const [email, setEmail] = useState(user.email);
   const [firstName, setFirstName] = useState(user.firstName || '');
   const [lastName, setLastName] = useState(user.lastName || '');
   const [error, setError] = useState('');
