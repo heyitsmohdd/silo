@@ -127,18 +127,13 @@ const QuestionList = () => {
     }
 
     return (
-        <div className="space-y-6">
-            {/* Header: Title + New Question Button */}
+        <div className="space-y-4">
+            {/* Header: Single Row */}
             <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-zinc-100">Course Q&A</h1>
-                    <p className="text-sm text-zinc-400 mt-1">
-                        {questionsList.length} {questionsList.length === 1 ? 'question' : 'questions'}
-                    </p>
-                </div>
+                <h1 className="text-xl font-bold text-zinc-100">Course Q&A</h1>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg bg-zinc-100 text-zinc-950 hover:bg-white transition-colors shadow-lg"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 transition-colors"
                 >
                     <Plus className="w-4 h-4" />
                     New Question
