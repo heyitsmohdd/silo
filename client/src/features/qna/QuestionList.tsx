@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { HelpCircle, Plus } from 'lucide-react';
+import { HelpCircle, Plus, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
-import QuestionFilters from './QuestionFilters';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import axiosClient from '@/lib/axios';
