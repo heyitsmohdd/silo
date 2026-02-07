@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageSquare } from 'lucide-react';
+import { getIdentity } from '@/lib/identity';
 import VotingButtons from './VotingButtons';
 import AnswerCard from './AnswerCard';
 import AnswerForm from './AnswerForm';
@@ -29,9 +30,9 @@ const QuestionDetail = () => {
     if (isLoading) {
         return (
             <div className="space-y-6">
-                <div className="h-10 w-24 bg-muted animate-pulse rounded" />
+                <div className="h-10 w-24 bg-zinc-800 animate-pulse rounded" />
                 <ListSkeleton count={1} />
-                <div className="h-40 bg-muted animate-pulse rounded" />
+                <div className="h-40 bg-zinc-800 animate-pulse rounded" />
             </div>
         );
     }
@@ -51,11 +52,7 @@ const QuestionDetail = () => {
     }
 
     const question = data;
-    const authorName =
-        question.author.firstName && question.author.lastName
-            ? `${question.author.firstName} ${question.author.lastName}`
-            : question.author.email.split('@')[0];
-
+    const identity = getIdentity(question.authorId);
     const voteCount = question.upvotes - question.downvotes;
     const answers = question.answers || [];
 
@@ -66,12 +63,18 @@ const QuestionDetail = () => {
         return b.upvotes - b.downvotes - (a.upvotes - a.downvotes);
     });
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
+    const formatTimeAgo = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now.getTime() - date.getTime();
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
+        return date.toLocaleDateString();
     };
 
     return (
@@ -79,67 +82,70 @@ const QuestionDetail = () => {
             {/* Back Button */}
             <button
                 onClick={() => navigate('/qna')}
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Questions
             </button>
 
             {/* Question Section */}
-            <div className="p-6 border border-border rounded-lg bg-card">
-                <div className="flex gap-6">
-                    {/* Voting Section */}
-                    <div className="flex-shrink-0">
-                        <VotingButtons
-                            voteCount={voteCount}
-                            upvotes={question.upvotes}
-                            downvotes={question.downvotes}
-                            voteEndpoint={`/academic/questions/${questionId}/vote`}
-                            onVoteSuccess={refetch}
-                            size="md"
-                        />
-                    </div>
+            <div className="flex gap-4 p-6 bg-zinc-900/50 border border-zinc-800 rounded-lg">
+                {/* Voting Section - Left */}
+                <div className="flex flex-col items-center gap-2 pt-1">
+                    <VotingButtons
+                        voteCount={voteCount}
+                        upvotes={question.upvotes}
+                        downvotes={question.downvotes}
+                        voteEndpoint={`/academic/questions/${questionId}/vote`}
+                        onVoteSuccess={refetch}
+                        size="md"
+                    />
+                </div>
+
+                {/* Question Content - Right */}
+                <div className="flex-1 min-w-0">
+                    {/* Title */}
+                    <h1 className="text-2xl font-bold text-zinc-100 mb-4">
+                        {question.title}
+                    </h1>
 
                     {/* Question Content */}
-                    <div className="flex-1 min-w-0">
-                        {/* Title */}
-                        <h1 className="text-2xl font-bold text-card-foreground mb-4">
-                            {question.title}
-                        </h1>
+                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-4">
+                        {question.content}
+                    </p>
 
-                        {/* Tags */}
-                        {question.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {question.tags.map((tag: string, index: number) => (
-                                    <span
-                                        key={index}
-                                        className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md bg-primary/10 text-primary"
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Question Content */}
-                        <p className="text-sm text-card-foreground leading-relaxed whitespace-pre-wrap mb-6">
-                            {question.content}
-                        </p>
-
-                        {/* Question Footer */}
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground pt-4 border-t border-border">
-                            <span>Asked by {authorName}</span>
-                            <span>•</span>
-                            <span>{formatDate(question.createdAt)}</span>
+                    {/* Tags */}
+                    {question.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {question.tags.map((tag: string, index: number) => (
+                                <span
+                                    key={index}
+                                    className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md bg-zinc-800/60 text-zinc-400 border border-zinc-700"
+                                >
+                                    {tag}
+                                </span>
+                            ))}
                         </div>
+                    )}
+
+                    {/* Question Footer - Author Info */}
+                    <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
+                        <img
+                            src={identity.avatar}
+                            alt={identity.name}
+                            className="w-6 h-6 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                        />
+                        <span className="text-xs text-zinc-500">
+                            Asked by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
+                        </span>
                     </div>
                 </div>
             </div>
 
             {/* Answers Section */}
-            <div className="space-y-6">
+            <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">
+                    <h2 className="text-xl font-bold text-zinc-100">
                         {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
                     </h2>
                 </div>

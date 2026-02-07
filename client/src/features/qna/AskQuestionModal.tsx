@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import Button from '@/components/ui/Button';
 import axiosClient from '@/lib/axios';
 
 interface AskQuestionModalProps {
@@ -18,8 +17,19 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!title.trim() || !content.trim() || !tags.trim()) {
-            setError('Please fill in all fields');
+        // Validate minimum lengths matching backend
+        if (title.trim().length < 5) {
+            setError('Title must be at least 5 characters');
+            return;
+        }
+
+        if (content.trim().length < 10) {
+            setError('Details must be at least 10 characters');
+            return;
+        }
+
+        if (!tags.trim()) {
+            setError('At least one tag is required');
             return;
         }
 
@@ -36,7 +46,13 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
             onSuccess();
             onClose();
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Failed to create question');
+            // Extract detailed error message
+            const errorMessage = err.response?.data?.message
+                || err.response?.data?.error
+                || err.message
+                || 'Failed to create question';
+            setError(errorMessage);
+            console.error('Question creation error:', err.response?.data);
         } finally {
             setIsSubmitting(false);
         }
@@ -81,7 +97,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                         {/* Title */}
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Question Title
+                                Question Title <span className="text-zinc-500">(minimum 5 characters)</span>
                             </label>
                             <input
                                 id="title"
@@ -94,14 +110,14 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             />
                             <p className="text-xs text-zinc-500 mt-1">
-                                {title.length}/200 characters
+                                {title.length}/200 characters {title.length > 0 && title.length < 5 && <span className="text-amber-500">• Need at least 5 characters</span>}
                             </p>
                         </div>
 
                         {/* Content */}
                         <div>
                             <label htmlFor="content" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Details
+                                Details <span className="text-zinc-500">(minimum 10 characters)</span>
                             </label>
                             <textarea
                                 id="content"
@@ -113,7 +129,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 className="w-full min-h-[150px] px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed resize-y transition-all"
                             />
                             <p className="text-xs text-zinc-500 mt-1">
-                                {content.length}/10000 characters
+                                {content.length}/10000 characters {content.length > 0 && content.length < 10 && <span className="text-amber-500">• Need at least 10 characters</span>}
                             </p>
                         </div>
 
@@ -149,7 +165,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                             </button>
                             <button
                                 type="submit"
-                                disabled={isSubmitting || !title.trim() || !content.trim() || !tags.trim()}
+                                disabled={isSubmitting || title.trim().length < 5 || content.trim().length < 10 || !tags.trim()}
                                 className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-100 text-zinc-950 font-bold hover:bg-white transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSubmitting ? 'Posting...' : 'Post Question'}

@@ -1,5 +1,4 @@
 import { Search, X } from 'lucide-react';
-import Input from '@/components/ui/Input';
 
 interface QuestionFiltersProps {
     searchTerm: string;
@@ -25,17 +24,17 @@ const QuestionFilters = ({
     onClearFilters,
 }: QuestionFiltersProps) => {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Input */}
                 <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <input
                         type="text"
                         placeholder="Search questions..."
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="pl-10"
+                        className="w-full h-10 pl-10 pr-4 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all"
                     />
                 </div>
 
@@ -43,7 +42,7 @@ const QuestionFilters = ({
                 <select
                     value={tagFilter}
                     onChange={(e) => onTagFilterChange(e.target.value)}
-                    className="h-10 px-4 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    className="h-10 px-4 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all"
                 >
                     <option value="">All Tags</option>
                     {allTags.map((tag) => (
@@ -57,7 +56,7 @@ const QuestionFilters = ({
                 <select
                     value={sortBy}
                     onChange={(e) => onSortChange(e.target.value as 'newest' | 'oldest' | 'upvotes')}
-                    className="h-10 px-4 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    className="h-10 px-4 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all"
                 >
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
@@ -69,7 +68,7 @@ const QuestionFilters = ({
             {hasFilters && (
                 <button
                     onClick={onClearFilters}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                     <X className="w-4 h-4" />
                     Clear Filters
