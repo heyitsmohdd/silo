@@ -89,7 +89,7 @@ const QuestionDetail = () => {
             </button>
 
             {/* Question Section */}
-            <div className="flex gap-4 p-6 bg-zinc-900/50 border border-zinc-800 rounded-lg">
+            <div className="flex gap-4 p-6 bg-zinc-900/30 rounded-lg">
                 {/* Voting Section - Left */}
                 <div className="flex flex-col items-center gap-2 pt-1">
                     <VotingButtons
@@ -104,6 +104,19 @@ const QuestionDetail = () => {
 
                 {/* Question Content - Right */}
                 <div className="flex-1 min-w-0">
+                    {/* Author Info - Top */}
+                    <div className="flex items-center gap-3 mb-4">
+                        <img
+                            src={identity.avatar}
+                            alt={identity.name}
+                            className="w-8 h-8 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                        />
+                        <div>
+                            <span className="text-sm font-medium text-zinc-300">{identity.name}</span>
+                            <span className="text-xs text-zinc-500 ml-2">• {formatTimeAgo(question.createdAt)}</span>
+                        </div>
+                    </div>
+
                     {/* Title */}
                     <h1 className="text-2xl font-bold text-zinc-100 mb-4">
                         {question.title}
@@ -116,7 +129,7 @@ const QuestionDetail = () => {
 
                     {/* Tags */}
                     {question.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2">
                             {question.tags.map((tag: string, index: number) => (
                                 <span
                                     key={index}
@@ -127,18 +140,6 @@ const QuestionDetail = () => {
                             ))}
                         </div>
                     )}
-
-                    {/* Question Footer - Author Info */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
-                        <img
-                            src={identity.avatar}
-                            alt={identity.name}
-                            className="w-6 h-6 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
-                        />
-                        <span className="text-xs text-zinc-500">
-                            Asked by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
-                        </span>
-                    </div>
                 </div>
             </div>
 
@@ -152,8 +153,8 @@ const QuestionDetail = () => {
 
                 {/* Answer List */}
                 {sortedAnswers.length > 0 ? (
-                    <div className="space-y-4">
-                        {sortedAnswers.map((answer: any) => (
+                    <div>
+                        {sortedAnswers.map((answer: any, index: number) => (
                             <AnswerCard
                                 key={answer.id}
                                 answer={answer}
@@ -161,6 +162,7 @@ const QuestionDetail = () => {
                                 questionAuthorId={question.authorId}
                                 isBest={answer.id === question.bestAnswerId}
                                 onUpdate={refetch}
+                                isLast={index === sortedAnswers.length - 1}
                             />
                         ))}
                     </div>
