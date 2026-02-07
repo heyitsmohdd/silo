@@ -27,9 +27,9 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
     const messageElement = document.getElementById(`message-${messageId}`);
     if (messageElement) {
       messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      messageElement.classList.add('ring-2', 'ring-violet-500');
+      messageElement.classList.add('ring-2', 'ring-emerald-500');
       setTimeout(() => {
-        messageElement.classList.remove('ring-2', 'ring-violet-500');
+        messageElement.classList.remove('ring-2', 'ring-emerald-500');
       }, 2000);
     }
   };
@@ -107,7 +107,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                         {identity.name}
                       </span>
                       {isMe && (
-                        <span className="text-xs text-violet-400 font-medium">
+                        <span className="text-xs text-emerald-400 font-medium">
                           (You)
                         </span>
                       )}
