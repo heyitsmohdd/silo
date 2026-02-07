@@ -5,6 +5,7 @@ import { Mail, Shield, Calendar, GitBranch, Edit2, Lock, User, Trash2 } from 'lu
 import axiosClient from '@/lib/axios';
 import EditProfile from './EditProfile';
 import ChangePassword from './ChangePassword';
+import { getIdentity } from '@/lib/identity';
 
 const ProfilePage = () => {
   const { user, logout } = useAuthStore();
@@ -40,40 +41,57 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Header Card */}
-      <div className="glass-card p-8 overflow-hidden">
-        <div className="flex items-center gap-6">
-          <div
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-violet-500/20 flex-shrink-0"
-          >
-            {user.firstName
-              ? user.firstName[0]
-              : user.userId[0]?.toUpperCase() || 'U'}
-          </div>
+      {/* Header Card - Anonymous Identity */}
+      {(() => {
+        const identity = getIdentity(user.userId);
+        return (
+          <div className="glass-card p-8 overflow-hidden border border-zinc-800">
+            <div className="flex items-center gap-6">
+              {/* Large Robot Avatar */}
+              <div className="relative flex-shrink-0">
+                <img
+                  src={identity.avatar}
+                  alt={identity.name}
+                  className="w-20 h-20 rounded-full bg-zinc-900 ring-4 ring-zinc-800 shadow-2xl shadow-violet-500/10"
+                />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-green-500 ring-4 ring-zinc-950 animate-pulse" />
+              </div>
 
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-white">
-              {user.firstName
-                ? `${user.firstName} ${user.lastName || ''}`
-                : user.userId}
-            </h1>
+              {/* Anonymous Codename */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold text-white tracking-tight">
+                    {identity.name}
+                  </h1>
+                  <div className="px-2.5 py-0.5 rounded-md bg-zinc-800/60 border border-zinc-700">
+                    <span className="text-xs font-mono text-zinc-400">ANON</span>
+                  </div>
+                </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 mt-2 rounded-full bg-green-500/10 border border-green-500/20">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm font-medium text-green-400">
-                {user.role === 'STUDENT' ? 'Active Student' : 'Professor'}
-              </span>
+                {/* Secondary Metadata */}
+                <div className="flex items-center gap-4 mt-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/40 border border-zinc-700">
+                    <Shield className="w-3 h-3 text-zinc-400" />
+                    <span className="text-xs font-medium text-zinc-300">
+                      {user.role === 'STUDENT' ? 'Student' : 'Professor'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-zinc-500 font-mono">
+                    {user.year} • {user.branch}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors font-medium"
+              >
+                Sign Out
+              </button>
             </div>
           </div>
-
-          <button
-            onClick={handleLogout}
-            className="text-sm text-zinc-400 hover:text-white transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* Content Area - Scrollable */}
       <div className="max-h-[60vh] overflow-y-auto">
@@ -150,68 +168,71 @@ const ProfilePage = () => {
 
         {/* Default View - Profile Details */}
         {activeView === 'profile' && (
-          <div className="glass-card p-6">
+          <div className="glass-card p-6 border border-zinc-800">
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-xl font-bold text-foreground">Your Profile</h2>
+                <h2 className="text-xl font-bold text-zinc-100">Account Information</h2>
               </div>
 
               <div className="space-y-4">
-                {/* Email */}
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Email Address</p>
-                    <p className="text-sm text-muted-foreground">{user.userId}</p>
+                {/* Real Email - Secondary */}
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
+                  <Mail className="w-4 h-4 text-zinc-500 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Email Address</p>
+                    <p className="text-sm text-zinc-200 font-mono">{user.userId}</p>
                   </div>
                 </div>
 
-                {/* Role */}
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Role</p>
-                    <p className="text-sm text-muted-foreground capitalize">{user.role.toLowerCase()}</p>
+                {/* Role - Secondary */}
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
+                  <Shield className="w-4 h-4 text-zinc-500 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Role</p>
+                    <p className="text-sm text-zinc-200 capitalize">{user.role.toLowerCase()}</p>
                   </div>
                 </div>
 
-                {/* Year */}
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Year</p>
-                    <p className="text-sm text-muted-foreground">{user.year}</p>
+                {/* Batch Info */}
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
+                  <Calendar className="w-4 h-4 text-zinc-500 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Batch Context</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-zinc-500">Year:</span>
+                        <span className="text-sm text-zinc-200 font-mono">{user.year}</span>
+                      </div>
+                      <div className="w-1 h-1 rounded-full bg-zinc-700" />
+                      <div className="flex items-center gap-1.5">
+                        <GitBranch className="w-3 h-3 text-zinc-500" />
+                        <span className="text-sm text-zinc-200 font-mono">{user.branch}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Branch */}
-                <div className="flex items-center gap-2">
-                  <GitBranch className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Branch</p>
-                    <p className="text-sm text-muted-foreground">{user.branch}</p>
+                {/* Real Name - If set */}
+                {(user.firstName || user.lastName) && (
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
+                    <User className="w-4 h-4 text-zinc-500 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Real Name</p>
+                      <p className="text-sm text-zinc-200">
+                        {user.firstName && user.lastName
+                          ? `${user.firstName} ${user.lastName}`
+                          : user.firstName || user.lastName || 'Not set'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                {/* Name */}
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Name</p>
-                    <p className="text-sm text-muted-foreground">
-                      {user.firstName && user.lastName
-                        ? `${user.firstName} ${user.lastName}`
-                        : user.firstName || user.lastName || 'N/A'}
-                    </p>
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="flex gap-3 pt-4">
                 <Button
                   onClick={() => setActiveView('edit')}
                   variant="ghost"
-                  className="flex-1"
+                  className="flex-1 border border-zinc-700 hover:border-zinc-600"
                 >
                   <Edit2 className="w-4 h-4 mr-2" />
                   Edit Profile
@@ -219,7 +240,7 @@ const ProfilePage = () => {
                 <Button
                   onClick={() => setActiveView('password')}
                   variant="ghost"
-                  className="flex-1"
+                  className="flex-1 border border-zinc-700 hover:border-zinc-600"
                 >
                   <Lock className="w-4 h-4 mr-2" />
                   Change Password

@@ -3,6 +3,7 @@ import { FileText, MessageSquare, User, Menu, X, HelpCircle, Settings } from 'lu
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useState } from 'react';
+import { getIdentity } from '@/lib/identity';
 
 const DashboardLayout = () => {
   const { user } = useAuthStore();
@@ -112,37 +113,38 @@ const SidebarContent = ({ user, onNavigate, isMobile }: SidebarContentProps) => 
       </nav>
 
       {/* Compact Profile Section */}
-      {user && (
-        <div className="p-4 border-t border-white/5">
-          <Link
-            to="/profile"
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/40 transition-colors group"
-            onClick={onNavigate}
-          >
-            {/* Avatar */}
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 shadow-lg shadow-violet-500/20">
-              {user.firstName
-                ? user.firstName[0]
-                : user.userId[0]?.toUpperCase() || 'U'}
-            </div>
+      {user && (() => {
+        const identity = getIdentity(user.userId);
+        return (
+          <div className="p-4 border-t border-white/5">
+            <Link
+              to="/profile"
+              className="flex items-center gap-3 p-2.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 transition-all group"
+              onClick={onNavigate}
+            >
+              {/* Robot Avatar */}
+              <img
+                src={identity.avatar}
+                alt={identity.name}
+                className="w-9 h-9 rounded-full bg-zinc-800 flex-shrink-0 ring-2 ring-zinc-700 group-hover:ring-violet-500/50 transition-all"
+              />
 
-            {/* Name */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {user.firstName
-                  ? `${user.firstName} ${user.lastName || ''}`
-                  : user.userId}
-              </p>
-              <p className="text-xs text-zinc-400 truncate">
-                {user.year} • {user.branch}
-              </p>
-            </div>
+              {/* Anonymous Identity */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-white truncate">
+                  {identity.name}
+                </p>
+                <p className="text-xs text-zinc-400 truncate">
+                  {user.year} • {user.branch}
+                </p>
+              </div>
 
-            {/* Settings Icon */}
-            <Settings className="w-4 h-4 text-zinc-500 group-hover:text-violet-400 transition-colors flex-shrink-0" />
-          </Link>
-        </div>
-      )}
+              {/* Settings Icon */}
+              <Settings className="w-4 h-4 text-zinc-500 group-hover:text-violet-400 transition-colors flex-shrink-0" />
+            </Link>
+          </div>
+        );
+      })()}
     </>
   );
 };
@@ -164,8 +166,8 @@ const NavLink = ({ to, icon: Icon, label, onClick }: NavLinkProps) => {
       to={to}
       onClick={onClick}
       className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-          ? 'bg-violet-500/10 text-violet-400 border-l-2 border-violet-500 shadow-lg shadow-violet-500/10'
-          : 'text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 border-l-2 border-transparent'
+        ? 'bg-violet-500/10 text-violet-400 border-l-2 border-violet-500 shadow-lg shadow-violet-500/10'
+        : 'text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 border-l-2 border-transparent'
         }`}
     >
       <Icon className="w-4 h-4 flex-shrink-0" />
