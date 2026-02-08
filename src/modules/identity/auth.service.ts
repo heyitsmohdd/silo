@@ -32,6 +32,15 @@ export const registerUser = async (data: {
 }): Promise<{ user: SafeUser; token: string }> => {
     const { email, password, year, branch, role, firstName, lastName } = data;
 
+    // VIP WHITELIST CHECK: Verify email is in allowed list
+    const allowedEmail = await prisma.allowedEmail.findUnique({
+        where: { email: email.toLowerCase() },
+    });
+
+    if (!allowedEmail) {
+        throw new AppError(403, 'Access Denied: You are not on the VIP list.');
+    }
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
         where: { email },
