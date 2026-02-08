@@ -7,6 +7,7 @@ async function main() {
 
     // List of allowed emails for beta access
     const allowedEmails = [
+        'attarshariq50@gmail.com', // Your personal email
         'shariq@example.com',
         'student1@university.edu',
         'student2@university.edu',
