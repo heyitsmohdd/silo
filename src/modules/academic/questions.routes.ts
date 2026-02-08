@@ -16,6 +16,7 @@ import {
     markBestAnswerHandler,
 } from './questions.controller.js';
 import { requireAuth } from '../../shared/middleware/auth.middleware.js';
+import { questionRateLimit } from '../../shared/middleware/rateLimit.middleware.js';
 
 const router = Router();
 
@@ -40,8 +41,9 @@ router.get('/questions', async (req, res, next) => {
 /**
  * POST /academic/questions
  * Create a new question
+ * Rate limited: 5 questions per hour
  */
-router.post('/questions', async (req, res, next) => {
+router.post('/questions', questionRateLimit, async (req, res, next) => {
     try {
         await createQuestionHandler(req, res);
     } catch (error) {

@@ -45,7 +45,7 @@ const BRANCHES = [
 const YEARS = [2022, 2023, 2024, 2025, 2026];
 const ROLES = [
     { value: 'STUDENT', label: 'Student' },
-    { value: 'PROFESSOR', label: 'Professor' },
+    // { value: 'PROFESSOR', label: 'Professor' }, // Disabled for beta - students only
 ];
 
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
@@ -203,8 +203,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         />
                     )}
 
-                    {/* Role (Signup only) */}
-                    {mode === 'signup' && (
+                    {/* Role (Signup only) - DISABLED FOR BETA */}
+                    {/* {mode === 'signup' && (
                         <Select
                             label="Role"
                             value={role}
@@ -212,7 +212,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                             options={ROLES}
                             disabled={loading}
                         />
-                    )}
+                    )} */}
 
                     {/* Year (Signup only) */}
                     {mode === 'signup' && (

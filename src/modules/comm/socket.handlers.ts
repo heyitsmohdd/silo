@@ -12,6 +12,11 @@ import {
     generateRoomId,
 } from '../../shared/lib/socket-auth.js';
 
+// Beta security: Simple in-memory rate limiter for chat messages
+const messageRateLimiter = new Map<string, { count: number; resetTime: number }>();
+const MESSAGE_LIMIT = 30; // 30 messages per minute
+const WINDOW_MS = 60 * 1000; // 1 minute
+
 /**
  * Initialize Socket.io handlers
  */
@@ -76,6 +81,24 @@ export const initializeSocketHandlers = (io: Server) => {
                 if (!data.content || data.content.trim().length === 0) {
                     socket.emit('error', { message: 'Message content is required' });
                     return;
+                }
+
+                // Beta security: Rate limiting
+                const now = Date.now();
+                const userKey = user.userId;
+                const limiter = messageRateLimiter.get(userKey);
+
+                if (limiter && now < limiter.resetTime) {
+                    if (limiter.count >= MESSAGE_LIMIT) {
+                        socket.emit('error', { message: 'Too many messages, please slow down.' });
+                        return;
+                    }
+                    limiter.count++;
+                } else {
+                    messageRateLimiter.set(userKey, {
+                        count: 1,
+                        resetTime: now + WINDOW_MS,
+                    });
                 }
 
                 // Save message to database

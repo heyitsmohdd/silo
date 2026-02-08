@@ -27,3 +27,22 @@ export const uploadRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Beta security: Limit question creation to prevent spam
+export const questionRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 questions per hour
+  message: 'Too many questions, please slow down and try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Beta security: Limit chat messages to prevent spam
+export const chatRateLimit = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30, // 30 messages per minute
+  message: 'Too many messages, please slow down.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
