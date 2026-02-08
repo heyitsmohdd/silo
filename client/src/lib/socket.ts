@@ -29,7 +29,14 @@ class SocketService {
             return this.socket;
         }
 
-        this.socket = io('http://localhost:3000', {
+        // ---------------------------------------------------------
+        // SMART SWITCH:
+        // 1. If VITE_API_URL exists (Vercel), use it.
+        // 2. Otherwise, assume we are testing locally (localhost).
+        // ---------------------------------------------------------
+        const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+        this.socket = io(BASE_URL, {
             query: {
                 token,
             },
