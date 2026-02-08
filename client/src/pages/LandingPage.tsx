@@ -62,9 +62,20 @@ const LandingPage = () => {
 
     return (
         <div className="relative min-h-screen bg-black text-white overflow-hidden">
-            {/* Green Radial Gradient Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-emerald-500/20 rounded-full blur-[150px]" />
+            {/* Fullscreen Background Video */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                >
+                    <source src="/background-video.mp4" type="video/mp4" />
+                    <source src="/background-video.webm" type="video/webm" />
+                </video>
+                {/* Dark overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/50" />
             </div>
 
             {/* Header - Mobile Responsive */}
