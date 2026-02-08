@@ -33,7 +33,7 @@ const LandingPage = () => {
     const [loopNum, setLoopNum] = useState(0);
     const [typingSpeed, setTypingSpeed] = useState(150);
 
-    const phrases = ['Succeed Together', 'Learn Together', 'Grow Together'];
+    const phrases = ['Privacy', 'Authenticity', 'Freedom', 'Honest Opinions'];
 
     useEffect(() => {
         const handleType = () => {
@@ -119,9 +119,9 @@ const LandingPage = () => {
                 <div className="max-w-5xl mx-auto text-center w-full">
                     {/* Main Headline with Typewriter */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] mb-4 md:mb-6">
-                        Study Together,
+                        Your space for
                         <br />
-                        <span className="inline-block w-full sm:w-auto sm:min-w-[300px] md:min-w-[400px] lg:min-w-[600px] text-center sm:text-left">
+                        <span className="inline-block w-full sm:w-auto sm:min-w-[300px] md:min-w-[400px] lg:min-w-[600px] text-center sm:text-left text-emerald-400">
                             {typewriterText}
                             <span className="animate-pulse">|</span>
                         </span>
