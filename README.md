@@ -1,229 +1,280 @@
 # Silo
 
-**Strict Multi-Tenant Academic Platform** with Domain-Driven Design (DDD) architecture.
+A batch-isolated academic collaboration platform that provides students with a private space to share notes, ask questions, and communicate without the noise of chaotic WhatsApp groups or scattered Google Docs.
 
-## 🎯 Core Principle: Batch Isolation
+## Why Silo?
 
-Students from **Year: 2026, Branch: CS** can **NEVER** access data from **Year: 2025** or **Branch: Mech**.
+Traditional student collaboration tools have several problems:
+- **WhatsApp groups** become chaotic with hundreds of messages, making it hard to find important information
+- **Google Docs** get scattered across drives with no central organization
+- **Public forums** lack privacy and make students hesitant to ask questions
+- **Cross-batch pollution** where resources get mixed between different years and branches
 
----
+Silo solves these by providing:
+- **Batch isolation**: Students only see content from their specific year and branch
+- **True anonymity**: Random usernames protect student identity when asking sensitive questions
+- **Organized knowledge**: Dedicated spaces for notes, questions, and real-time chat
+- **VIP access control**: Whitelist-based registration ensures only verified students can join
 
-## 🏗️ Architecture
+## Features
 
-- **Backend**: Node.js, Express, TypeScript (strict mode)
-- **Database**: PostgreSQL + Prisma ORM
-- **Validation**: Zod (parse, don't validate)
-- **Auth**: Stateless JWT with batch context
-- **Real-time**: Socket.io (authenticated handshake)
+### For Students
+- **Q&A System**: Ask questions and get answers from batchmates anonymously
+- **Real-time Chat**: Instant messaging with your batch (rate-limited to prevent spam)
+- **Notes Repository**: Access study materials and resources (currently professor-upload only)
+- **Profile Management**: Customize your username and view your activity
 
----
+### Security & Privacy
+- **Whitelist-based registration**: Only approved emails can create accounts
+- **Anonymous usernames**: Random generated usernames protect identity
+- **Batch isolation**: Complete separation between different years and branches
+- **Rate limiting**: Prevents spam (5 questions/hour, 30 messages/minute)
+- **No professor accounts**: Beta launch is student-only for safety
 
-## 📁 Project Structure (DDD)
+## Tech Stack
 
-```
-src/
-├── modules/               # Feature domains
-│   ├── identity/         # Auth, JWT, RBAC
-│   ├── academic/         # Notes, file metadata
-│   ├── comm/             # Socket.io chat rooms
-│   └── qna/              # Discussion threads
-└── shared/               # Cross-cutting concerns
-    ├── lib/              # Prisma client
-    ├── middleware/       # Auth, error handling
-    ├── schemas/          # Zod validation
-    └── types/            # TypeScript interfaces
-```
+### Backend
+- **Runtime**: Node.js with Express
+- **Language**: TypeScript (strict mode)
+- **Database**: PostgreSQL (Neon serverless)
+- **ORM**: Prisma
+- **Authentication**: JWT with bcrypt password hashing
+- **Real-time**: Socket.io for chat
+- **Validation**: Zod schemas
+- **Rate Limiting**: express-rate-limit
 
----
+### Frontend
+- **Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **HTTP Client**: Axios
+- **UI Components**: Custom component library
 
-## 🚀 Quick Start
+### Infrastructure
+- **Backend Deploy**: Render (auto-deploy from GitHub)
+- **Frontend Deploy**: Vercel (auto-deploy from GitHub)
+- **Database**: Neon PostgreSQL (serverless)
+- **Version Control**: Git/GitHub
 
-### 1. Install Dependencies
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ and npm
+- PostgreSQL database (or Neon account)
+- Git
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/heyitsmohdd/silo.git
+   cd silo
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Backend
+   npm install
+   
+   # Frontend
+   cd client
+   npm install
+   cd ..
+   ```
+
+3. **Configure environment variables**
+   ```bash
+   # Backend .env
+   DATABASE_URL="postgresql://..."
+   JWT_SECRET="your-secret-key"
+   PORT=3000
+   
+   # Frontend .env
+   VITE_API_URL="http://localhost:3000"
+   ```
+
+4. **Initialize database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Start development servers**
+   ```bash
+   # Terminal 1: Backend
+   npm run dev
+   
+   # Terminal 2: Frontend
+   cd client
+   npm run dev
+   ```
+
+The app will be available at `http://localhost:5173` (frontend) and `http://localhost:3000` (backend).
+
+## Usage
+
+### Adding Users to Whitelist
+
+Only whitelisted emails can register. To add users:
+
+**Option 1: Prisma Studio (GUI)**
 ```bash
-npm install
+DATABASE_URL="your-production-url" npx prisma studio
 ```
+1. Click on `AllowedEmail` table
+2. Add record with the user's email
+3. Save changes
 
-### 2. Configure Environment
+**Option 2: Seed Script**
+Edit `prisma/seed.mjs` and add emails to the array:
+```javascript
+const allowedEmails = [
+  'student1@university.edu',
+  'student2@university.edu',
+];
+```
+Then run:
 ```bash
-cp .env.example .env
-# Edit .env with your PostgreSQL URL and JWT secret
+node prisma/seed.mjs
 ```
 
-Generate JWT secret:
-```bash
-openssl rand -base64 64
+### User Registration Flow
+
+1. User visits the app and clicks "Get Started"
+2. Enters email (must be whitelisted)
+3. If whitelisted: completes registration with password, year, branch
+4. If not whitelisted: receives 403 error (access denied)
+
+### Using the Platform
+
+**Q&A**
+- Click "Q&A" in sidebar
+- Ask questions (max 5 per hour)
+- Answer questions from batchmates
+- Upvote/downvote answers
+- Mark best answer (question author only)
+
+**Chat**
+- Click "Chat" in sidebar
+- Send messages to your batch (max 30 per minute)
+- Real-time updates via WebSocket
+- See typing indicators
+
+**Notes**
+- Click "Notes" in sidebar
+- View study materials (upload restricted to professors in production)
+
+## Project Structure
+
+```
+silo/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── features/      # Feature modules (auth, chat, qna, etc.)
+│   │   ├── components/    # Reusable UI components
+│   │   ├── layouts/       # Page layouts
+│   │   ├── stores/        # Zustand state management
+│   │   └── lib/           # Utilities and API clients
+│   └── public/            # Static assets
+├── src/                   # Express backend
+│   ├── modules/          # Domain modules
+│   │   ├── identity/     # Authentication & authorization
+│   │   ├── academic/     # Notes and academic resources
+│   │   ├── comm/         # Real-time chat via Socket.io
+│   │   └── qna/          # Q&A system (future)
+│   └── shared/           # Shared utilities
+│       ├── lib/          # Libraries (Prisma, JWT)
+│       ├── middleware/   # Express middleware
+│       └── types/        # TypeScript type definitions
+└── prisma/               # Database schema and migrations
 ```
 
-### 3. Initialize Database
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
-
-### 4. Run Development Server
-```bash
-npm run dev
-```
-
-Server runs on `http://localhost:3000`
-
----
-
-## 🔑 Key Features (Foundation)
-
-### Multi-Tenant Batch Isolation
-Every JWT contains `{ userId, role, year, branch }`. All queries are automatically scoped:
-```typescript
-// Student from Year 2026, CS can only see their batch's notes
-const notes = await prisma.note.findMany({
-  where: {
-    year: req.context.year,    // From JWT
-    branch: req.context.branch,
-    isDeleted: false
-  }
-});
-```
-
-### Parse, Don't Validate (Zod)
-All incoming data passes through strict Zod schemas:
-```typescript
-const data = parseCreateNote(req.body); // Throws on invalid data
-// TypeScript knows exact shape at compile time
-```
-
-### Role-Based Access Control
-Three roles: `SUPER_ADMIN`, `PROFESSOR`, `STUDENT`
-```typescript
-// Middleware factory
-app.get('/admin/users', requireRole(Role.SUPER_ADMIN), handler);
-```
-
-### Soft Deletes Only
-No hard deletes in application layer:
-```typescript
-await prisma.note.update({
-  where: { id },
-  data: { isDeleted: true }
-});
-```
-
----
-
-## 📝 Scripts
-
-```bash
-npm run dev          # Development server with hot-reload
-npm run build        # Compile TypeScript to dist/
-npm run start        # Run production build
-npm run type-check   # TypeScript validation without emit
-```
-
-### Prisma Commands
-```bash
-npm run prisma:generate  # Generate Prisma Client
-npm run prisma:migrate   # Create/run migrations
-npm run prisma:studio    # Database GUI
-npm run prisma:push      # Push schema without migration
-```
-
----
-
-## 🗄️ Database Schema
-
-### User
-- UUID primary key
-- Email authentication (bcrypt hashed)
-- Batch context: `year`, `branch`
-- Role: `SUPER_ADMIN | PROFESSOR | STUDENT`
-- Soft delete flag
-
-### Note
-- UUID primary key
-- Content, subject, file metadata
-- Batch context: `year`, `branch`
-- Author relation
-- Soft delete flag
-
-### Message
-- UUID primary key
-- Real-time chat content
-- Room identifier
-- Batch context: `year`, `branch`
-- Anonymous sender tracking
-- Soft delete flag
-
----
-
-## 🔒 Security
-
-### Authentication Flow
-1. User logs in via `POST /auth/login` (to be implemented)
-2. Server validates credentials, returns JWT
-3. Client includes JWT in `Authorization: Bearer <token>` header
-4. Middleware verifies JWT and injects `req.context = { year, branch }`
-5. All queries are automatically batch-scoped
-
-### Stateless Authentication
-- No session storage
-- JWT contains all authorization data
-- Token expiration enforced
-- Invalid tokens rejected at middleware layer
-
----
-
-## 🎨 Frontend (To Be Implemented)
-
-**Theme**: Digital Brutalism / Terminal Minimal
-- Monospace fonts, high-contrast black & white
-- Faculty toggle: Dark mode ↔ Light mode
-- No landing pages - direct to dashboard after login
-- High information density
-
----
-
-## 📚 API Routes (To Be Implemented)
+## API Documentation
 
 ### Authentication
-- `POST /auth/login` - Email/password login
-- `POST /auth/register` - User registration
+- `POST /auth/register` - Create new account (requires whitelisted email)
+- `POST /auth/login` - Login with email/password
+- `GET /auth/me` - Get current user profile
+- `PUT /auth/me` - Update user profile
 
-### Academic
+### Q&A (Coming Soon)
+- `GET /academic/questions` - List questions (batch-scoped)
+- `POST /academic/questions` - Create question
+- `GET /academic/questions/:id` - Get question details
+- `POST /academic/questions/:id/answers` - Answer a question
+
+### Notes
 - `GET /academic/notes` - List notes (batch-scoped)
-- `POST /academic/notes` - Create note
-- `GET /academic/notes/:id` - Get single note
-- `PUT /academic/notes/:id` - Update note
-- `DELETE /academic/notes/:id` - Soft delete note
+- `POST /academic/notes` - Upload note (professor only)
+- `GET /academic/notes/:id` - Get note details
 
-### Real-time Chat (Socket.io)
-- Authenticated handshake with JWT
-- Batch-isolated chat rooms
-- Anonymous student messaging
+### Chat (Socket.io)
+- `connect` - Authenticate and join batch room
+- `sendMessage` - Send message to batch
+- `getMessages` - Retrieve message history
+- `typing` - Send typing indicator
+
+## Deployment
+
+### Backend (Render)
+1. Push code to GitHub `main` branch
+2. Render auto-deploys from GitHub
+3. Environment variables configured in Render dashboard
+
+### Frontend (Vercel)
+1. Push code to GitHub `main` branch
+2. Vercel auto-deploys from GitHub
+3. Environment variables configured in Vercel dashboard
+
+### Database (Neon)
+- Serverless PostgreSQL
+- Connection pooling enabled
+- Automatic backups
+
+## Security Considerations
+
+### Implemented
+- Whitelist-based registration (VIP access)
+- bcrypt password hashing
+- JWT authentication with expiration
+- Rate limiting on auth, questions, and chat
+- Batch isolation (year + branch scoping)
+- Input validation via Zod schemas
+- SQL injection prevention (Prisma ORM)
+- CORS configuration
+- Environment variable protection
+
+### Future Enhancements
+- Password reset via email
+- Two-factor authentication
+- Content moderation tools
+- User reporting system
+- Admin dashboard
+- Email domain verification for professors
+
+## Known Limitations (Beta)
+
+- Professor accounts disabled (students only)
+- Notes upload restricted to professors
+- No content moderation beyond rate limits
+- Manual user management via database
+- No email notifications
+- Limited to 15 beta users currently
+
+## Contributing
+
+This is a private academic project. For issues or feature requests, contact the development team.
+
+## License
+
+Private - All Rights Reserved
+
+## Contact
+
+For support or questions about using Silo, contact your batch administrator.
 
 ---
 
-## 🧪 Type Safety
-
-All code compiled with **strict TypeScript mode**:
-- `strict: true`
-- `noImplicitAny: true`
-- `strictNullChecks: true`
-- `noUncheckedIndexedAccess: true`
-- All other strict flags enabled
-
-Zero tolerance for unsafe operations.
-
----
-
-## 📄 License
-
-Private academic project.
-
----
-
-## 🤝 Next Steps
-
-1. Implement `/auth/login` endpoint with bcrypt
-2. Create CRUD routes for academic notes
-3. Set up Socket.io with JWT authentication
-4. Build React frontend with Digital Brutalism theme
-5. Deploy to production
+**Version**: 1.0.0-beta  
+**Last Updated**: February 2026
