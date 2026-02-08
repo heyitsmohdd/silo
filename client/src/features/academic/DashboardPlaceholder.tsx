@@ -12,11 +12,11 @@ const DashboardPlaceholder = () => {
                     </p>
 
                     <p>
-                        This is your batch's private space—think of it as your own little corner of the internet where you can share notes, ask questions, and actually stay organized for once.
+                        We also know it's hard to be yourself when you're worried about what others think. That's why Silo gives you true anonymity.
                     </p>
 
-                    <p className="text-emerald-400 font-medium">
-                        No noise. No distractions. Just your classmates, your semester, your stuff.
+                    <p>
+                        Whether you need to ask a weird question, discuss upcoming events, or just vent—you can do it here with full privacy. This is your batch's private space. Think of it as your own little corner of the internet where you can share notes, stay organized, and finally just be yourself.
                     </p>
 
                     <div className="pt-6 flex flex-col sm:flex-row gap-3 justify-center items-center text-sm text-zinc-400">
