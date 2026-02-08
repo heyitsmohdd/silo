@@ -9,7 +9,7 @@ const ChatPage = () => {
   const { messages, sendMessage, isConnected, currentUser } = useChat();
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-[100dvh] flex flex-col">
       <ChatWindow
         messages={messages}
         sendMessage={sendMessage}
