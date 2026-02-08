@@ -67,26 +67,26 @@ const LandingPage = () => {
                 <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-emerald-500/20 rounded-full blur-[150px]" />
             </div>
 
-            {/* Header - Exact Velon Structure */}
-            <header className="fixed top-0 w-full z-50 py-6">
-                <div className="max-w-7xl mx-auto px-6 flex justify-center">
-                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center justify-between w-fit">
+            {/* Header - Mobile Responsive */}
+            <header className="fixed top-0 w-full z-50 py-4 md:py-6">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-center">
+                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between w-fit max-w-full">
 
                         {/* Logo on the left */}
                         <Link
                             to="/"
-                            className="text-xl font-bold tracking-tight hover:text-white/70 transition-all duration-300"
+                            className="text-lg md:text-xl font-bold tracking-tight hover:text-white/70 transition-all duration-300"
                         >
                             {logoText}
                             {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
                         </Link>
 
                         {/* About Us link and CTA */}
-                        <div className="flex items-center gap-4 ml-8">
-                            {/* About Us Link */}
+                        <div className="flex items-center gap-2 md:gap-4 ml-4 md:ml-8">
+                            {/* About Us Link - Hidden on very small screens */}
                             <Link
                                 to="/about"
-                                className="text-sm text-white/70 hover:text-white transition-all duration-300"
+                                className="hidden xs:block text-xs md:text-sm text-white/70 hover:text-white transition-all duration-300"
                             >
                                 About Us
                             </Link>
@@ -94,7 +94,7 @@ const LandingPage = () => {
                             {/* CTA Button */}
                             <Link
                                 to="/register"
-                                className="px-6 py-2 bg-white text-black rounded-md text-sm font-medium hover:bg-white/90 transition-all duration-300"
+                                className="px-4 md:px-6 py-1.5 md:py-2 bg-white text-black rounded-md text-xs md:text-sm font-medium hover:bg-white/90 transition-all duration-300 whitespace-nowrap"
                             >
                                 Get Started
                             </Link>
@@ -104,32 +104,32 @@ const LandingPage = () => {
             </header>
 
             {/* Hero Section */}
-            <main className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 pt-20">
-                <div className="max-w-5xl mx-auto text-center">
+            <main className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-8 pt-20">
+                <div className="max-w-5xl mx-auto text-center w-full">
                     {/* Main Headline with Typewriter */}
-                    <h1 className="text-6xl md:text-7xl font-bold tracking-tighter leading-[1.1] mb-6">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] mb-4 md:mb-6">
                         Study Together,
                         <br />
-                        <span className="inline-block min-w-[600px] text-left">
+                        <span className="inline-block w-full sm:w-auto sm:min-w-[300px] md:min-w-[400px] lg:min-w-[600px] text-center sm:text-left">
                             {typewriterText}
                             <span className="animate-pulse">|</span>
                         </span>
                     </h1>
 
                     {/* Subheadline */}
-                    <p className="text-lg text-white/90 leading-[2] mb-8 max-w-2xl mx-auto">
+                    <p className="text-base md:text-lg text-white/90 leading-relaxed md:leading-[2] mb-6 md:mb-8 max-w-2xl mx-auto px-4">
                         Academic collaboration platform built for your batch
                     </p>
 
                     {/* Social Proof */}
-                    <p className="text-xs text-white/50 mb-8">
+                    <p className="text-xs text-white/50 mb-6 md:mb-8">
                         Trusted by 100+ students
                     </p>
 
                     {/* CTA Button */}
                     <Link
                         to="/register"
-                        className="inline-block px-10 py-4 bg-white text-black text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
+                        className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
                     >
                         Get Started
                     </Link>
