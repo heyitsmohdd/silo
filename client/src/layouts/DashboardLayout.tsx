@@ -82,7 +82,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
     <>
       {/* Logo */}
       <div className="h-14 flex items-center px-6 border-b border-white/5">
-        <h1 className="text-base font-semibold text-white">
+        <h1 className="text-base font-bold text-white font-['Outfit'] tracking-tighter antialiased">
           Silo
         </h1>
         {isMobile && (

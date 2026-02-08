@@ -79,6 +79,13 @@ const LandingPage = () => {
                         >
                             {logoText}
                             {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
+                            <div className="size-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+                                <span className="text-white font-bold text-lg font-['Outfit'] tracking-tighter antialiased">S</span>
+                            </div>
+                            <span className="font-bold text-xl text-white font-['Outfit'] tracking-tighter antialiased">
+                                {logoText}
+                                {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
+                            </span>
                         </Link>
 
                         {/* About Us link and CTA */}

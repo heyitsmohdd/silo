@@ -148,7 +148,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                                 S
                             </span>
                         </div>
-                        <span className="font-serif text-2xl font-bold text-foreground">
+                        <span className="font-bold text-2xl text-foreground font-['Outfit'] tracking-tighter antialiased">
                             Silo
                         </span>
                     </div>
