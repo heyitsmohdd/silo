@@ -75,7 +75,7 @@ const LandingPage = () => {
                         {/* Logo on the left */}
                         <Link
                             to="/"
-                            className="font-bold text-xl text-white font-['Outfit'] tracking-tighter antialiased hover:opacity-70 transition-opacity"
+                            className="font-bold text-xl text-white font-['Press_Start_2P'] hover:opacity-70 transition-opacity"
                         >
                             {logoText}
                             {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}

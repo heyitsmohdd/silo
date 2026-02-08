@@ -143,7 +143,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 <DialogHeader>
                     {/* Logo */}
                     <div className="mb-6">
-                        <span className="font-bold text-3xl text-foreground font-['Outfit'] tracking-tighter antialiased">
+                        <span className="font-bold text-2xl text-foreground font-['Press_Start_2P']">
                             Silo
                         </span>
                     </div>
