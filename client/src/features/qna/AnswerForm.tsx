@@ -61,13 +61,13 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
                         onChange={(e) => setContent(e.target.value)}
                         disabled={isSubmitting}
                         className="w-full min-h-[120px] px-4 py-3 text-sm bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed resize-none"
-                        maxLength={10000}
+                        maxLength={2000}
                     />
 
                     {/* Bottom Bar: Character Count + Button */}
                     <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-800">
                         <span className="text-xs text-zinc-500">
-                            {content.length}/10000
+                            {content.length}/2000
                         </span>
 
                         {/* Show button only when typing */}

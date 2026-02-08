@@ -125,11 +125,11 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 disabled={isSubmitting}
-                                maxLength={10000}
+                                maxLength={2000}
                                 className="w-full min-h-[150px] px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed resize-y transition-all"
                             />
                             <p className="text-xs text-zinc-500 mt-1">
-                                {content.length}/10000 characters {content.length > 0 && content.length < 10 && <span className="text-amber-500">• Need at least 10 characters</span>}
+                                {content.length}/2000 characters {content.length > 0 && content.length < 10 && <span className="text-amber-500">• Need at least 10 characters</span>}
                             </p>
                         </div>
 

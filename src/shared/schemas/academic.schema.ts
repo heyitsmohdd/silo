@@ -81,7 +81,7 @@ export const parseNoteQuery = (data: unknown): NoteQueryInput => {
  */
 export const CreateQuestionSchema = z.object({
     title: z.string().min(5, 'Title must be at least 5 characters').max(200, 'Title too long'),
-    content: z.string().min(10, 'Content must be at least 10 characters').max(1000, 'Question too long - max 1000 characters'),
+    content: z.string().min(10, 'Content must be at least 10 characters').max(2000, 'Question too long - max 2000 characters'),
     tags: z.string().min(1, 'At least one tag is required').max(200, 'Tags too long'),
 });
 
@@ -92,7 +92,7 @@ export type CreateQuestionInput = z.infer<typeof CreateQuestionSchema>;
  */
 export const UpdateQuestionSchema = z.object({
     title: z.string().min(5).max(200).optional(),
-    content: z.string().min(10).max(1000).optional(),
+    content: z.string().min(10).max(2000).optional(),
     tags: z.string().max(200).optional(),
 });
 
@@ -102,7 +102,7 @@ export type UpdateQuestionInput = z.infer<typeof UpdateQuestionSchema>;
  * Create Answer Request Schema
  */
 export const CreateAnswerSchema = z.object({
-    content: z.string().min(10, 'Answer must be at least 10 characters').max(1000, 'Answer too long - max 1000 characters'),
+    content: z.string().min(10, 'Answer must be at least 10 characters').max(2000, 'Answer too long - max 2000 characters'),
 });
 
 export type CreateAnswerInput = z.infer<typeof CreateAnswerSchema>;

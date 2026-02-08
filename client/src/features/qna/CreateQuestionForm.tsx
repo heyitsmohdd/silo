@@ -82,10 +82,10 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
                         onChange={(e) => setContent(e.target.value)}
                         disabled={isSubmitting}
                         className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed resize-y"
-                        maxLength={10000}
+                        maxLength={2000}
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                        {content.length}/10000 characters
+                        {content.length}/2000 characters
                     </p>
                 </div>
 
