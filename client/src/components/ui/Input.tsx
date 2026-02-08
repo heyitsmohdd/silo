@@ -21,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             // Base styles - larger, more comfortable
             'flex h-11 w-full rounded-md border border-input bg-background',
-            'px-3.5 py-2.5 text-sm text-zinc-100',
+            'px-3.5 py-2.5 text-base md:text-sm text-zinc-100',
             'transition-colors duration-150',
             // Placeholder and disabled states
             'placeholder:text-muted-foreground',
@@ -32,6 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             error && 'border-destructive focus-visible:ring-destructive',
             className
           )}
+          style={{ fontSize: '16px' }}
           {...props}
         />
         {error && (

@@ -21,7 +21,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           className={cn(
             // Base styles - match Input component
             'flex h-11 w-full rounded-md border border-input bg-background',
-            'px-3.5 py-2.5 text-sm',
+            'px-3.5 py-2.5 text-base md:text-sm',
             'transition-colors duration-150',
             // Focus state
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
@@ -31,6 +31,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             error && 'border-destructive focus-visible:ring-destructive',
             className
           )}
+          style={{ fontSize: '16px' }}
           {...props}
         >
           {options.map((option) => (
