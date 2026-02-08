@@ -36,18 +36,18 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header - Transparent Glass */}
-      <div className="flex-shrink-0 glass-header border-b border-white/5 px-6 py-4">
-        <div className="flex items-center justify-between">
+      {/* Header - Mobile Responsive */}
+      <div className="flex-shrink-0 glass-header border-b border-white/5 px-4 md:px-6 py-3 md:py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
           <div>
-            <h1 className="font-semibold text-lg text-white">
+            <h1 className="font-semibold text-base md:text-lg text-white">
               Batch Channel
             </h1>
-            <p className="text-sm text-zinc-400 mt-0.5">
+            <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
               {currentUser?.year} • {currentUser?.branch}
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             {/* Search */}
             <ChatSearch
               messages={messages}
@@ -57,7 +57,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
             {/* Connection Status */}
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm font-medium text-zinc-400">
+              <span className="text-xs md:text-sm font-medium text-zinc-400">
                 {isConnected ? 'Online' : 'Offline'}
               </span>
             </div>
@@ -66,7 +66,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
       </div>
 
       {/* Messages List - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-4">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-sm text-zinc-500">
@@ -92,10 +92,10 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                   <img
                     src={identity.avatar}
                     alt={identity.name}
-                    className="w-10 h-10 rounded-full bg-zinc-900 ring-2 ring-zinc-800 flex-shrink-0"
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-900 ring-2 ring-zinc-800 flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-10 flex-shrink-0" />
+                  <div className="w-8 md:w-10 flex-shrink-0" />
                 )}
 
                 {/* Message Block - Right Side */}
@@ -123,11 +123,11 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                   {/* Message Content */}
                   <div
                     className={`rounded-lg px-3 py-2 break-words ${isMe
-                        ? 'bg-zinc-800/30 border border-zinc-700/50'
-                        : 'bg-transparent'
+                      ? 'bg-zinc-800/30 border border-zinc-700/50'
+                      : 'bg-transparent'
                       }`}
                   >
-                    <p className="text-sm text-zinc-100 leading-relaxed">
+                    <p className="text-sm md:text-sm text-zinc-100 leading-relaxed">
                       {message.content}
                     </p>
                   </div>
