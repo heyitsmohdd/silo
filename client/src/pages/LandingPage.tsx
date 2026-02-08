@@ -75,15 +75,10 @@ const LandingPage = () => {
                         {/* Logo on the left */}
                         <Link
                             to="/"
-                            className="flex items-center gap-2 hover:opacity-70 transition-opacity duration-300"
+                            className="font-bold text-xl text-white font-['Outfit'] tracking-tighter antialiased hover:opacity-70 transition-opacity"
                         >
-                            <div className="size-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-                                <span className="text-white font-bold text-lg font-['Outfit'] tracking-tighter antialiased">S</span>
-                            </div>
-                            <span className="font-bold text-xl text-white font-['Outfit'] tracking-tighter antialiased">
-                                {logoText}
-                                {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
-                            </span>
+                            {logoText}
+                            {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
                         </Link>
 
                         {/* About Us link and CTA */}

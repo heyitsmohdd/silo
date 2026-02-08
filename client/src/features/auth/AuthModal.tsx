@@ -142,13 +142,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <DialogContent>
                 <DialogHeader>
                     {/* Logo */}
-                    <div className="flex items-center gap-2.5 mb-6">
-                        <div className="size-10 rounded-lg bg-primary/10 dark:bg-primary/20 border border-primary/20 flex items-center justify-center">
-                            <span className="text-primary font-serif font-bold text-xl">
-                                S
-                            </span>
-                        </div>
-                        <span className="font-bold text-2xl text-foreground font-['Outfit'] tracking-tighter antialiased">
+                    <div className="mb-6">
+                        <span className="font-bold text-3xl text-foreground font-['Outfit'] tracking-tighter antialiased">
                             Silo
                         </span>
                     </div>
