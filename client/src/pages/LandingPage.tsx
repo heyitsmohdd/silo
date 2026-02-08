@@ -127,13 +127,16 @@ const LandingPage = () => {
                     </h1>
 
                     {/* Subheadline */}
+                    {/* Subheadline */}
                     <p className="text-base md:text-lg text-white/90 leading-relaxed md:leading-[2] mb-6 md:mb-8 max-w-2xl mx-auto px-4">
-                        Academic collaboration platform built for your batch
+                        Speak freely, share openly, and connect without barriers.
+                        <br className="hidden md:block" />
+                        The anonymous network for your campus.
                     </p>
 
                     {/* Social Proof */}
                     <p className="text-xs text-white/50 mb-6 md:mb-8">
-                        Trusted by 100+ students
+                        Join 100+ students from your batch
                     </p>
 
                     {/* CTA Button */}
