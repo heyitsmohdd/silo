@@ -82,9 +82,11 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
     <>
       {/* Logo */}
       <div className="h-14 flex items-center px-6 border-b border-white/5">
-        <h1 className="text-sm font-bold text-white font-['Press_Start_2P']">
-          Silo
-        </h1>
+        <Link to="/" className="hover:opacity-70 transition-opacity">
+          <h1 className="text-sm font-bold text-white font-['Press_Start_2P']">
+            Silo
+          </h1>
+        </Link>
         {isMobile && (
           <button
             onClick={onNavigate}
