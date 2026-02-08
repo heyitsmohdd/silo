@@ -108,7 +108,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             } else {
                 // Register
                 const payload: RegisterPayload = {
-                    email,
+                    email: email.trim(),
                     password,
                     role,
                     year: Number(year),
