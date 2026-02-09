@@ -1,0 +1,220 @@
+import { useState, useEffect } from 'react';
+import { Moon, Shield, Trash2, LogOut, User } from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Dialog';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import LogoutConfirmationModal from '@/components/LogoutConfirmationModal';
+import { getIdentity } from '@/lib/identity';
+
+const THEME_KEY = 'silo_theme';
+
+const SettingsPage = () => {
+    const { user, logout } = useAuthStore();
+    const [darkMode, setDarkMode] = useState(true);
+    const [alias, setAlias] = useState('');
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    // Initial Identity & Theme Setup
+    useEffect(() => {
+        if (user?.userId) {
+            const identity = getIdentity(user.userId);
+            setAlias(identity.name);
+        }
+
+        // Hydrate theme
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        const prefersDark = savedTheme === 'dark' || savedTheme === null;
+        setDarkMode(prefersDark);
+        document.documentElement.classList.toggle('dark', prefersDark);
+    }, [user?.userId]);
+
+    const toggleTheme = () => {
+        const newTheme = !darkMode ? 'dark' : 'light';
+        setDarkMode(!darkMode);
+        localStorage.setItem(THEME_KEY, newTheme);
+        document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    };
+
+    const handleDeleteAccount = () => {
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        // In a real app, calling an API endpoint would happen here
+        setShowDeleteModal(false);
+        alert('Account deletion logic executed. Goodbye!');
+        logout(); // Assuming we want to logout the user after simulated deletion
+    };
+
+    const handleLogoutClick = () => {
+        setShowLogoutModal(true);
+    };
+
+    const handleConfirmLogout = () => {
+        logout();
+        setShowLogoutModal(false);
+    };
+
+    return (
+        <div className="w-full max-w-2xl mx-auto space-y-8 animate-in fade-in-50 duration-500 pb-12">
+            {/* Page Header */}
+            <div>
+                <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+                <p className="text-zinc-400">Manage your account and preferences.</p>
+            </div>
+
+            {/* 1. Identity Section (New) */}
+            <section className="space-y-4">
+                <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
+                    <User className="w-5 h-5 text-zinc-400" />
+                    <h2 className="text-lg font-semibold">My Identity</h2>
+                </div>
+
+                <div className="glass-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <div className="text-sm text-zinc-400 mb-1">Current Alias</div>
+                        <div className="text-2xl font-bold text-white tracking-wide">{alias || 'Loading...'}</div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 2. Appearance Section */}
+            <section className="space-y-4">
+                <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
+                    <Moon className="w-5 h-5 text-zinc-400" />
+                    <h2 className="text-lg font-semibold">Interface</h2>
+                </div>
+
+                <div className="glass-card p-6 flex items-center justify-between">
+                    <div>
+                        <div className="font-medium text-white">Dark Mode</div>
+                        <div className="text-sm text-zinc-400">Adjust the appearance of the application</div>
+                    </div>
+
+                    {/* Toggle Switch */}
+                    <button
+                        onClick={toggleTheme}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${darkMode ? 'bg-emerald-500' : 'bg-zinc-700'
+                            }`}
+                        role="switch"
+                        aria-checked={darkMode}
+                    >
+                        <span
+                            className={`${darkMode ? 'translate-x-6' : 'translate-x-1'
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200`}
+                        />
+                    </button>
+                </div>
+            </section>
+
+            {/* 3. Security & Account Section */}
+            <section className="space-y-4">
+                <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
+                    <Shield className="w-5 h-5 text-zinc-400" />
+                    <h2 className="text-lg font-semibold">Security</h2>
+                </div>
+
+                <div className="glass-card p-6 space-y-6">
+                    <div className="grid gap-2">
+                        <Input
+                            label="Email Address"
+                            value={user?.email || ''}
+                            disabled
+                            className="bg-zinc-900/50 text-zinc-500 border-zinc-800"
+                        />
+                        <p className="text-xs text-zinc-500">Your email address is managed by your provider.</p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <Button
+                            variant="secondary"
+                            className="w-full sm:w-auto"
+                            onClick={() => setIsPasswordModalOpen(true)}
+                        >
+                            Change Password
+                        </Button>
+                        <Button variant="outline" className="w-full sm:w-auto gap-2" onClick={handleLogoutClick}>
+                            <LogOut className="w-4 h-4" />
+                            Log Out of All Devices
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
+            {/* 4. Danger Zone */}
+            <section className="pt-4">
+                <div className="border border-red-500/20 bg-red-500/5 rounded-xl p-6">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-red-400">
+                                <Trash2 className="w-5 h-5" />
+                                <h3 className="font-semibold">Delete Account</h3>
+                            </div>
+                            <p className="text-sm text-red-500/80">
+                                Permanently delete your account and all your messages. This action cannot be undone.
+                            </p>
+                        </div>
+                        <Button
+                            variant="destructive"
+                            className="shrink-0"
+                            onClick={handleDeleteAccount}
+                        >
+                            Delete Account
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
+            {/* Change Password Modal */}
+            <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Change Password</DialogTitle>
+                        <DialogDescription>
+                            Enter your new password below.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <Input
+                            label="New Password"
+                            type="password"
+                            placeholder="••••••••"
+                        />
+                        <Input
+                            label="Confirm Password"
+                            type="password"
+                            placeholder="••••••••"
+                        />
+                        <div className="flex justify-end gap-3 pt-4">
+                            <Button variant="ghost" onClick={() => setIsPasswordModalOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={() => setIsPasswordModalOpen(false)}>
+                                Save Changes
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+            {/* Delete Account Confirmation Modal */}
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleConfirmDelete}
+            />
+
+            {/* Logout Confirmation Modal */}
+            <LogoutConfirmationModal
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={handleConfirmLogout}
+            />
+        </div>
+    );
+};
+
+export default SettingsPage;

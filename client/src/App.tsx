@@ -14,6 +14,7 @@ import QuestionList from '@/features/qna/QuestionList';
 import QuestionDetail from '@/features/qna/QuestionDetail';
 import ChatPage from '@/features/chat/ChatPage';
 import ProfilePage from '@/features/profile/ProfilePage';
+import SettingsPage from '@/pages/SettingsPage';
 
 import NewLandingPage from '@/pages/LandingPage';
 
@@ -59,6 +60,7 @@ function App() {
             <Route index element={<DashboardPlaceholder />} />
             <Route path="chat" element={<ChatPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route
               path="notes"
               element={
