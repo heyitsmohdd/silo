@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { TriangleAlert, CheckCircle, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { getIdentity } from '@/lib/identity';
 
 interface DeleteConfirmationModalProps {
     isOpen: boolean;
@@ -10,6 +12,7 @@ interface DeleteConfirmationModalProps {
 }
 
 const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalProps) => {
+    const { user } = useAuthStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -26,12 +29,26 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
     }, [isOpen]);
 
     const handleDelete = () => {
+        if (!user) return;
+
+        const identity = getIdentity(user.userId);
         setIsLoading(true);
-        // Simulate server request
+
+        // Construct mailto link
+        const recipient = "siloedu00@gmail.com";
+        const subject = `DELETE ACCOUNT REQUEST: ${user.userId}`;
+        const body = `I want to delete my account.\nMy Username is: ${identity.name}\n\nPlease remove my data.`;
+
+        const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open email client
+        window.location.href = mailtoLink;
+
+        // Show success state
         setTimeout(() => {
             setIsLoading(false);
             setIsSubmitted(true);
-        }, 1500);
+        }, 1000);
     };
 
     return (
@@ -50,19 +67,14 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
                     {/* Content */}
                     <div className="space-y-2 mb-6">
                         <h2 className="text-xl font-bold text-white transition-all duration-300">
-                            {isSubmitted ? 'Deletion Request Received' : 'Delete your account?'}
+                            {isSubmitted ? 'Opening your email app...' : 'Delete your account?'}
                         </h2>
                         <p className="text-zinc-400 text-sm leading-relaxed transition-all duration-300">
                             {isSubmitted
-                                ? 'We have received your request. Your account and data will be permanently removed within 2-3 business days.'
+                                ? 'Please hit send to finalize your request.'
                                 : 'You are about to permanently delete your account and all messages. This action cannot be undone.'
                             }
                         </p>
-                        {isSubmitted && (
-                            <p className="text-xs text-zinc-500 animate-in fade-in slide-in-from-bottom-2 delay-150">
-                                If you need immediate assistance, contact us at <span className="text-zinc-400 hover:text-white transition-colors cursor-pointer">siloedu00@gmail.com</span>.
-                            </p>
-                        )}
                     </div>
 
                     {/* Actions */}
@@ -93,7 +105,7 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
                                     {isLoading ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
-                                        'Yes, Delete Everything'
+                                        'Yes, Request Deletion'
                                     )}
                                 </Button>
                             </>
