@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, Menu, X, HelpCircle } from 'lucide-react';
+import { FileText, MessageSquare, Menu, X, HelpCircle, Bug } from 'lucide-react';
+import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
 
@@ -71,6 +72,7 @@ const DashboardLayout = () => {
   );
 };
 
+
 // Sidebar Content Component (shared between desktop and mobile)
 interface SidebarContentProps {
   onNavigate: () => void;
@@ -78,8 +80,15 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <>
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
+
       {/* Logo */}
       <div className="h-14 flex items-center px-6 border-b border-white/5">
         <Link to="/" className="hover:opacity-70 transition-opacity">
@@ -103,9 +112,15 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
         <NavLink to="/chat" icon={MessageSquare} label="Chat" onClick={onNavigate} />
+        <button
+          onClick={() => setIsContactModalOpen(true)}
+          className="w-full relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200"
+        >
+          <Bug className="w-4 h-4 flex-shrink-0" />
+          <span>Contact</span>
+        </button>
+
       </nav>
-
-
     </>
   );
 };
