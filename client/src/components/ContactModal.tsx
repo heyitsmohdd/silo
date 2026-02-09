@@ -8,7 +8,7 @@ interface ContactModalProps {
 }
 
 const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
-    const adminEmail = "siloedu0@gmail.com";
+    const adminEmail = "siloedu00@gmail.com";
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {

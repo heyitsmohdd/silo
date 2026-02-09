@@ -60,7 +60,7 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
                         </p>
                         {isSubmitted && (
                             <p className="text-xs text-zinc-500 animate-in fade-in slide-in-from-bottom-2 delay-150">
-                                If you need immediate assistance, contact us at <span className="text-zinc-400 hover:text-white transition-colors cursor-pointer">siloedu0@gmail.com</span>.
+                                If you need immediate assistance, contact us at <span className="text-zinc-400 hover:text-white transition-colors cursor-pointer">siloedu00@gmail.com</span>.
                             </p>
                         )}
                     </div>
