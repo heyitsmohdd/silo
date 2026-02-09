@@ -131,13 +131,13 @@ const QuestionList = () => {
             <div className="flex flex-col gap-6 mb-8">
                 {/* Top Row: Title & New Question Button */}
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Course Q&A</h1>
+                    <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion Board</h1>
                     <button
                         onClick={() => setShowModal(true)}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
-                        New Question
+                        New Post
                     </button>
                 </div>
 
@@ -202,18 +202,18 @@ const QuestionList = () => {
                     icon={HelpCircle}
                     title={
                         hasFilters
-                            ? 'No questions match your filters'
-                            : 'No questions yet'
+                            ? 'No posts match your filters'
+                            : 'No posts yet'
                     }
                     description={
                         hasFilters
                             ? 'Try adjusting your search or filters.'
-                            : 'Be the first to ask a question!'
+                            : 'Be the first to start a discussion!'
                     }
                     action={
                         !hasFilters
                             ? {
-                                label: 'Ask Question',
+                                label: 'Start Discussion',
                                 onClick: () => setShowModal(true),
                             }
                             : undefined

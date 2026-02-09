@@ -8,6 +8,7 @@ interface AskQuestionModalProps {
 }
 
 const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
+    const [category, setCategory] = useState('ACADEMIC');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState('');
@@ -41,6 +42,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                 title: title.trim(),
                 content: content.trim(),
                 tags: tags.trim(),
+                category,
             });
 
             onSuccess();
@@ -50,9 +52,9 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
             const errorMessage = err.response?.data?.message
                 || err.response?.data?.error
                 || err.message
-                || 'Failed to create question';
+                || 'Failed to create post';
             setError(errorMessage);
-            console.error('Question creation error:', err.response?.data);
+            console.error('Post creation error:', err.response?.data);
         } finally {
             setIsSubmitting(false);
         }
@@ -75,7 +77,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                         <h2 className="text-xl font-bold text-zinc-100">
-                            Ask a Question
+                            Start a Discussion
                         </h2>
                         <button
                             onClick={onClose}
@@ -94,15 +96,34 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                             </div>
                         )}
 
+                        {/* Category (Flair) */}
+                        <div>
+                            <label htmlFor="category" className="block text-sm font-medium text-zinc-300 mb-2">
+                                I want to post...
+                            </label>
+                            <select
+                                id="category"
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all appearance-none"
+                            >
+                                <option value="ACADEMIC">📚 Academic Question</option>
+                                <option value="GOSSIP">☕ Tea / Gossip</option>
+                                <option value="RANT">📢 Rant</option>
+                                <option value="CONFESSION">🎭 Confession</option>
+                                <option value="OTHER">💬 General Discussion</option>
+                            </select>
+                        </div>
+
                         {/* Title */}
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Question Title <span className="text-zinc-500">(minimum 5 characters)</span>
+                                Title <span className="text-zinc-500">(minimum 5 characters)</span>
                             </label>
                             <input
                                 id="title"
                                 type="text"
-                                placeholder="What's your question about?"
+                                placeholder="Give your post a catchy title..."
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 disabled={isSubmitting}
@@ -121,7 +142,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                             </label>
                             <textarea
                                 id="content"
-                                placeholder="Provide more details about your question..."
+                                placeholder="Spill the tea or ask your doubt..."
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 disabled={isSubmitting}
@@ -141,7 +162,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                             <input
                                 id="tags"
                                 type="text"
-                                placeholder="e.g., algorithms, data-structures, python"
+                                placeholder="e.g., exams, hostel, crush, coding"
                                 value={tags}
                                 onChange={(e) => setTags(e.target.value)}
                                 disabled={isSubmitting}
@@ -168,7 +189,7 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 disabled={isSubmitting || title.trim().length < 5 || content.trim().length < 10 || !tags.trim()}
                                 className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-100 text-zinc-950 font-bold hover:bg-white transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isSubmitting ? 'Posting...' : 'Post Question'}
+                                {isSubmitting ? 'Posting...' : 'Post'}
                             </button>
                         </div>
                     </form>
