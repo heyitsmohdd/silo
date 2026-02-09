@@ -1,5 +1,8 @@
-import { MessageSquare, ArrowUp, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { MessageSquare, CheckCircle2, Book, Coffee, Megaphone, VenetianMask, MessageCircle } from 'lucide-react';
 import { getIdentity } from '@/lib/identity';
+import { cn } from '@/lib/utils';
+import axiosClient from '@/lib/axios';
 
 interface QuestionCardProps {
     question: {
@@ -9,6 +12,8 @@ interface QuestionCardProps {
         tags: string[];
         upvotes: number;
         downvotes: number;
+        reactions: any[]; // Array of reactions
+        category: string;
         answers: any[];
         bestAnswerId: string | null;
         authorId: string;
@@ -26,7 +31,44 @@ interface QuestionCardProps {
 
 const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
     const identity = getIdentity(question.authorId);
-    const voteCount = question.upvotes - question.downvotes;
+
+    // Get current user ID from local storage or context (Simulated for clear example, ideally passed as prop)
+    const currentUserId = JSON.parse(localStorage.getItem('user') || '{}').id;
+
+    const [reactions, setReactions] = useState(question.reactions || []);
+
+    // Handle Reaction Click
+    const handleReaction = async (type: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        // Optimistic UI Update
+        const hasReacted = reactions.some((r: any) => r.userId === currentUserId && r.type === type);
+
+        let newReactions;
+        if (hasReacted) {
+            newReactions = reactions.filter((r: any) => !(r.userId === currentUserId && r.type === type));
+        } else {
+            newReactions = [...reactions, { userId: currentUserId, type }];
+        }
+        setReactions(newReactions);
+
+        // Call API
+        try {
+            await axiosClient.post('/academic/reactions', { questionId: question.id, type });
+        } catch (err) {
+            console.error('Failed to react', err);
+            // Revert on error
+            setReactions(reactions);
+        }
+    };
+
+    // Calculate Reaction Counts
+    const reactionCounts = ["🔥", "💀", "❤️", "💩"].map(emoji => ({
+        emoji,
+        count: reactions.filter((r: any) => r.type === emoji).length,
+        userReacted: reactions.some((r: any) => r.userId === currentUserId && r.type === emoji)
+    }));
+
     const answerCount = question.answers?.length || 0;
     const hasBestAnswer = question.bestAnswerId !== null;
 
@@ -44,81 +86,104 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
         return date.toLocaleDateString();
     };
 
+    // Category Badge Helper
+    const getCategoryBadge = (category: string = 'ACADEMIC') => {
+        switch (category) {
+            case "ACADEMIC": return { color: "bg-blue-500/10 text-blue-500 border-blue-500/20", icon: <Book className="w-3 h-3" />, label: "Academic" };
+            case "GOSSIP": return { color: "bg-purple-500/10 text-purple-500 border-purple-500/20", icon: <Coffee className="w-3 h-3" />, label: "Tea / Gossip" };
+            case "RANT": return { color: "bg-red-500/10 text-red-500 border-red-500/20", icon: <Megaphone className="w-3 h-3" />, label: "Rant" };
+            case "CONFESSION": return { color: "bg-pink-500/10 text-pink-500 border-pink-500/20", icon: <VenetianMask className="w-3 h-3" />, label: "Confession" };
+            default: return { color: "bg-zinc-500/10 text-zinc-500 border-zinc-500/20", icon: <MessageCircle className="w-3 h-3" />, label: "General" };
+        }
+    };
+
+    const badge = getCategoryBadge(question.category);
+
     return (
         <div
             onClick={onClick}
-            className="flex gap-4 p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-600 transition-colors cursor-pointer group"
+            className="flex flex-col gap-3 p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all cursor-pointer group shadow-sm hover:shadow-md"
         >
-            {/* Left: Voting Column */}
-            <div className="flex flex-col items-center gap-1 pt-1">
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        // Upvote logic here
-                    }}
-                    className="p-1.5 rounded hover:bg-zinc-800 transition-colors"
-                >
-                    <ArrowUp className={`w-5 h-5 ${voteCount > 0 ? 'text-green-500' : 'text-zinc-500'}`} />
-                </button>
-                <span className={`text-sm font-bold ${voteCount > 0 ? 'text-green-500' : 'text-zinc-400'}`}>
-                    {voteCount}
-                </span>
-            </div>
+            {/* Header: Badge (Only show if NOT Academic) */}
+            {question.category !== 'ACADEMIC' && (
+                <div className="flex items-center justify-between">
+                    <div className={`flex items-center gap-2 px-2.5 py-1 text-xs font-medium rounded-full border ${badge.color}`}>
+                        {badge.icon}
+                        {badge.label}
+                    </div>
+                </div>
+            )}
 
-            {/* Right: Content Column */}
-            <div className="flex-1 min-w-0">
-                {/* Title */}
+            {/* Content */}
+            <div>
                 <div className="flex items-start gap-2 mb-2">
-                    <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-emerald-400 transition-colors line-clamp-2 flex-1">
+                    <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-primary transition-colors line-clamp-2 flex-1">
                         {question.title}
                     </h3>
                     {hasBestAnswer && (
                         <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                     )}
                 </div>
-
-                {/* Preview */}
-                <p className="text-sm text-zinc-400 line-clamp-2 leading-relaxed mb-3">
+                <p className="text-sm text-zinc-400 line-clamp-3 leading-relaxed mb-4">
                     {question.content}
                 </p>
+            </div>
 
-                {/* Meta Row: Avatar + Posted by + Tags */}
-                <div className="flex items-center gap-3 flex-wrap">
-                    {/* Avatar */}
-                    <img
-                        src={identity.avatar}
-                        alt={identity.name}
-                        className="w-5 h-5 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
-                    />
+            {/* Meta Row (Restored): Avatar + Posted by + Time + Answers + Tags */}
+            <div className="flex items-center gap-3 flex-wrap text-xs text-zinc-500 mb-4">
+                {/* Avatar */}
+                <img
+                    src={identity.avatar}
+                    alt={identity.name}
+                    className="w-5 h-5 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                />
 
-                    {/* Posted by */}
-                    <span className="text-xs text-zinc-500">
-                        Posted by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
-                    </span>
+                {/* Posted by & Time */}
+                <span>
+                    Posted by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
+                </span>
 
-                    {/* Answer Count */}
-                    <div className="flex items-center gap-1 text-xs text-zinc-500">
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        <span>{answerCount} {answerCount === 1 ? 'answer' : 'answers'}</span>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex items-center gap-2">
-                        {question.tags.slice(0, 2).map((tag, index) => (
-                            <span
-                                key={index}
-                                className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-zinc-800/60 text-zinc-400 border border-zinc-700"
-                            >
-                                {tag}
-                            </span>
-                        ))}
-                        {question.tags.length > 2 && (
-                            <span className="text-xs text-zinc-500">
-                                +{question.tags.length - 2}
-                            </span>
-                        )}
-                    </div>
+                {/* Answer Count */}
+                <div className="flex items-center gap-1 hover:text-zinc-300 transition-colors">
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>{answerCount} {answerCount === 1 ? 'answer' : 'answers'}</span>
                 </div>
+
+                {/* Tags */}
+                <div className="flex items-center gap-2 ml-auto sm:ml-0">
+                    {question.tags.slice(0, 2).map((tag, index) => (
+                        <span
+                            key={index}
+                            className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-zinc-800/60 text-zinc-400 border border-zinc-700"
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                    {question.tags.length > 2 && (
+                        <span className="text-xs text-zinc-500">
+                            +{question.tags.length - 2}
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            {/* Footer: Reactions */}
+            <div className="flex items-center gap-2 pt-3 border-t border-zinc-800/50">
+                {reactionCounts.map(({ emoji, count, userReacted }) => (
+                    <button
+                        key={emoji}
+                        onClick={(e) => handleReaction(emoji, e)}
+                        className={cn(
+                            "flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors border",
+                            userReacted
+                                ? "bg-primary/20 border-primary/50 text-emerald-400"
+                                : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700"
+                        )}
+                    >
+                        <span>{emoji}</span>
+                        {count > 0 && <span>{count}</span>}
+                    </button>
+                ))}
             </div>
         </div>
     );
