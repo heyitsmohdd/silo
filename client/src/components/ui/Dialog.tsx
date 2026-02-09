@@ -8,6 +8,8 @@ interface DialogProps {
     children: ReactNode;
 }
 
+import { createPortal } from 'react-dom';
+
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
     // Handle escape key
     useEffect(() => {
@@ -35,7 +37,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
     if (!open) return null;
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Backdrop */}
             <div
@@ -47,18 +49,20 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
             <div className="relative z-50 w-full max-w-md mx-4">
                 {children}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
 
 interface DialogContentProps {
     children: ReactNode;
     onClose?: () => void;
+    className?: string;
 }
 
-export function DialogContent({ children, onClose }: DialogContentProps) {
+export function DialogContent({ children, onClose, className }: DialogContentProps) {
     return (
-        <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 animate-in fade-in-0 zoom-in-95">
+        <div className={cn("bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 animate-in fade-in-0 zoom-in-95", className)}>
             {onClose && (
                 <button
                     onClick={onClose}

@@ -7,6 +7,7 @@ interface JWTPayload {
     role: 'STUDENT' | 'PROFESSOR';
     year: number;
     branch: string;
+    username?: string;
     exp: number;
     iat: number;
 }
@@ -18,6 +19,7 @@ export interface User {
     role: 'STUDENT' | 'PROFESSOR';
     year: number;
     branch: string;
+    username?: string;
     firstName?: string | null;
     lastName?: string | null;
 }
@@ -77,7 +79,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     isStudent: false,
 
     login: (token: string) => {
-        const payload = decodeJWT(token);
+        const payload = decodeJWT(token) as JWTPayload;
 
         if (!payload || isTokenExpired(payload)) {
             // Invalid or expired token
@@ -91,6 +93,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
             role: payload.role,
             year: payload.year,
             branch: payload.branch,
+            username: payload.username,
         };
 
         // Store in localStorage

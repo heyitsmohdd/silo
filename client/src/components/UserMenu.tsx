@@ -3,10 +3,12 @@ import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getIdentity } from '@/lib/identity';
+import LogoutConfirmationModal from '@/components/LogoutConfirmationModal';
 
 const UserMenu = () => {
     const { user, logout } = useAuthStore();
     const [isOpen, setIsOpen] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
@@ -31,11 +33,15 @@ const UserMenu = () => {
         };
     }, [isOpen]);
 
-    const handleLogout = () => {
-        if (window.confirm('Are you sure you want to log out?')) {
-            logout();
-            navigate('/login');
-        }
+    const handleLogoutClick = () => {
+        setIsOpen(false);
+        setShowLogoutModal(true);
+    };
+
+    const handleConfirmLogout = () => {
+        logout();
+        navigate('/login');
+        setShowLogoutModal(false);
     };
 
     return (
@@ -107,7 +113,7 @@ const UserMenu = () => {
                         {/* Logout */}
                         <div className="border-t border-zinc-800 py-2">
                             <button
-                                onClick={handleLogout}
+                                onClick={handleLogoutClick}
                                 className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/10 transition-colors text-zinc-400 hover:text-red-400"
                             >
                                 <LogOut className="w-4 h-4" />
@@ -117,6 +123,12 @@ const UserMenu = () => {
                     </div>
                 </>
             )}
+
+            <LogoutConfirmationModal
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={handleConfirmLogout}
+            />
         </div>
     );
 };
