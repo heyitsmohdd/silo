@@ -42,14 +42,24 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
         e.stopPropagation();
 
         // Optimistic UI Update
-        const hasReacted = reactions.some((r: any) => r.userId === currentUserId && r.type === type);
+        const existingReactionIndex = reactions.findIndex((r: any) => r.userId === currentUserId);
+        const existingReaction = reactions[existingReactionIndex];
 
-        let newReactions;
-        if (hasReacted) {
-            newReactions = reactions.filter((r: any) => !(r.userId === currentUserId && r.type === type));
+        let newReactions = [...reactions];
+
+        if (existingReaction) {
+            if (existingReaction.type === type) {
+                // Toggling off
+                newReactions = reactions.filter((r: any) => r.userId !== currentUserId);
+            } else {
+                // Switching type (Update the existing reaction object)
+                newReactions[existingReactionIndex] = { ...existingReaction, type };
+            }
         } else {
-            newReactions = [...reactions, { userId: currentUserId, type }];
+            // Adding new
+            newReactions.push({ userId: currentUserId, type });
         }
+
         setReactions(newReactions);
 
         // Call API

@@ -71,11 +71,11 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
             {/* Modal */}
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
-                    className="w-full max-w-2xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 overflow-hidden"
+                    className="w-full max-w-2xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col max-h-[90vh]"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+                    <div className="flex items-center justify-between p-6 border-b border-zinc-800 flex-shrink-0">
                         <h2 className="text-xl font-bold text-zinc-100">
                             Start a Discussion
                         </h2>
@@ -87,95 +87,97 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                         </button>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                        {/* Error Message */}
-                        {error && (
-                            <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-                                <p className="text-sm text-red-400">{error}</p>
+                    {/* Form - Scrollable Area & Fixed Footer */}
+                    <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                        <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+                            {/* Error Message */}
+                            {error && (
+                                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                                    <p className="text-sm text-red-400">{error}</p>
+                                </div>
+                            )}
+
+                            {/* Category (Flair) */}
+                            <div>
+                                <label htmlFor="category" className="block text-sm font-medium text-zinc-300 mb-2">
+                                    I want to post...
+                                </label>
+                                <select
+                                    id="category"
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all appearance-none"
+                                >
+                                    <option value="ACADEMIC">📚 Academic Question</option>
+                                    <option value="GOSSIP">☕ Tea / Gossip</option>
+                                    <option value="RANT">📢 Rant</option>
+                                    <option value="CONFESSION">🎭 Confession</option>
+                                    <option value="OTHER">💬 General Discussion</option>
+                                </select>
                             </div>
-                        )}
 
-                        {/* Category (Flair) */}
-                        <div>
-                            <label htmlFor="category" className="block text-sm font-medium text-zinc-300 mb-2">
-                                I want to post...
-                            </label>
-                            <select
-                                id="category"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all appearance-none"
-                            >
-                                <option value="ACADEMIC">📚 Academic Question</option>
-                                <option value="GOSSIP">☕ Tea / Gossip</option>
-                                <option value="RANT">📢 Rant</option>
-                                <option value="CONFESSION">🎭 Confession</option>
-                                <option value="OTHER">💬 General Discussion</option>
-                            </select>
+                            {/* Title */}
+                            <div>
+                                <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Title <span className="text-zinc-500">(minimum 5 characters)</span>
+                                </label>
+                                <input
+                                    id="title"
+                                    type="text"
+                                    placeholder="Give your post a catchy title..."
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    disabled={isSubmitting}
+                                    maxLength={200}
+                                    className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                />
+                                <p className="text-xs text-zinc-500 mt-1">
+                                    {title.length}/200 characters {title.length > 0 && title.length < 5 && <span className="text-amber-500">• Need at least 5 characters</span>}
+                                </p>
+                            </div>
+
+                            {/* Content */}
+                            <div>
+                                <label htmlFor="content" className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Details <span className="text-zinc-500">(minimum 10 characters)</span>
+                                </label>
+                                <textarea
+                                    id="content"
+                                    placeholder="Spill the tea or ask your doubt..."
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    disabled={isSubmitting}
+                                    maxLength={2000}
+                                    className="w-full min-h-[150px] px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed resize-y transition-all"
+                                />
+                                <p className="text-xs text-zinc-500 mt-1">
+                                    {content.length}/2000 characters {content.length > 0 && content.length < 10 && <span className="text-amber-500">• Need at least 10 characters</span>}
+                                </p>
+                            </div>
+
+                            {/* Tags */}
+                            <div>
+                                <label htmlFor="tags" className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Tags
+                                </label>
+                                <input
+                                    id="tags"
+                                    type="text"
+                                    placeholder="e.g., exams, hostel, crush, coding"
+                                    value={tags}
+                                    onChange={(e) => setTags(e.target.value)}
+                                    disabled={isSubmitting}
+                                    maxLength={200}
+                                    className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                />
+                                <p className="text-xs text-zinc-500 mt-1">
+                                    Separate tags with commas
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Title */}
-                        <div>
-                            <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Title <span className="text-zinc-500">(minimum 5 characters)</span>
-                            </label>
-                            <input
-                                id="title"
-                                type="text"
-                                placeholder="Give your post a catchy title..."
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                disabled={isSubmitting}
-                                maxLength={200}
-                                className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                            />
-                            <p className="text-xs text-zinc-500 mt-1">
-                                {title.length}/200 characters {title.length > 0 && title.length < 5 && <span className="text-amber-500">• Need at least 5 characters</span>}
-                            </p>
-                        </div>
-
-                        {/* Content */}
-                        <div>
-                            <label htmlFor="content" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Details <span className="text-zinc-500">(minimum 10 characters)</span>
-                            </label>
-                            <textarea
-                                id="content"
-                                placeholder="Spill the tea or ask your doubt..."
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                disabled={isSubmitting}
-                                maxLength={2000}
-                                className="w-full min-h-[150px] px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed resize-y transition-all"
-                            />
-                            <p className="text-xs text-zinc-500 mt-1">
-                                {content.length}/2000 characters {content.length > 0 && content.length < 10 && <span className="text-amber-500">• Need at least 10 characters</span>}
-                            </p>
-                        </div>
-
-                        {/* Tags */}
-                        <div>
-                            <label htmlFor="tags" className="block text-sm font-medium text-zinc-300 mb-2">
-                                Tags
-                            </label>
-                            <input
-                                id="tags"
-                                type="text"
-                                placeholder="e.g., exams, hostel, crush, coding"
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                disabled={isSubmitting}
-                                maxLength={200}
-                                className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                            />
-                            <p className="text-xs text-zinc-500 mt-1">
-                                Separate tags with commas
-                            </p>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex gap-3 pt-4">
+                        {/* Footer - Fixed */}
+                        <div className="flex gap-3 p-6 border-t border-zinc-800 bg-zinc-900/50 flex-shrink-0">
                             <button
                                 type="button"
                                 onClick={onClose}
