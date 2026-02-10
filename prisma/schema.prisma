@@ -56,6 +56,7 @@ model User {
   messages  Message[]
   questions Question[]
   answers   Answer[]
+  reactions Reaction[]
   
   @@index([year, branch])
   @@index([email])
@@ -162,6 +163,9 @@ model Question {
   content   String   @db.Text
   tags      String[] // Array of tags for categorization
   
+  // New Fields
+  category  Category @default(ACADEMIC)
+  
   // Batch Context (Enforced Isolation)
   year      Int
   branch    String
@@ -170,10 +174,15 @@ model Question {
   authorId  String   @map("author_id") @db.Uuid
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   
-  // Voting
+  // Voting (Legacy - Kept for backward compatibility)
   upvotes   Int      @default(0)
   downvotes Int      @default(0)
   
+  // Reactions (New System)
+  reactions Reaction[]
+  
+
+
   // Best Answer Selection (One-to-One)
   bestAnswerId String? @unique @map("best_answer_id") @db.Uuid
   bestAnswer   Answer? @relation("BestAnswer", fields: [bestAnswerId], references: [id], onDelete: SetNull)
@@ -192,6 +201,42 @@ model Question {
   @@index([authorId])
   @@index([bestAnswerId])
   @@map("questions")
+}
+
+// ============================================================================
+// REACTION MODEL (Granular feedback)
+// ============================================================================
+
+model Reaction {
+  id         String   @id @default(uuid()) @db.Uuid
+  type       String   // e.g., "🔥", "💀", "❤️", "💩"
+  
+  // User who reacted
+  userId     String   @map("user_id") @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Target Question
+  questionId String   @map("question_id") @db.Uuid
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  // TODO: Add support for Answer reactions if needed later
+
+  @@unique([userId, questionId]) // User can only react ONCE per post (reaction type may change)
+  @@index([questionId])
+  @@index([userId])
+  @@map("reactions")
+}
+
+// ============================================================================
+// CATEGORY ENUM
+// ============================================================================
+
+enum Category {
+  ACADEMIC
+  GOSSIP
+  RANT
+  CONFESSION
+  OTHER
 }
 
 // ============================================================================

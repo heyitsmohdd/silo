@@ -128,6 +128,7 @@ export const getQuestions = async (
                 },
             },
             bestAnswer: true,
+            reactions: true, // Include reactions
         },
         orderBy,
         take: filters?.limit ?? 20,
@@ -184,6 +185,7 @@ export const getQuestionById = async (
                 ],
             },
             bestAnswer: true,
+            reactions: true, // Include reactions
         },
     });
 

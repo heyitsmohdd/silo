@@ -14,6 +14,7 @@ import { sanitizeBody, sanitizeQuery } from './shared/middleware/sanitize.middle
 import authRoutes from './modules/identity/auth.routes.js';
 import notesRoutes from './modules/academic/notes.routes.js';
 import questionsRoutes from './modules/academic/questions.routes.js';
+import reactionsRoutes from './modules/academic/reactions.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 
 const app = express();
@@ -98,6 +99,7 @@ app.get('/health', (_req, res) => {
 app.use('/auth', authRoutes);
 app.use('/academic', notesRoutes);
 app.use('/academic', questionsRoutes);
+app.use('/academic', reactionsRoutes);
 
 // ============================================================================
 // ERROR HANDLING
