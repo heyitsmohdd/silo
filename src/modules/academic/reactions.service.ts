@@ -16,25 +16,33 @@ export const toggleReaction = async (
     userId: string,
     type: string
 ) => {
-    // Check if user already reacted with this type
+    // Check if user already reacted
     const existingReaction = await prisma.reaction.findUnique({
         where: {
-            userId_questionId_type: {
+            userId_questionId: {
                 userId,
                 questionId,
-                type,
             },
         },
     });
 
     if (existingReaction) {
-        // Remove reaction
-        await prisma.reaction.delete({
-            where: { id: existingReaction.id },
-        });
-        return { action: 'removed' };
+        if (existingReaction.type === type) {
+            // Same reaction -> Remove it (Toggle off)
+            await prisma.reaction.delete({
+                where: { id: existingReaction.id },
+            });
+            return { action: 'removed' };
+        } else {
+            // Different reaction -> Switch it
+            await prisma.reaction.update({
+                where: { id: existingReaction.id },
+                data: { type },
+            });
+            return { action: 'switched' };
+        }
     } else {
-        // Add reaction
+        // No reaction -> Add it
         await prisma.reaction.create({
             data: {
                 userId,
