@@ -14,7 +14,7 @@ const UserMenu = () => {
 
     if (!user) return null;
 
-    const identity = getIdentity(user.userId);
+    const identity = getIdentity(user.userId, user.username);
 
     // Close menu when clicking outside
     useEffect(() => {

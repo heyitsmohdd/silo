@@ -16,7 +16,7 @@ const ProfilePage = () => {
     return null;
   }
 
-  const identity = getIdentity(user.userId);
+  const identity = getIdentity(user.userId, user.username);
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to log out?')) {
