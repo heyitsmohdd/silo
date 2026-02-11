@@ -1,14 +1,10 @@
-/**
- * Authentication Service Layer
- * Business logic for user registration and login
- */
-
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../shared/lib/prisma.js';
 import { Role, JWTPayload, SafeUser } from '../../shared/types/auth.types.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
 import { generateResetToken, verifyResetToken } from '../../shared/lib/resetToken.js';
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
 
 const JWT_SECRET = process.env['JWT_SECRET'];
 
@@ -63,6 +59,12 @@ export const registerUser = async (data: {
             role,
             firstName: firstName ?? null,
             lastName: lastName ?? null,
+            username: uniqueNamesGenerator({
+                dictionaries: [adjectives, animals],
+                separator: '-',
+                style: 'capital',
+                length: 2,
+            }),
         },
     });
 

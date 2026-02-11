@@ -1,5 +1,5 @@
 {
-  "name": "academic-vault",
+  "name": "silo",
   "version": "0.1.0",
   "description": "Strict multi-tenant academic platform with DDD architecture",
   "private": true,
@@ -24,6 +24,7 @@
     "express-rate-limit": "^8.2.1",
     "jsonwebtoken": "^9.0.2",
     "socket.io": "^4.8.3",
+    "unique-names-generator": "^4.7.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
