@@ -123,6 +123,7 @@ const generateToken = (user: {
     role: Role;
     year: number;
     branch: string;
+    username?: string | null;
 }): string => {
     const payload: JWTPayload = {
         userId: user.id,
@@ -130,6 +131,7 @@ const generateToken = (user: {
         role: user.role,
         year: user.year,
         branch: user.branch,
+        username: user.username || undefined,
     };
 
     return jwt.sign(payload, JWT_SECRET!, { expiresIn: JWT_EXPIRES_IN });

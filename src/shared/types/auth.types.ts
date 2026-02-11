@@ -28,6 +28,7 @@ export interface JWTPayload {
     role: Role;
     year: number;
     branch: string;
+    username?: string;
     iat?: number;
     exp?: number;
 }
