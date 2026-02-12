@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword, updateProfile, changePassword } from './auth.controller.js';
+import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword, updateProfile, changePassword, backfillUsernames } from './auth.controller.js';
 import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
@@ -100,6 +100,18 @@ router.put('/profile', verifyJWT, async (req, res, next) => {
 router.put('/change-password', verifyJWT, async (req, res, next) => {
     try {
         await changePassword(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * POST /auth/backfill
+ * Backfill missing usernames
+ */
+router.post('/backfill', async (req, res, next) => {
+    try {
+        await backfillUsernames(req, res);
     } catch (error) {
         next(error);
     }
