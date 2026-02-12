@@ -21,11 +21,14 @@ interface Question {
         firstName: string | null;
         lastName: string | null;
         email: string;
+        username?: string;
     };
     upvotes: number;
     downvotes: number;
     bestAnswerId: string | null;
     answers: any[];
+    reactions: any[];
+    category: string;
 }
 
 const QuestionList = () => {
