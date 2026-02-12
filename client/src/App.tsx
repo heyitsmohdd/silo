@@ -7,6 +7,7 @@ import LoginForm from '@/features/auth/LoginForm';
 import RegisterForm from '@/features/auth/RegisterForm';
 import ForgotPassword from '@/features/auth/ForgotPassword';
 import ResetPassword from '@/features/auth/ResetPassword';
+import RequestAccess from '@/pages/RequestAccess';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 import AcademicLayout from '@/features/academic/AcademicLayout';
 import NotesList from '@/features/academic/NotesList';
@@ -47,6 +48,7 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/request-access" element={<RequestAccess />} />
 
           {/* Protected Routes */}
           <Route
