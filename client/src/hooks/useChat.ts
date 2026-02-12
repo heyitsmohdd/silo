@@ -13,6 +13,7 @@ export interface Message {
     id: string;
     firstName: string | null;
     lastName: string | null;
+    username?: string;
     role: string;
   };
   createdAt: string;
