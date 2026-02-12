@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { MessageSquare, CheckCircle2, Book, Coffee, Megaphone, VenetianMask, MessageCircle } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Book, Coffee, Megaphone, VenetianMask, MessageCircle, Trash2 } from 'lucide-react';
 import { getIdentity } from '@/lib/identity';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/useAuthStore';
 import axiosClient from '@/lib/axios';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
+
 
 interface QuestionCardProps {
     question: {
@@ -30,20 +33,49 @@ interface QuestionCardProps {
     onDelete?: () => void;
 }
 
-const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
+const QuestionCard = ({ question, onClick, onDelete }: QuestionCardProps) => {
     const identity = getIdentity(question.authorId, question.author.username);
+    const { user } = useAuthStore();
 
-    // Get current user ID from local storage or context (Simulated for clear example, ideally passed as prop)
-    const currentUserId = JSON.parse(localStorage.getItem('user') || '{}').id;
+    // Check if current user is the author
+    const isAuthor = user?.userId === question.authorId;
 
     const [reactions, setReactions] = useState(question.reactions || []);
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    // Handle delete click (opens modal)
+    const handleDeleteClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsDeleteModalOpen(true);
+    };
+
+    // Confirm delete action
+    const handleConfirmDelete = async () => {
+        setIsDeleting(true);
+        try {
+            await axiosClient.delete(`/academic/questions/${question.id}`);
+            if (onDelete) {
+                onDelete();
+            }
+        } catch (error) {
+            console.error('Failed to delete question:', error);
+            // Optional: Show toast error here
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
+        }
+    };
 
     // Handle Reaction Click
     const handleReaction = async (type: string, e: React.MouseEvent) => {
         e.stopPropagation();
 
+        if (!user) return;
+
         // Optimistic UI Update
-        const existingReactionIndex = reactions.findIndex((r: any) => r.userId === currentUserId);
+        const existingReactionIndex = reactions.findIndex((r: any) => r.userId === user.userId);
         const existingReaction = reactions[existingReactionIndex];
 
         let newReactions = [...reactions];
@@ -51,14 +83,14 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
         if (existingReaction) {
             if (existingReaction.type === type) {
                 // Toggling off
-                newReactions = reactions.filter((r: any) => r.userId !== currentUserId);
+                newReactions = reactions.filter((r: any) => r.userId !== user.userId);
             } else {
                 // Switching type (Update the existing reaction object)
                 newReactions[existingReactionIndex] = { ...existingReaction, type };
             }
         } else {
             // Adding new
-            newReactions.push({ userId: currentUserId, type });
+            newReactions.push({ userId: user.userId, type });
         }
 
         setReactions(newReactions);
@@ -77,7 +109,7 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
     const reactionCounts = ["🔥", "💀", "❤️", "💩"].map(emoji => ({
         emoji,
         count: reactions.filter((r: any) => r.type === emoji).length,
-        userReacted: reactions.some((r: any) => r.userId === currentUserId && r.type === emoji)
+        userReacted: user ? reactions.some((r: any) => r.userId === user.userId && r.type === emoji) : false
     }));
 
     const answerCount = question.answers?.length || 0;
@@ -116,14 +148,25 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
             className="flex flex-col gap-3 p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all cursor-pointer group shadow-sm hover:shadow-md"
         >
             {/* Header: Badge (Only show if NOT Academic) */}
-            {question.category !== 'ACADEMIC' && (
-                <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
+                {question.category !== 'ACADEMIC' && (
                     <div className={`flex items-center gap-2 px-2.5 py-1 text-xs font-medium rounded-full border ${badge.color}`}>
                         {badge.icon}
                         {badge.label}
                     </div>
-                </div>
-            )}
+                )}
+
+                {/* Delete button for author */}
+                {isAuthor && (
+                    <button
+                        onClick={handleDeleteClick}
+                        className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors"
+                        title="Delete question"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </button>
+                )}
+            </div>
 
             {/* Content */}
             <div>
@@ -196,6 +239,17 @@ const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
                     </button>
                 ))}
             </div>
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Question?"
+                description="Are you sure you want to delete this question? This action cannot be undone."
+                confirmText="Delete"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };
