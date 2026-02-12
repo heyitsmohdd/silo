@@ -76,7 +76,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
         ) : (
           messages.map((message: Message, index: number) => {
             const isMe = message.sender.id === currentUser?.userId;
-            const identity = getIdentity(message.sender.id);
+            const identity = getIdentity(message.sender.id, message.sender.username);
             const prevMessage = index > 0 ? messages[index - 1] : null;
             const isNewSender = !prevMessage || prevMessage.sender.id !== message.sender.id;
 
