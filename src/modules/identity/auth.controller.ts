@@ -221,3 +221,61 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
     }
 };
 
+/**
+ * POST /auth/backfill
+ * Temporary endpoint to backfill missing usernames
+ */
+export const backfillUsernames = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+        const { uniqueNamesGenerator, adjectives, animals } = await import('unique-names-generator');
+        const { prisma } = await import('../../shared/lib/prisma.js');
+
+        // Find users with null username
+        const users = await prisma.user.findMany({
+            where: { username: null },
+        });
+
+        let updatedCount = 0;
+
+        for (const user of users) {
+            let username = '';
+            let isUnique = false;
+            let attempts = 0;
+
+            while (!isUnique && attempts < 5) {
+                attempts++;
+                username = uniqueNamesGenerator({
+                    dictionaries: [adjectives, animals],
+                    separator: '-',
+                    style: 'capital',
+                    length: 2,
+                });
+
+                const existing = await prisma.user.findUnique({
+                    where: { username },
+                });
+
+                if (!existing) {
+                    isUnique = true;
+                }
+            }
+
+            if (isUnique) {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { username },
+                });
+                updatedCount++;
+            }
+        }
+
+        res.status(200).json({
+            message: 'Backfill complete',
+            totalFound: users.length,
+            updated: updatedCount,
+        });
+    } catch (error) {
+        console.error('Backfill error:', error);
+        res.status(500).json({ error: 'Backfill failed' });
+    }
+};
