@@ -10,6 +10,7 @@ import ResetPassword from '@/features/auth/ResetPassword';
 import RequestAccess from '@/pages/RequestAccess';
 import DashboardPlaceholder from '@/features/academic/DashboardPlaceholder';
 import AcademicLayout from '@/features/academic/AcademicLayout';
+import AboutPage from '@/pages/AboutPage';
 import NotesList from '@/features/academic/NotesList';
 import QuestionList from '@/features/qna/QuestionList';
 import QuestionDetail from '@/features/qna/QuestionDetail';
@@ -42,6 +43,7 @@ function App() {
         <Routes>
           {/* Landing Page */}
           <Route path="/welcome" element={<NewLandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           {/* Public Routes (kept for direct access) */}
           <Route path="/login" element={<LoginForm />} />

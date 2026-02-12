@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Mail } from 'lucide-react';
 
 const LandingPage = () => {
     // Logo typewriter effect
@@ -81,7 +82,7 @@ const LandingPage = () => {
             {/* Header - Mobile Responsive */}
             <header className="fixed top-0 w-full z-50 py-4 md:py-6">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-center">
-                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-4 md:px-6 py-2 md:py-3 flex items-center justify-between w-fit max-w-full">
+                    <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-4 md:px-6 py-2 md:py-3 flex items-center gap-6 md:gap-12 w-fit max-w-full">
 
                         {/* Logo on the left */}
                         <Link
@@ -92,22 +93,19 @@ const LandingPage = () => {
                             {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
                         </Link>
 
+                        {/* Middle Icon */}
+                        <a href="mailto:siloedu00@gmail.com" className="text-white/20 hover:text-white/80 transition-colors duration-300">
+                            <Mail className="w-5 h-5 md:w-6 md:h-6" />
+                        </a>
+
                         {/* About Us link and CTA */}
-                        <div className="flex items-center gap-2 md:gap-4 ml-4 md:ml-8">
-                            {/* About Us Link - Hidden on very small screens */}
+                        <div className="flex items-center">
+                            {/* About Us Button (Replaces Get Started) */}
                             <Link
                                 to="/about"
-                                className="hidden xs:block text-xs md:text-sm text-white/70 hover:text-white transition-all duration-300"
-                            >
-                                About Us
-                            </Link>
-
-                            {/* CTA Button */}
-                            <Link
-                                to="/register"
                                 className="px-4 md:px-6 py-1.5 md:py-2 bg-white text-black rounded-md text-xs md:text-sm font-medium hover:bg-white/90 transition-all duration-300 whitespace-nowrap"
                             >
-                                Get Started
+                                About Us
                             </Link>
                         </div>
                     </div>
@@ -141,7 +139,7 @@ const LandingPage = () => {
 
                     {/* CTA Button */}
                     <Link
-                        to="/register"
+                        to="/request-access"
                         className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
                     >
                         Get Started
