@@ -52,7 +52,7 @@ const QuestionDetail = () => {
     }
 
     const question = data;
-    const identity = getIdentity(question.authorId);
+    const identity = getIdentity(question.authorId, question.author.username);
     const voteCount = question.upvotes - question.downvotes;
     const answers = question.answers || [];
 
