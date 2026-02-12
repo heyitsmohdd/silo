@@ -88,6 +88,17 @@ const AboutPage = () => {
                     </div>
                 </div>
 
+                {/* Legal / Safety Disclaimer */}
+                <div className="border-t border-white/10 pt-12 mb-12">
+                    <h3 className="text-2xl font-bold mb-4 text-zinc-200">Legal & Safety</h3>
+                    <p className="text-zinc-500 max-w-2xl leading-relaxed">
+                        <span className="text-zinc-300 font-medium">This is a student project, not Big Tech.</span>{' '}
+                        We are currently in public beta. To ensure the safety of our community, we reserve the right to
+                        suspend or ban any account for any reason, at our sole discretion.
+                        By using Silo, you agree to these terms.
+                    </p>
+                </div>
+
                 {/* Footer */}
                 <div className="text-center text-zinc-600 text-sm">
                     <p>&copy; {new Date().getFullYear()} Silo. Built for the students.</p>
