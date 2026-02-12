@@ -1,17 +1,24 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MessageSquare } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Trash2 } from 'lucide-react';
 import { getIdentity } from '@/lib/identity';
+import { useAuthStore } from '@/stores/useAuthStore';
 import VotingButtons from './VotingButtons';
 import AnswerCard from './AnswerCard';
 import AnswerForm from './AnswerForm';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import axiosClient from '@/lib/axios';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
 const QuestionDetail = () => {
     const { questionId } = useParams<{ questionId: string }>();
     const navigate = useNavigate();
+    const { user } = useAuthStore();
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const { data, isLoading, isError, refetch } = useQuery({
         queryKey: ['question', questionId],
@@ -20,6 +27,33 @@ const QuestionDetail = () => {
             return response.data.question;
         },
         enabled: !!questionId,
+    });
+
+    // Handle delete click (opens modal)
+    const handleDeleteClick = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    // Confirm delete action
+    const handleConfirmDelete = async () => {
+        setIsDeleting(true);
+        try {
+            await axiosClient.delete(`/academic/questions/${questionId}`);
+            navigate('/qna');
+        } catch (error) {
+            console.error('Failed to delete question:', error);
+            // Optional: Show toast error here
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
+        }
+    };
+
+    // Sort answers: best answer first, then by vote count
+    const sortedAnswers = (data?.answers || []).sort((a: any, b: any) => {
+        if (a.id === data?.bestAnswerId) return -1;
+        if (b.id === data?.bestAnswerId) return 1;
+        return b.upvotes - b.downvotes - (a.upvotes - a.downvotes);
     });
 
     if (!questionId) {
@@ -55,13 +89,7 @@ const QuestionDetail = () => {
     const identity = getIdentity(question.authorId, question.author.username);
     const voteCount = question.upvotes - question.downvotes;
     const answers = question.answers || [];
-
-    // Sort answers: best answer first, then by vote count
-    const sortedAnswers = [...answers].sort((a, b) => {
-        if (a.id === question.bestAnswerId) return -1;
-        if (b.id === question.bestAnswerId) return 1;
-        return b.upvotes - b.downvotes - (a.upvotes - a.downvotes);
-    });
+    const isAuthor = user?.userId === question.authorId;
 
     const formatTimeAgo = (dateString: string) => {
         const date = new Date(dateString);
@@ -79,14 +107,26 @@ const QuestionDetail = () => {
 
     return (
         <div className="space-y-6">
-            {/* Back Button */}
-            <button
-                onClick={() => navigate('/qna')}
-                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
-            >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Questions
-            </button>
+            {/* Header with Back Button and Delete */}
+            <div className="flex items-center justify-between">
+                <button
+                    onClick={() => navigate('/qna')}
+                    className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Questions
+                </button>
+
+                {isAuthor && (
+                    <button
+                        onClick={handleDeleteClick}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 border border-red-500/20 rounded-md hover:bg-red-500/20 transition-colors"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                        Delete Question
+                    </button>
+                )}
+            </div>
 
             {/* Question Section */}
             <div className="flex gap-4 p-6 bg-zinc-900/30 rounded-lg">
@@ -178,6 +218,17 @@ const QuestionDetail = () => {
 
             {/* Answer Form */}
             <AnswerForm questionId={questionId} onSuccess={refetch} />
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Question?"
+                description="Are you sure you want to delete this question? This action cannot be undone."
+                confirmText="Delete"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };
