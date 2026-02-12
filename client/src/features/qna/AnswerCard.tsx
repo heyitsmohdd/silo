@@ -14,6 +14,7 @@ interface AnswerCardProps {
             firstName: string | null;
             lastName: string | null;
             email: string;
+            username?: string;
         };
         upvotes: number;
         downvotes: number;
@@ -39,7 +40,7 @@ const AnswerCard = ({
     const [isDeleting, setIsDeleting] = useState(false);
     const [isMarkingBest, setIsMarkingBest] = useState(false);
 
-    const identity = getIdentity(answer.authorId);
+    const identity = getIdentity(answer.authorId, answer.author.username);
     const canDelete = user?.userId === answer.authorId;
     const canMarkBest = user?.userId === questionAuthorId && !isBest;
 
