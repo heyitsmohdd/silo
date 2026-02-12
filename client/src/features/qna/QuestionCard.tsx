@@ -21,6 +21,7 @@ interface QuestionCardProps {
             firstName: string | null;
             lastName: string | null;
             email: string;
+            username?: string;
         };
         createdAt: string;
     };
@@ -30,7 +31,7 @@ interface QuestionCardProps {
 }
 
 const QuestionCard = ({ question, onClick }: QuestionCardProps) => {
-    const identity = getIdentity(question.authorId);
+    const identity = getIdentity(question.authorId, question.author.username);
 
     // Get current user ID from local storage or context (Simulated for clear example, ideally passed as prop)
     const currentUserId = JSON.parse(localStorage.getItem('user') || '{}').id;
