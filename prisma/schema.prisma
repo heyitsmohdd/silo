@@ -282,3 +282,18 @@ model Answer {
   @@index([bestQuestionId])
   @@map("answers")
 }
+
+// ============================================================================
+// ACCESS REQUEST MODEL (Waitlist)
+// ============================================================================
+
+model AccessRequest {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  status    String   @default("PENDING") // Options: PENDING, APPROVED, REJECTED
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("access_requests")
+}

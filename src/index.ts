@@ -15,6 +15,7 @@ import authRoutes from './modules/identity/auth.routes.js';
 import notesRoutes from './modules/academic/notes.routes.js';
 import questionsRoutes from './modules/academic/questions.routes.js';
 import reactionsRoutes from './modules/academic/reactions.routes.js';
+import accessRoutes from './modules/access/access.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 
 const app = express();
@@ -100,6 +101,7 @@ app.use('/auth', authRoutes);
 app.use('/academic', notesRoutes);
 app.use('/academic', questionsRoutes);
 app.use('/academic', reactionsRoutes);
+app.use('/api/access', accessRoutes);
 
 // ============================================================================
 // ERROR HANDLING
