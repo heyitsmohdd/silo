@@ -5,6 +5,7 @@ import axiosClient from '@/lib/axios';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import AuthLayout from './AuthLayout';
+import { getAuthErrorMessage } from '@/utils/errorHelpers';
 
 interface LoginResponse {
   token: string;
@@ -37,9 +38,8 @@ const LoginForm = () => {
 
       login(response.data.token);
       navigate('/');
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || err.message || 'Login failed. Please check your credentials.';
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
       setError(errorMessage);
     } finally {
       setIsLoading(false);
