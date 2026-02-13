@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import AuthLayout from './AuthLayout';
+import { getAuthErrorMessage } from '@/utils/errorHelpers';
 
 interface RegisterPayload {
   email: string;
@@ -68,9 +69,8 @@ const RegisterForm = () => {
 
       login(response.data.token);
       navigate('/');
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+    } catch (err) {
+      const errorMessage = getAuthErrorMessage(err);
       setError(errorMessage);
     } finally {
       setIsLoading(false);
