@@ -269,6 +269,11 @@ model Answer {
   bestQuestionId String?   @unique @map("best_question_id") @db.Uuid
   bestQuestion   Question? @relation("BestAnswer")
   
+  // Threading (Self-Relation)
+  parentId  String?  @map("parent_id") @db.Uuid
+  parent    Answer?  @relation("AnswerReplies", fields: [parentId], references: [id])
+  children  Answer[] @relation("AnswerReplies")
+  
   // Soft Delete
   isDeleted Boolean  @default(false) @map("is_deleted")
   

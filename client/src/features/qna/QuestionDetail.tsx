@@ -5,8 +5,8 @@ import { ArrowLeft, MessageSquare, Trash2 } from 'lucide-react';
 import { getIdentity } from '@/lib/identity';
 import { useAuthStore } from '@/stores/useAuthStore';
 import VotingButtons from './VotingButtons';
-import AnswerCard from './AnswerCard';
 import AnswerForm from './AnswerForm';
+import CommentThread from './CommentThread';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import axiosClient from '@/lib/axios';
@@ -49,12 +49,23 @@ const QuestionDetail = () => {
         }
     };
 
-    // Sort answers: best answer first, then by vote count
-    const sortedAnswers = (data?.answers || []).sort((a: any, b: any) => {
-        if (a.id === data?.bestAnswerId) return -1;
-        if (b.id === data?.bestAnswerId) return 1;
-        return b.upvotes - b.downvotes - (a.upvotes - a.downvotes);
-    });
+    // Sort root answers (no parentId)
+    // 1. Best Answer
+    // 2. Upvotes (desc)
+    // 3. Newest (desc)
+    const rootAnswers = (data?.answers || [])
+        .filter((a: any) => !a.parentId)
+        .sort((a: any, b: any) => {
+            if (a.id === data?.bestAnswerId) return -1;
+            if (b.id === data?.bestAnswerId) return 1;
+
+            // Primary: Vote score
+            const voteDiff = (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+            if (voteDiff !== 0) return voteDiff;
+
+            // Secondary: Newest first
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
 
     if (!questionId) {
         navigate('/qna');
@@ -193,17 +204,17 @@ const QuestionDetail = () => {
                 </div>
 
                 {/* Answer List */}
-                {sortedAnswers.length > 0 ? (
-                    <div>
-                        {sortedAnswers.map((answer: any, index: number) => (
-                            <AnswerCard
+                {rootAnswers.length > 0 ? (
+                    <div className="space-y-4">
+                        {rootAnswers.map((answer: any) => (
+                            <CommentThread
                                 key={answer.id}
                                 answer={answer}
+                                allAnswers={data.answers || []}
                                 questionId={questionId}
                                 questionAuthorId={question.authorId}
-                                isBest={answer.id === question.bestAnswerId}
+                                bestAnswerId={question.bestAnswerId}
                                 onUpdate={refetch}
-                                isLast={index === sortedAnswers.length - 1}
                             />
                         ))}
                     </div>

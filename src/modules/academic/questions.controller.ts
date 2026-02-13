@@ -214,6 +214,7 @@ export const createAnswerHandler = async (
         {
             content: data.content,
             authorId: req.user.userId,
+            parentId: data.parentId,
         },
         year,
         branch

@@ -4,9 +4,11 @@ import axiosClient from '@/lib/axios';
 interface AnswerFormProps {
     questionId: string;
     onSuccess: () => void;
+    parentId?: string;
+    onCancel?: () => void;
 }
 
-const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
+const AnswerForm = ({ questionId, onSuccess, parentId, onCancel }: AnswerFormProps) => {
     const [content, setContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -30,6 +32,7 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
         try {
             await axiosClient.post(`/academic/questions/${questionId}/answers`, {
                 content: content.trim(),
+                parentId,
             });
 
             setContent('');
@@ -43,10 +46,11 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
 
     const hasContent = content.length > 0;
     const isValid = content.trim().length >= 10;
+    const isReply = !!parentId;
 
     return (
-        <div className="mt-6">
-            <h3 className="text-lg font-bold text-zinc-100 mb-3">Your Answer</h3>
+        <div className={isReply ? "mt-4 ml-4" : "mt-6"}>
+            {!isReply && <h3 className="text-lg font-bold text-zinc-100 mb-3">Your Answer</h3>}
 
             <form onSubmit={handleSubmit}>
                 {/* Unified Container - Twitter/X Style */}
@@ -56,12 +60,13 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
                 >
                     {/* Textarea */}
                     <textarea
-                        placeholder="Write your answer..."
+                        placeholder={isReply ? "Write a reply..." : "Write your answer..."}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         disabled={isSubmitting}
-                        className="w-full min-h-[120px] px-4 py-3 text-sm bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+                        className={`w-full px-4 py-3 text-sm bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed resize-none ${isReply ? 'min-h-[80px]' : 'min-h-[120px]'}`}
                         maxLength={2000}
+                        autoFocus={isReply}
                     />
 
                     {/* Bottom Bar: Character Count + Button */}
@@ -70,16 +75,28 @@ const AnswerForm = ({ questionId, onSuccess }: AnswerFormProps) => {
                             {content.length}/2000
                         </span>
 
-                        {/* Show button only when typing */}
-                        {hasContent && (
-                            <button
-                                type="submit"
-                                disabled={isSubmitting || !isValid}
-                                className="px-4 py-1.5 text-sm font-bold rounded-full bg-white text-zinc-950 hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isSubmitting ? 'Posting...' : 'Post Answer'}
-                            </button>
-                        )}
+                        <div className="flex items-center gap-2">
+                            {isReply && onCancel && (
+                                <button
+                                    type="button"
+                                    onClick={onCancel}
+                                    className="px-3 py-1.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            )}
+
+                            {/* Show button only when typing OR if it's a reply (always show for reply to encourage action?) - Keeping logic same for consistency */}
+                            {(hasContent || isReply) && (
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting || !isValid}
+                                    className="px-4 py-1.5 text-sm font-bold rounded-full bg-white text-zinc-950 hover:bg-zinc-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? (isReply ? 'Replying...' : 'Posting...') : (isReply ? 'Reply' : 'Post Answer')}
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 

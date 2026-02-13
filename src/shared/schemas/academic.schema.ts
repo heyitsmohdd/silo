@@ -103,6 +103,7 @@ export type UpdateQuestionInput = z.infer<typeof UpdateQuestionSchema>;
  */
 export const CreateAnswerSchema = z.object({
     content: z.string().min(10, 'Answer must be at least 10 characters').max(2000, 'Answer too long - max 2000 characters'),
+    parentId: z.string().uuid().optional(),
 });
 
 export type CreateAnswerInput = z.infer<typeof CreateAnswerSchema>;
