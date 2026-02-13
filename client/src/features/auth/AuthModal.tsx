@@ -43,10 +43,7 @@ const BRANCHES = [
 ];
 
 const YEARS = [2022, 2023, 2024, 2025, 2026];
-const ROLES = [
-    { value: 'STUDENT', label: 'Student' },
-    // { value: 'PROFESSOR', label: 'Professor' }, // Disabled for beta - students only
-];
+
 
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     const [mode, setMode] = useState<'signin' | 'signup'>('signin');
