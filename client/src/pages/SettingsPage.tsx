@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Moon, Shield, Trash2, LogOut, User } from 'lucide-react';
+import { Moon, Trash2, User } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Dialog';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import LogoutConfirmationModal from '@/components/LogoutConfirmationModal';
 import { getIdentity } from '@/lib/identity';
@@ -14,7 +12,6 @@ const SettingsPage = () => {
     const { user, logout } = useAuthStore();
     const [darkMode, setDarkMode] = useState(true);
     const [alias, setAlias] = useState('');
-    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -48,10 +45,6 @@ const SettingsPage = () => {
         setShowDeleteModal(false);
         alert('Account deletion logic executed. Goodbye!');
         logout(); // Assuming we want to logout the user after simulated deletion
-    };
-
-    const handleLogoutClick = () => {
-        setShowLogoutModal(true);
     };
 
     const handleConfirmLogout = () => {
@@ -111,42 +104,10 @@ const SettingsPage = () => {
                 </div>
             </section>
 
-            {/* 3. Security & Account Section */}
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
-                    <Shield className="w-5 h-5 text-zinc-400" />
-                    <h2 className="text-lg font-semibold">Security</h2>
-                </div>
 
-                <div className="glass-card p-6 space-y-6">
-                    <div className="grid gap-2">
-                        <Input
-                            label="Email Address"
-                            value={user?.email || ''}
-                            disabled
-                            className="bg-zinc-900/50 text-zinc-500 border-zinc-800"
-                        />
-                        <p className="text-xs text-zinc-500">Your email address is managed by your provider.</p>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                        <Button
-                            variant="secondary"
-                            className="w-full sm:w-auto"
-                            onClick={() => setIsPasswordModalOpen(true)}
-                        >
-                            Change Password
-                        </Button>
-                        <Button variant="outline" className="w-full sm:w-auto gap-2" onClick={handleLogoutClick}>
-                            <LogOut className="w-4 h-4" />
-                            Log Out of All Devices
-                        </Button>
-                    </div>
-                </div>
-            </section>
 
             {/* 4. Danger Zone */}
-            <section className="pt-4">
+            < section className="pt-4" >
                 <div className="border border-red-500/20 bg-red-500/5 rounded-xl p-6">
                     <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
@@ -167,53 +128,22 @@ const SettingsPage = () => {
                         </Button>
                     </div>
                 </div>
-            </section>
+            </section >
 
-            {/* Change Password Modal */}
-            <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Change Password</DialogTitle>
-                        <DialogDescription>
-                            Enter your new password below.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <Input
-                            label="New Password"
-                            type="password"
-                            placeholder="••••••••"
-                        />
-                        <Input
-                            label="Confirm Password"
-                            type="password"
-                            placeholder="••••••••"
-                        />
-                        <div className="flex justify-end gap-3 pt-4">
-                            <Button variant="ghost" onClick={() => setIsPasswordModalOpen(false)}>
-                                Cancel
-                            </Button>
-                            <Button onClick={() => setIsPasswordModalOpen(false)}>
-                                Save Changes
-                            </Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
             {/* Delete Account Confirmation Modal */}
-            <DeleteConfirmationModal
+            < DeleteConfirmationModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
             />
 
             {/* Logout Confirmation Modal */}
-            <LogoutConfirmationModal
+            < LogoutConfirmationModal
                 isOpen={showLogoutModal}
                 onClose={() => setShowLogoutModal(false)}
                 onConfirm={handleConfirmLogout}
             />
-        </div>
+        </div >
     );
 };
 
