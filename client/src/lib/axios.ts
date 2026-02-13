@@ -27,11 +27,15 @@ axiosClient.interceptors.request.use(
 );
 
 // Response interceptor - Handle errors
+// Response interceptor - Handle errors
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        // Auto-logout on 401 Unauthorized
-        if (error.response?.status === 401) {
+        // Check if it's a login request
+        const isLoginRequest = error.config?.url?.includes('/auth/login');
+
+        // Auto-logout on 401 Unauthorized (ONLY if not logging in)
+        if (error.response?.status === 401 && !isLoginRequest) {
             useAuthStore.getState().logout();
             window.location.href = '/login';
         }
