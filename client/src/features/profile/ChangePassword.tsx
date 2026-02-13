@@ -48,18 +48,18 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg shadow-soft-lg overflow-hidden">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-border">
+      <div className="flex items-center justify-between p-6 border-b border-zinc-800">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Lock className="w-5 h-5 text-primary" />
+          <div className="p-2 bg-zinc-800 rounded-lg">
+            <Lock className="w-5 h-5 text-zinc-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-card-foreground">
+            <h2 className="text-lg font-semibold text-zinc-100">
               Change Password
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-zinc-400">
               Update your password to keep your account secure
             </p>
           </div>
@@ -69,7 +69,7 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           size="sm"
           onClick={onCancel}
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4 text-zinc-400" />
         </Button>
       </div>
 
@@ -118,11 +118,11 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
         />
 
         {/* Password Requirements */}
-        <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-          <p className="text-sm font-medium text-card-foreground">
+        <div className="p-4 bg-zinc-900/50 border border-zinc-800/50 rounded-lg space-y-2">
+          <p className="text-sm font-medium text-zinc-300">
             Password Requirements:
           </p>
-          <ul className="text-xs text-muted-foreground space-y-1">
+          <ul className="text-xs text-zinc-500 space-y-1">
             <li>• Minimum 8 characters</li>
             <li>• Should be different from current password</li>
           </ul>
