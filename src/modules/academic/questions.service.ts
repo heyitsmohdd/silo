@@ -130,6 +130,11 @@ export const getQuestions = async (
                         },
                     },
                 },
+                orderBy: [
+                    { bestQuestionId: { sort: 'desc', nulls: 'last' } },
+                    { upvotes: 'desc' },
+                    { createdAt: 'desc' },
+                ],
             },
             bestAnswer: true,
             reactions: true, // Include reactions
@@ -188,6 +193,8 @@ export const getQuestionById = async (
                     { bestQuestionId: { sort: 'desc', nulls: 'last' } },
                     // Then by upvotes
                     { upvotes: 'desc' },
+                    // Then by newest
+                    { createdAt: 'desc' },
                 ],
             },
             bestAnswer: true,
@@ -309,6 +316,7 @@ export const createAnswer = async (
     data: {
         content: string;
         authorId: string;
+        parentId?: string;
     },
     year: number,
     branch: string
@@ -327,11 +335,27 @@ export const createAnswer = async (
         throw new AppError(404, 'Question not found');
     }
 
+    // If parentId is provided, verify it exists and belongs to the same question
+    if (data.parentId) {
+        const parentAnswer = await prisma.answer.findFirst({
+            where: {
+                id: data.parentId,
+                questionId,
+                isDeleted: false,
+            },
+        });
+
+        if (!parentAnswer) {
+            throw new AppError(404, 'Parent answer not found');
+        }
+    }
+
     const answer = await prisma.answer.create({
         data: {
             content: data.content,
             authorId: data.authorId,
             questionId: questionId,
+            parentId: data.parentId,
             year: year,
             branch: branch,
         },

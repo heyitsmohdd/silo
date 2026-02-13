@@ -26,6 +26,7 @@ interface AnswerCardProps {
     isBest: boolean;
     onUpdate: () => void;
     isLast?: boolean;
+    onReply: () => void;
 }
 
 const AnswerCard = ({
@@ -35,6 +36,7 @@ const AnswerCard = ({
     isBest,
     onUpdate,
     isLast = false,
+    onReply,
 }: AnswerCardProps) => {
     const { user } = useAuthStore();
     const [isDeleting, setIsDeleting] = useState(false);
@@ -140,7 +142,10 @@ const AnswerCard = ({
                 {/* Actions Row */}
                 <div className="flex items-center gap-4">
                     {/* Reply (placeholder) */}
-                    <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+                    <button
+                        onClick={onReply}
+                        className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                    >
                         <MessageSquare className="w-3.5 h-3.5" />
                         <span>Reply</span>
                     </button>

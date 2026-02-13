@@ -30,7 +30,7 @@ router.post('/request', async (req, res, next) => {
         });
 
         if (isAllowed) {
-            res.status(400).json({ message: 'You are already approved! Please Log In.' });
+            res.status(400).json({ message: 'You are already approved! Please Create an Account.' });
             return;
         }
 
