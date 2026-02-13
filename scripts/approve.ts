@@ -30,6 +30,7 @@ async function sendWelcomeEmail(email: string) {
         <a href="${loginLink}" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Create Account</a>
         <br><br>
         <p style="color: #666; font-size: 12px;">Welcome to the chaos.</p>
+        <p style="color: #aaa; font-size: 10px; margin-top: 20px;">Ref: ${new Date().getTime().toString(36)}</p>
       </div>
     `,
     };
