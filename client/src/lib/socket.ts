@@ -7,6 +7,7 @@ import { io, Socket } from 'socket.io-client';
 class SocketService {
     private static instance: SocketService;
     private socket: Socket | null = null;
+    private listeners: ((socket: Socket | null) => void)[] = [];
 
     private constructor() { }
 
@@ -21,6 +22,22 @@ class SocketService {
     }
 
     /**
+     * Subscribe to socket connection changes
+     */
+    public onConnectionChange(callback: (socket: Socket | null) => void) {
+        this.listeners.push(callback);
+        // Immediately verify current state
+        callback(this.socket);
+        return () => {
+            this.listeners = this.listeners.filter(cb => cb !== callback);
+        };
+    }
+
+    private notifyListeners() {
+        this.listeners.forEach(cb => cb(this.socket));
+    }
+
+    /**
      * Connect to Socket.io server with JWT authentication
      * @param token - JWT token from auth store
      */
@@ -31,29 +48,39 @@ class SocketService {
 
         // ---------------------------------------------------------
         // SMART SWITCH:
-        // 1. If VITE_API_URL exists (Vercel), use it.
+        // 1. If VITE_API_URL exists (Vercel/Render), use it.
         // 2. Otherwise, assume we are testing locally (localhost).
         // ---------------------------------------------------------
         const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+        console.log('🔌 [SocketService] Connecting to:', BASE_URL);
 
         this.socket = io(BASE_URL, {
             query: {
                 token,
             },
+            transports: ['websocket', 'polling'], // Force websocket first, fall back to polling
+            withCredentials: true,
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
         });
 
         this.socket.on('connect', () => {
-            console.log('[Socket] Connected:', this.socket?.id);
+            console.log('✅ [Socket] Connected:', this.socket?.id);
+            this.notifyListeners();
         });
 
-        this.socket.on('disconnect', () => {
-            console.log('[Socket] Disconnected');
+        this.socket.on('connect_error', (err) => {
+            console.error('❌ [Socket] Connection Error:', err.message);
+            this.notifyListeners();
         });
 
-        this.socket.on('connect_error', (error) => {
-            console.error('[Socket] Connection error:', error);
+        this.socket.on('disconnect', (reason) => {
+            console.log('⚠️ [Socket] Disconnected:', reason);
+            this.notifyListeners();
         });
 
+        this.notifyListeners();
         return this.socket;
     }
 
@@ -65,6 +92,7 @@ class SocketService {
             this.socket.removeAllListeners();
             this.socket.disconnect();
             this.socket = null;
+            this.notifyListeners();
         }
     }
 
