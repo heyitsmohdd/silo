@@ -4,9 +4,14 @@ import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
 import { NotificationBell } from '@/components/layout/NotificationBell';
+import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
+import { useSocketConnection } from '@/hooks/useSocketConnection';
 
 const DashboardLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Initialize global socket connection
+  useSocketConnection();
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
@@ -83,6 +88,7 @@ interface SidebarContentProps {
 
 const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isCreateChannelOpen, setIsCreateChannelOpen] = useState(false);
 
   return (
     <>
@@ -121,6 +127,15 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           <Bug className="w-4 h-4 flex-shrink-0" />
           <span>Contact</span>
         </button>
+
+        {/* Community Rooms Section */}
+        <div className="pt-4 mt-4 border-t border-white/5">
+          <ChannelListHeader onCreateClick={() => setIsCreateChannelOpen(true)} />
+          <ChannelList
+            isModalOpen={isCreateChannelOpen}
+            onModalClose={() => setIsCreateChannelOpen(false)}
+          />
+        </div>
 
       </nav>
     </>
