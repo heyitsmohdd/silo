@@ -4,7 +4,6 @@
  */
 
 import { prisma } from '../../shared/lib/prisma.js';
-import { AppError } from '../../shared/middleware/error.middleware.js';
 
 /**
  * Toggle a reaction on a question
@@ -43,7 +42,7 @@ export const toggleReaction = async (
         }
     } else {
         // No reaction -> Add it
-        const reaction = await prisma.reaction.create({
+        await prisma.reaction.create({
             data: {
                 userId,
                 questionId,

@@ -225,7 +225,7 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
  * POST /auth/backfill
  * Temporary endpoint to backfill missing usernames
  */
-export const backfillUsernames = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const backfillUsernames = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const { uniqueNamesGenerator, adjectives, animals } = await import('unique-names-generator');
         const { prisma } = await import('../../shared/lib/prisma.js');

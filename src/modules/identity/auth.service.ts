@@ -69,12 +69,12 @@ export const registerUser = async (data: {
     });
 
     // Generate JWT
-    const token = generateToken(user);
+    const token = generateToken(user as unknown as any);
 
     // Return user without password
     const { password: _, ...safeUser } = user;
 
-    return { user: safeUser, token };
+    return { user: safeUser as unknown as SafeUser, token };
 };
 
 /**
@@ -106,12 +106,12 @@ export const loginUser = async (
     }
 
     // Generate JWT
-    const token = generateToken(user);
+    const token = generateToken(user as unknown as any); // Force cast for now or better type mapping
 
     // Return user without password
     const { password: _, ...safeUser } = user;
 
-    return { user: safeUser, token };
+    return { user: safeUser as unknown as SafeUser, token };
 };
 
 /**
@@ -236,6 +236,7 @@ export const updateUserProfile = async (
         email?: string;
         firstName?: string;
         lastName?: string;
+        username?: string;
     }
 ): Promise<SafeUser> => {
     // Find user
@@ -306,7 +307,7 @@ export const updateUserProfile = async (
 
     // Return user without password
     const { password: _, ...safeUser } = updatedUser;
-    return safeUser;
+    return safeUser as unknown as SafeUser;
 };
 
 /**
