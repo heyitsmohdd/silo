@@ -3,6 +3,7 @@ import { prisma } from '../../shared/lib/prisma.js';
 /**
  * Create a new notification
  * Includes duplicate prevention for UPVOTE notifications
+ * Emits real-time Socket.IO event to the recipient
  */
 export const createNotification = async (
     userId: string, // recipient
@@ -28,7 +29,7 @@ export const createNotification = async (
         if (existing) return; // Already notified about this upvote
     }
 
-    return prisma.notification.create({
+    const notification = await prisma.notification.create({
         data: {
             userId,
             actorId,
@@ -36,7 +37,38 @@ export const createNotification = async (
             message,
             resourceId,
         },
+        include: {
+            actor: {
+                select: {
+                    id: true,
+                    username: true,
+                    firstName: true,
+                    lastName: true,
+                },
+            },
+        },
     });
+
+    // Emit real-time notification via Socket.IO
+    try {
+        const { io } = await import('../../index.js');
+        const { emitNotificationToUser } = await import('../comm/socket.handlers.js');
+
+        emitNotificationToUser(io, userId, {
+            id: notification.id,
+            type: notification.type,
+            message: notification.message,
+            resourceId: notification.resourceId,
+            isRead: notification.isRead,
+            createdAt: notification.createdAt,
+            actor: notification.actor,
+        });
+    } catch (error) {
+        console.error('Failed to emit notification via socket:', error);
+        // Don't throw - notification is still saved in DB
+    }
+
+    return notification;
 };
 
 /**
