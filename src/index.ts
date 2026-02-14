@@ -56,6 +56,9 @@ const io = new Server(httpServer, {
 // Initialize socket handlers
 initializeSocketHandlers(io);
 
+// Export io for use in notification services
+export { io };
+
 // ============================================================================
 // MIDDLEWARE
 // ============================================================================
