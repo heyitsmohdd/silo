@@ -43,13 +43,36 @@ export const toggleReaction = async (
         }
     } else {
         // No reaction -> Add it
-        await prisma.reaction.create({
+        const reaction = await prisma.reaction.create({
             data: {
                 userId,
                 questionId,
                 type,
             },
         });
+
+        // Trigger notification for new reaction
+        try {
+            const question = await prisma.question.findUnique({
+                where: { id: questionId },
+                select: { authorId: true },
+            });
+
+            if (question && question.authorId !== userId) {
+                const { createNotification } = await import('../notifications/notifications.service.js');
+                await createNotification(
+                    question.authorId,
+                    userId,
+                    'MENTION',
+                    `reacted ${type} to your post`,
+                    questionId
+                );
+            }
+        } catch (error) {
+            console.error('Failed to create reaction notification:', error);
+            // Don't throw - reaction is still saved
+        }
+
         return { action: 'added' };
     }
 };
