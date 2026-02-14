@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Bell } from 'lucide-react';
 import axios from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
+import socketService from '@/lib/socket';
 
 interface Notification {
     id: string;
@@ -52,10 +53,27 @@ export const NotificationBell = () => {
     };
 
     // Handle notification click
-    const handleNotificationClick = (notification: Notification) => {
-        setIsOpen(false);
+    const handleNotificationClick = (e: React.MouseEvent, notification: Notification) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('🔔 Notification clicked:', notification);
+        console.log('📍 Resource ID:', notification.resourceId);
+
         if (notification.resourceId) {
-            navigate(`/dashboard/qna/${notification.resourceId}`);
+            const targetPath = `/qna/${notification.resourceId}`;
+            console.log('🧭 Navigating to:', targetPath);
+
+            // Navigate first, then close dropdown
+            navigate(targetPath);
+
+            // Small delay before closing to ensure navigation starts
+            setTimeout(() => {
+                setIsOpen(false);
+            }, 100);
+        } else {
+            console.warn('⚠️ No resourceId found in notification');
+            setIsOpen(false);
         }
     };
 
@@ -79,15 +97,30 @@ export const NotificationBell = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Fetch on mount
+    // Fetch on mount and setup Socket.IO listener
     useEffect(() => {
         fetchNotifications();
-    }, []);
 
-    // Poll every 60 seconds
-    useEffect(() => {
-        const interval = setInterval(fetchNotifications, 60000);
-        return () => clearInterval(interval);
+        // Get socket instance
+        const socket = socketService.getSocket();
+
+        if (socket) {
+            // Listen for real-time notifications
+            socket.on('notification:new', (notification: Notification) => {
+                console.log('📬 New notification received:', notification);
+
+                // Add to notifications list
+                setNotifications((prev) => [notification, ...prev]);
+
+                // Increment unread count
+                setUnreadCount((prev) => prev + 1);
+            });
+
+            // Cleanup listener on unmount
+            return () => {
+                socket.off('notification:new');
+            };
+        }
     }, []);
 
     // Get actor display name
@@ -145,7 +178,7 @@ export const NotificationBell = () => {
                             notifications.map((notification) => (
                                 <button
                                     key={notification.id}
-                                    onClick={() => handleNotificationClick(notification)}
+                                    onClick={(e) => handleNotificationClick(e, notification)}
                                     className={`w-full px-4 py-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${!notification.isRead ? 'bg-violet-500/5' : ''
                                         }`}
                                 >
