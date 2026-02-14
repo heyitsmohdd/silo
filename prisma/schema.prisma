@@ -26,6 +26,11 @@ enum NotificationType {
   MENTION
 }
 
+enum ChannelType {
+  PUBLIC
+  PRIVATE
+}
+
 // ============================================================================
 // USER MODEL
 // ============================================================================
@@ -63,6 +68,8 @@ model User {
   questions Question[]
   answers   Answer[]
   reactions Reaction[]
+  channelMessages ChannelMessage[]
+  ownedChannels   Channel[] @relation("ChannelOwner")
   
   // Notification Relations
   notifications      Notification[] @relation("UserNotifications")
@@ -337,3 +344,56 @@ model Notification {
   @@index([createdAt])
   @@map("notifications")
 }
+
+// ============================================================================
+// CHANNEL MODEL (Public Chat Rooms)
+// ============================================================================
+
+model Channel {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  description String?
+  type        ChannelType @default(PUBLIC)
+  
+  // Owner and Default Room Tracking
+  ownerId     String?  @map("owner_id") @db.Uuid
+  isDefault   Boolean  @default(false) @map("is_default")
+  
+  // Relations
+  owner       User?    @relation("ChannelOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  messages    ChannelMessage[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@index([type])
+  @@index([ownerId])
+  @@index([isDefault])
+  @@map("channels")
+}
+
+// ============================================================================
+// CHANNEL MESSAGE MODEL (Messages in Public Channels)
+// ============================================================================
+
+model ChannelMessage {
+  id        String   @id @default(uuid()) @db.Uuid
+  content   String   @db.Text
+  
+  // Channel Relation
+  channelId String   @map("channel_id") @db.Uuid
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  // Author Relation
+  authorId  String   @map("author_id") @db.Uuid
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@index([channelId, createdAt])
+  @@index([authorId])
+  @@map("channel_messages")
+}
+
