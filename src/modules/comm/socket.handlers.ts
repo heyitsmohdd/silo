@@ -17,6 +17,20 @@ const messageRateLimiter = new Map<string, { count: number; resetTime: number }>
 const MESSAGE_LIMIT = 30; // 30 messages per minute
 const WINDOW_MS = 60 * 1000; // 1 minute
 
+// User socket registry for targeted notifications
+const userSockets = new Map<string, string>(); // userId -> socketId
+
+/**
+ * Emit notification to a specific user
+ */
+export const emitNotificationToUser = (io: Server, userId: string, notification: any) => {
+    const socketId = userSockets.get(userId);
+    if (socketId) {
+        io.to(socketId).emit('notification:new', notification);
+        console.log(`🔔 Notification sent to user ${userId}`);
+    }
+};
+
 /**
  * Initialize Socket.io handlers
  */
@@ -51,6 +65,9 @@ export const initializeSocketHandlers = (io: Server) => {
         }
 
         console.log(`✅ User connected: ${user.email} (${user.year} ${user.branch})`);
+
+        // Register user socket for notifications
+        userSockets.set(user.userId, socket.id);
 
         // Auto-join room based on batch context
         const roomId = generateRoomId(user.year, user.branch);
@@ -181,6 +198,7 @@ export const initializeSocketHandlers = (io: Server) => {
 
         // Handle: Disconnect
         socket.on('disconnect', () => {
+            userSockets.delete(user.userId);
             console.log(`❌ User disconnected: ${user.email}`);
         });
     });
