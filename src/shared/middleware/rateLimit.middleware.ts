@@ -46,3 +46,12 @@ export const chatRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
+// Resource protection: Limit channel creation
+export const createChannelRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 channels per hour
+  message: 'You can only create 5 channels per hour. Please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
