@@ -3,6 +3,7 @@ import { FileText, MessageSquare, Menu, X, HelpCircle, Bug } from 'lucide-react'
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
+import { NotificationBell } from '@/components/layout/NotificationBell';
 
 const DashboardLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,8 +57,9 @@ const DashboardLayout = () => {
               </div>
             </div>
 
-            {/* Right Side: User Menu */}
+            {/* Right Side: Notifications + User Menu */}
             <div className="flex items-center gap-3">
+              <NotificationBell />
               <UserMenu />
             </div>
           </div>
