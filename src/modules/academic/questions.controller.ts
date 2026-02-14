@@ -273,8 +273,9 @@ export const voteQuestionHandler = async (
 
     const { voteType } = parseVote(req.body);
     const { year, branch } = req.context;
+    const voterId = req.user!.userId;
 
-    const question = await voteQuestion(id, voteType, year, branch);
+    const question = await voteQuestion(id, voteType, voterId, year, branch);
 
     res.status(200).json({
         message: 'Vote recorded successfully',
@@ -303,8 +304,9 @@ export const voteAnswerHandler = async (
 
     const { voteType } = parseVote(req.body);
     const { year, branch } = req.context;
+    const voterId = req.user!.userId;
 
-    const answer = await voteAnswer(answerId, voteType, year, branch);
+    const answer = await voteAnswer(answerId, voteType, voterId, year, branch);
 
     res.status(200).json({
         message: 'Vote recorded successfully',
