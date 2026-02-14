@@ -17,7 +17,9 @@ import questionsRoutes from './modules/academic/questions.routes.js';
 import reactionsRoutes from './modules/academic/reactions.routes.js';
 import accessRoutes from './modules/access/access.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
+import channelRoutes from './modules/channels/channel.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
+import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -33,11 +35,26 @@ const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') ?? [
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:5175',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
 ];
 
 app.use(
     cors({
-        origin: allowedOrigins,
+        origin: (origin, callback) => {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.indexOf(origin) === -1) {
+                // For debugging, allow all localhost origins
+                if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+                    return callback(null, true);
+                }
+                const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+                return callback(new Error(msg), false);
+            }
+            return callback(null, true);
+        },
         credentials: true,
     })
 );
@@ -48,7 +65,16 @@ app.use(
 
 const io = new Server(httpServer, {
     cors: {
-        origin: allowedOrigins,
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+                if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+                    return callback(null, true);
+                }
+                return callback(new Error('Not allowed by CORS'), false);
+            }
+            return callback(null, true);
+        },
         credentials: true,
     },
 });
@@ -107,6 +133,7 @@ app.use('/academic', questionsRoutes);
 app.use('/academic', reactionsRoutes);
 app.use('/api/access', accessRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/channels', channelRoutes);
 
 // ============================================================================
 // ERROR HANDLING
@@ -124,6 +151,9 @@ httpServer.listen(PORT, () => {
     console.log(`📍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
     console.log(`🔒 JWT Secret: ${process.env['JWT_SECRET'] ? 'Configured' : 'MISSING!'}`);
     console.log(`💬 Socket.io: Enabled with JWT authentication`);
+
+    // Initialize channel cleanup service
+    initializeChannelCleanup();
 });
 
 export default app;
