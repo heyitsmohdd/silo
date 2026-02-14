@@ -20,6 +20,12 @@ enum Role {
   STUDENT
 }
 
+enum NotificationType {
+  REPLY
+  UPVOTE
+  MENTION
+}
+
 // ============================================================================
 // USER MODEL
 // ============================================================================
@@ -57,6 +63,10 @@ model User {
   questions Question[]
   answers   Answer[]
   reactions Reaction[]
+  
+  // Notification Relations
+  notifications      Notification[] @relation("UserNotifications")
+  triggeredNotifications Notification[] @relation("ActorNotifications")
   
   @@index([year, branch])
   @@index([email])
@@ -301,4 +311,29 @@ model AccessRequest {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("access_requests")
+}
+
+// ============================================================================
+// NOTIFICATION MODEL
+// ============================================================================
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String   @db.Uuid // Recipient
+  actorId    String   @db.Uuid // Person who triggered the notification
+  type       NotificationType
+  message    String
+  resourceId String?  // Question/Answer ID
+  isRead     Boolean  @default(false) @map("is_read")
+  
+  // Timestamps
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user  User @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  actor User @relation("ActorNotifications", fields: [actorId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
 }

@@ -372,6 +372,38 @@ export const createAnswer = async (
         },
     });
 
+    // Trigger REPLY notification
+    const { createNotification } = await import('../notifications/notifications.service.js');
+
+    // Notify question author
+    if (question.authorId !== data.authorId) {
+        await createNotification(
+            question.authorId,
+            data.authorId,
+            'REPLY',
+            'replied to your question',
+            question.id
+        );
+    }
+
+    // If replying to a comment, also notify parent comment author
+    if (data.parentId) {
+        const parentAnswer = await prisma.answer.findUnique({
+            where: { id: data.parentId },
+            select: { authorId: true },
+        });
+
+        if (parentAnswer && parentAnswer.authorId !== data.authorId && parentAnswer.authorId !== question.authorId) {
+            await createNotification(
+                parentAnswer.authorId,
+                data.authorId,
+                'REPLY',
+                'replied to your comment',
+                question.id
+            );
+        }
+    }
+
     return answer;
 };
 
@@ -415,6 +447,7 @@ export const deleteAnswer = async (
 export const voteQuestion = async (
     id: string,
     voteType: 'upvote' | 'downvote',
+    voterId: string,
     year: number,
     branch: string
 ) => {
@@ -441,6 +474,18 @@ export const voteQuestion = async (
         },
     });
 
+    // Trigger UPVOTE notification
+    if (voteType === 'upvote' && question.authorId !== voterId) {
+        const { createNotification } = await import('../notifications/notifications.service.js');
+        await createNotification(
+            question.authorId,
+            voterId,
+            'UPVOTE',
+            'upvoted your question',
+            question.id
+        );
+    }
+
     return updatedQuestion;
 };
 
@@ -450,6 +495,7 @@ export const voteQuestion = async (
 export const voteAnswer = async (
     answerId: string,
     voteType: 'upvote' | 'downvote',
+    voterId: string,
     year: number,
     branch: string
 ) => {
@@ -475,6 +521,22 @@ export const voteAnswer = async (
             downvotes: voteType === 'downvote' ? { increment: 1 } : answer.downvotes,
         },
     });
+
+    // Trigger UPVOTE notification
+    if (voteType === 'upvote' && answer.authorId !== voterId) {
+        const { createNotification } = await import('../notifications/notifications.service.js');
+
+        // Get the question ID for the notification
+        const questionId = answer.questionId;
+
+        await createNotification(
+            answer.authorId,
+            voterId,
+            'UPVOTE',
+            'upvoted your answer',
+            questionId
+        );
+    }
 
     return updatedAnswer;
 };
