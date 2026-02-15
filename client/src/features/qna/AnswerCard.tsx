@@ -139,7 +139,7 @@ const AnswerCard = ({
                     </div>
 
                     {/* Answer Content */}
-                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3">
+                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3 break-words">
                         {answer.content}
                     </p>
 

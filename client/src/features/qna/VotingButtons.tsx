@@ -1,6 +1,7 @@
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axiosClient from '@/lib/axios';
+import { cn } from '@/lib/utils';
 
 interface VotingButtonsProps {
     voteCount: number;
@@ -18,7 +19,8 @@ const VotingButtons = ({
     voteEndpoint,
     itemId,
     size = 'md',
-}: VotingButtonsProps) => {
+    className,
+}: VotingButtonsProps & { className?: string }) => {
     const [isVoting, setIsVoting] = useState(false);
     const [userVote, setUserVote] = useState<'upvote' | 'downvote' | null>(null);
 
@@ -60,7 +62,7 @@ const VotingButtons = ({
     const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-4 h-4';
 
     return (
-        <div className="flex flex-col items-center gap-1">
+        <div className={cn("flex flex-col items-center gap-1", className)}>
             {/* Upvote Button */}
             <button
                 onClick={(e) => {
@@ -69,8 +71,8 @@ const VotingButtons = ({
                 }}
                 disabled={isVoting}
                 className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'upvote'
-                        ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
-                        : 'hover:bg-zinc-800'
+                    ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
+                    : 'hover:bg-zinc-800'
                     }`}
                 aria-label="Upvote"
             >
@@ -84,10 +86,10 @@ const VotingButtons = ({
             {/* Vote Count */}
             <span
                 className={`font-bold ${voteCount > 0
-                        ? 'text-green-500'
-                        : voteCount < 0
-                            ? 'text-red-500'
-                            : 'text-zinc-400'
+                    ? 'text-green-500'
+                    : voteCount < 0
+                        ? 'text-red-500'
+                        : 'text-zinc-400'
                     } ${size === 'sm' ? 'text-xs' : 'text-sm'}`}
             >
                 {voteCount}
@@ -101,8 +103,8 @@ const VotingButtons = ({
                 }}
                 disabled={isVoting}
                 className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'downvote'
-                        ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
-                        : 'hover:bg-zinc-800'
+                    ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
+                    : 'hover:bg-zinc-800'
                     }`}
                 aria-label="Downvote"
             >
