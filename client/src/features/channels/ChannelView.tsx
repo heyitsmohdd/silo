@@ -34,17 +34,24 @@ export default function ChannelView() {
     const [showJoinModal, setShowJoinModal] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // Effect 1: Data Loading & UI State
     useEffect(() => {
         if (!channelId) return;
 
         loadMessages();
-        // Show join modal on first visit
+        // Reset state on channel change
+        setHasJoined(false);
         setShowJoinModal(true);
+    }, [channelId]);
+
+    // Effect 2: Socket Subscription & Join Logic
+    useEffect(() => {
+        if (!socket || !channelId) return;
 
         // Listen for socket events
-        console.log('🔌 Socket status in ChannelView:', socket?.connected ? 'Connected' : 'Disconnected', socket?.id);
+        console.log('🔌 Socket status in ChannelView:', socket.connected ? 'Connected' : 'Disconnected', socket.id);
 
-        if (socket && socket.connected) {
+        if (socket.connected) {
             socket.on('new_channel_message', (msg) => {
                 console.log('📩 New message received:', msg);
                 handleNewMessage(msg);
@@ -61,8 +68,9 @@ export default function ChannelView() {
             // Log when we emit join
             console.log('Emit join_channel listener setup');
 
-            // If we have already joined locally, ensure back-end knows
+            // If we have joined locally, ensure back-end knows
             if (hasJoined) {
+                console.log('🚀 Emitting join_channel event');
                 socket.emit('join_channel', { channelId });
             }
         }
@@ -72,17 +80,13 @@ export default function ChannelView() {
                 leaveChannel();
             }
             if (socket) {
-                // Remove specific listeners?
-                // Actually remove all listeners we added.
-                // Since function references (handleNewMessage) are recreated on render, off(name, fn) might fail if not useCallbacked.
-                // But removing all for specific event is safer here.
                 socket.off('new_channel_message');
                 socket.off('update_member_list');
                 socket.off('channel_deleted');
                 socket.off('channel_joined');
             }
         };
-    }, [channelId, socket, socket?.connected]);
+    }, [channelId, socket, socket?.connected, hasJoined]);
 
     useEffect(() => {
         scrollToBottom();
