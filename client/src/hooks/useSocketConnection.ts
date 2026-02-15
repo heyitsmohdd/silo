@@ -26,7 +26,7 @@ export const useSocketConnection = () => {
             return;
         }
 
-        console.log('🔌 [useSocketConnection] Initiating connection for user:', user.email);
+        console.log('🔌 [useSocketConnection] Initiating connection');
         socketService.connect(token);
 
         return () => {
