@@ -75,6 +75,9 @@ model User {
   notifications      Notification[] @relation("UserNotifications")
   triggeredNotifications Notification[] @relation("ActorNotifications")
   
+  // Upvote Relations
+  upvotesCast Upvote[]
+  
   @@index([year, branch])
   @@index([email])
   @@map("users")
@@ -198,6 +201,9 @@ model Question {
   // Reactions (New System)
   reactions Reaction[]
   
+  // Upvotes (Leaderboard Tracking)
+  upvotesCast Upvote[]
+  
 
 
   // Best Answer Selection (One-to-One)
@@ -242,6 +248,33 @@ model Reaction {
   @@index([questionId])
   @@index([userId])
   @@map("reactions")
+}
+
+// ============================================================================
+// UPVOTE MODEL (Leaderboard Tracking)
+// ============================================================================
+
+model Upvote {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId    String   @map("user_id") @db.Uuid // Voter
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Target Content
+  questionId String? @map("question_id") @db.Uuid
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  answerId   String? @map("answer_id") @db.Uuid
+  answer     Answer? @relation(fields: [answerId], references: [id], onDelete: Cascade)
+
+  // Denormalization for Performance (Top Contributors)
+  targetAuthorId String @map("target_author_id") @db.Uuid
+
+  @@index([targetAuthorId, createdAt])
+  @@unique([userId, questionId])
+  @@unique([userId, answerId])
+  @@map("upvotes")
 }
 
 // ============================================================================
@@ -297,6 +330,9 @@ model Answer {
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Upvotes (Leaderboard Tracking)
+  upvotesCast Upvote[]
   
   @@index([year, branch])
   @@index([questionId])

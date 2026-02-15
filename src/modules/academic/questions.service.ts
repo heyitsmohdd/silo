@@ -465,28 +465,65 @@ export const voteQuestion = async (
         throw new AppError(404, 'Question not found');
     }
 
-    // Update vote count
-    const updatedQuestion = await prisma.question.update({
-        where: { id },
-        data: {
-            upvotes: voteType === 'upvote' ? { increment: 1 } : question.upvotes,
-            downvotes: voteType === 'downvote' ? { increment: 1 } : question.downvotes,
+    // Check for existing upvote
+    const existingUpvote = await prisma.upvote.findUnique({
+        where: {
+            userId_questionId: {
+                userId: voterId,
+                questionId: id,
+            },
         },
     });
 
-    // Trigger UPVOTE notification
-    if (voteType === 'upvote' && question.authorId !== voterId) {
-        const { createNotification } = await import('../notifications/notifications.service.js');
-        await createNotification(
-            question.authorId,
-            voterId,
-            'UPVOTE',
-            'upvoted your question',
-            question.id
-        );
+    // If upvoting and no existing upvote, create one
+    if (voteType === 'upvote' && !existingUpvote) {
+        await prisma.$transaction(async (tx) => {
+            // Create upvote record
+            await tx.upvote.create({
+                data: {
+                    userId: voterId,
+                    questionId: id,
+                    targetAuthorId: question.authorId,
+                },
+            });
+
+            // Increment count
+            await tx.question.update({
+                where: { id },
+                data: { upvotes: { increment: 1 } },
+            });
+        });
+
+        // Trigger UPVOTE notification (outside transaction to avoid blocking)
+        if (question.authorId !== voterId) {
+            const { createNotification } = await import('../notifications/notifications.service.js');
+            await createNotification(
+                question.authorId,
+                voterId,
+                'UPVOTE',
+                'upvoted your question',
+                question.id
+            );
+        }
+    }
+    // If downvoting (removing upvote) and existing upvote exists, delete it
+    else if (voteType === 'downvote' && existingUpvote) {
+        await prisma.$transaction(async (tx) => {
+            // Delete upvote record
+            await tx.upvote.delete({
+                where: { id: existingUpvote.id },
+            });
+
+            // Decrement count
+            await tx.question.update({
+                where: { id },
+                data: { upvotes: { decrement: 1 } },
+            });
+        });
     }
 
-    return updatedQuestion;
+    // Return updated question
+    return await prisma.question.findUnique({ where: { id } });
 };
 
 /**
@@ -513,32 +550,66 @@ export const voteAnswer = async (
         throw new AppError(404, 'Answer not found');
     }
 
-    // Update vote count
-    const updatedAnswer = await prisma.answer.update({
-        where: { id: answerId },
-        data: {
-            upvotes: voteType === 'upvote' ? { increment: 1 } : answer.upvotes,
-            downvotes: voteType === 'downvote' ? { increment: 1 } : answer.downvotes,
+    // Check for existing upvote
+    const existingUpvote = await prisma.upvote.findUnique({
+        where: {
+            userId_answerId: {
+                userId: voterId,
+                answerId,
+            },
         },
     });
 
-    // Trigger UPVOTE notification
-    if (voteType === 'upvote' && answer.authorId !== voterId) {
-        const { createNotification } = await import('../notifications/notifications.service.js');
+    // If upvoting and no existing upvote, create one
+    if (voteType === 'upvote' && !existingUpvote) {
+        await prisma.$transaction(async (tx) => {
+            // Create upvote record
+            await tx.upvote.create({
+                data: {
+                    userId: voterId,
+                    answerId,
+                    targetAuthorId: answer.authorId,
+                },
+            });
 
-        // Get the question ID for the notification
-        const questionId = answer.questionId;
+            // Increment count
+            await tx.answer.update({
+                where: { id: answerId },
+                data: { upvotes: { increment: 1 } },
+            });
+        });
 
-        await createNotification(
-            answer.authorId,
-            voterId,
-            'UPVOTE',
-            'upvoted your answer',
-            questionId
-        );
+        // Trigger UPVOTE notification
+        if (answer.authorId !== voterId) {
+            const { createNotification } = await import('../notifications/notifications.service.js');
+            const questionId = answer.questionId;
+            await createNotification(
+                answer.authorId,
+                voterId,
+                'UPVOTE',
+                'upvoted your answer',
+                questionId
+            );
+        }
+    }
+    // If downvoting (removing upvote) and existing upvote exists, delete it
+    else if (voteType === 'downvote' && existingUpvote) {
+        await prisma.$transaction(async (tx) => {
+            // Delete upvote record
+            await tx.upvote.delete({
+                where: { id: existingUpvote.id },
+            });
+
+            // Decrement count
+            await tx.answer.update({
+                where: { id: answerId },
+                data: { upvotes: { decrement: 1 } },
+            });
+        });
     }
 
-    return updatedAnswer;
+    // Return updated answer
+    return await prisma.answer.findUnique({ where: { id: answerId } });
 };
 
 /**

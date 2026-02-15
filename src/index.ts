@@ -20,6 +20,7 @@ import notificationsRoutes from './modules/notifications/notifications.routes.js
 import channelRoutes from './modules/channels/channel.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
+import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -134,6 +135,7 @@ app.use('/academic', reactionsRoutes);
 app.use('/api/access', accessRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/channels', channelRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // ============================================================================
 // ERROR HANDLING
