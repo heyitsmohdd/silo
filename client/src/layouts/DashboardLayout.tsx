@@ -1,11 +1,12 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, Menu, X, HelpCircle, Bug } from 'lucide-react';
+import { FileText, MessageSquare, Menu, X, HelpCircle, Bug, Trophy } from 'lucide-react';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
 import { NotificationBell } from '@/components/layout/NotificationBell';
 import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
 import { useSocketConnection } from '@/hooks/useSocketConnection';
+import WeeklyStarsWidget from '@/components/leaderboard/WeeklyStarsWidget';
 
 const DashboardLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -120,6 +121,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
         <NavLink to="/chat" icon={MessageSquare} label="Chat" onClick={onNavigate} />
+        <NavLink to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={onNavigate} />
         <button
           onClick={() => setIsContactModalOpen(true)}
           className="w-full relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200"
@@ -127,6 +129,11 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           <Bug className="w-4 h-4 flex-shrink-0" />
           <span>Contact</span>
         </button>
+
+        {/* Weekly Stars Widget */}
+        <div className="pt-2">
+          <WeeklyStarsWidget />
+        </div>
 
         {/* Community Rooms Section */}
         <div className="pt-4 mt-4 border-t border-white/5">
