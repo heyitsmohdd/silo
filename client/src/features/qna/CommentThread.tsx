@@ -29,7 +29,7 @@ const CommentThread = ({
         .sort((a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes) || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return (
-        <div className={`flex flex-col ${depth > 0 ? 'ml-8 border-l-2 border-zinc-800 pl-4' : ''}`}>
+        <div className={`flex flex-col ${depth > 0 ? 'ml-3 md:ml-8 border-l-2 border-zinc-800 pl-3 md:pl-4' : ''}`}>
             {/* The Comment Itself */}
             <AnswerCard
                 answer={answer}

@@ -148,9 +148,9 @@ const QuestionDetail = () => {
             </div>
 
             {/* Question Section */}
-            <div className="flex gap-4 p-6 bg-zinc-900/30 rounded-lg">
-                {/* Voting Section - Left */}
-                <div className="flex flex-col items-center gap-2 pt-1">
+            <div className="flex flex-col md:flex-row gap-4 p-4 md:p-6 bg-zinc-900/30 rounded-lg">
+                {/* Voting Section - Mobile: Top Row, Desktop: Left Column */}
+                <div className="flex md:flex-col items-center gap-2 pt-1 self-start">
                     <VotingButtons
                         voteCount={voteCount}
                         upvotes={question.upvotes}
@@ -159,6 +159,7 @@ const QuestionDetail = () => {
                         itemId={questionId}
                         onVoteSuccess={refetch}
                         size="md"
+                        className="flex-row md:flex-col"
                     />
                 </div>
 
@@ -178,12 +179,12 @@ const QuestionDetail = () => {
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-2xl font-bold text-zinc-100 mb-4">
+                    <h1 className="text-2xl font-bold text-zinc-100 mb-4 break-words">
                         {question.title}
                     </h1>
 
                     {/* Question Content */}
-                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-4">
+                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-4 break-words">
                         {question.content}
                     </p>
 

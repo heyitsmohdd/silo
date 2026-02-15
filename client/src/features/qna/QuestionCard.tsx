@@ -8,6 +8,12 @@ import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import VotingButtons from './VotingButtons';
 
 
+interface Reaction {
+    id?: string;
+    userId: string;
+    type: string;
+}
+
 interface QuestionCardProps {
     question: {
         id: string;
@@ -16,9 +22,9 @@ interface QuestionCardProps {
         tags: string[];
         upvotes: number;
         downvotes: number;
-        reactions: any[]; // Array of reactions
+        reactions: Reaction[];
         category: string;
-        answers: any[];
+        answers: unknown[];
         bestAnswerId: string | null;
         authorId: string;
         author: {
@@ -76,7 +82,8 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
         if (!user) return;
 
         // Optimistic UI Update
-        const existingReactionIndex = reactions.findIndex((r: any) => r.userId === user.userId);
+        // Optimistic UI Update
+        const existingReactionIndex = reactions.findIndex((r: Reaction) => r.userId === user.userId);
         const existingReaction = reactions[existingReactionIndex];
 
         let newReactions = [...reactions];
@@ -84,7 +91,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
         if (existingReaction) {
             if (existingReaction.type === type) {
                 // Toggling off
-                newReactions = reactions.filter((r: any) => r.userId !== user.userId);
+                newReactions = reactions.filter((r: Reaction) => r.userId !== user.userId);
             } else {
                 // Switching type (Update the existing reaction object)
                 newReactions[existingReactionIndex] = { ...existingReaction, type };
@@ -109,8 +116,8 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
     // Calculate Reaction Counts
     const reactionCounts = ["🔥", "💀", "❤️", "💩"].map(emoji => ({
         emoji,
-        count: reactions.filter((r: any) => r.type === emoji).length,
-        userReacted: user ? reactions.some((r: any) => r.userId === user.userId && r.type === emoji) : false
+        count: reactions.filter((r: Reaction) => r.type === emoji).length,
+        userReacted: user ? reactions.some((r: Reaction) => r.userId === user.userId && r.type === emoji) : false
     }));
 
     const answerCount = question.answers?.length || 0;
@@ -147,7 +154,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
     return (
         <div
             onClick={onClick}
-            className="flex gap-4 p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all cursor-pointer group shadow-sm hover:shadow-md"
+            className="flex gap-3 md:gap-4 p-4 md:p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all cursor-pointer group shadow-sm hover:shadow-md"
         >
             {/* Voting Column */}
             <div
@@ -166,7 +173,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
             </div>
 
             {/* Content Column */}
-            <div className="flex-1 flex flex-col gap-3 min-w-0">
+            <div className="flex-1 flex flex-col gap-2 md:gap-3 min-w-0">
                 {/* Header: Badge (Only show if NOT Academic) */}
                 <div className="flex items-center justify-between">
                     {question.category !== 'ACADEMIC' && (
@@ -191,14 +198,14 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                 {/* Content */}
                 <div>
                     <div className="flex items-start gap-2 mb-2">
-                        <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-primary transition-colors line-clamp-2 flex-1">
+                        <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-primary transition-colors line-clamp-2 flex-1 break-words">
                             {question.title}
                         </h3>
                         {hasBestAnswer && (
                             <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                         )}
                     </div>
-                    <p className="text-sm text-zinc-400 line-clamp-3 leading-relaxed mb-4">
+                    <p className="text-sm text-zinc-400 line-clamp-3 leading-relaxed mb-4 break-words">
                         {question.content}
                     </p>
                 </div>
