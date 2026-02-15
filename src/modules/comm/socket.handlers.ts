@@ -11,6 +11,8 @@ import {
     extractSocketToken,
     generateRoomId,
 } from '../../shared/lib/socket-auth.js';
+import { getChannelMembers } from '../channels/channel.service.js';
+import { startChannelDeletionTimeout, clearChannelTimeout } from '../channels/channel-cleanup.service.js';
 
 // Beta security: Simple in-memory rate limiter for chat messages
 const messageRateLimiter = new Map<string, { count: number; resetTime: number }>();
@@ -19,6 +21,7 @@ const WINDOW_MS = 60 * 1000; // 1 minute
 
 // User socket registry for targeted notifications
 const userSockets = new Map<string, string>(); // userId -> socketId
+const channelMembers = new Map<string, Set<string>>(); // channelId -> Set of userIds
 
 /**
  * Emit notification to a specific user
@@ -29,6 +32,22 @@ export const emitNotificationToUser = (io: Server, userId: string, notification:
         io.to(socketId).emit('notification:new', notification);
         console.log(`🔔 Notification sent to user ${userId}`);
     }
+};
+
+/**
+ * Emit updated member list to all users in a channel
+ */
+const emitChannelMemberList = async (io: Server, channelId: string) => {
+    const memberIds = Array.from(channelMembers.get(channelId) || []);
+
+    if (memberIds.length === 0) {
+        io.to(`channel_${channelId}`).emit('update_member_list', { members: [] });
+        return;
+    }
+
+    const members = await getChannelMembers(memberIds);
+    io.to(`channel_${channelId}`).emit('update_member_list', { members });
+    console.log(`👥 Emitted member list for channel ${channelId}: ${members.length} members`);
 };
 
 /**
@@ -194,6 +213,138 @@ export const initializeSocketHandlers = (io: Server) => {
                 firstName: user?.email.split('@')[0],
                 isTyping: data.isTyping,
             });
+        });
+
+        // ========================================================================
+        // CHANNEL EVENTS (Public Chat Rooms)
+        // ========================================================================
+
+        // Handle: Join Channel
+        socket.on('join_channel', async (data: { channelId: string }) => {
+            try {
+                if (!user) {
+                    socket.emit('error', { message: 'Not authenticated' });
+                    return;
+                }
+
+                const { channelId } = data;
+                const channelRoom = `channel_${channelId}`;
+
+                // Join the channel room
+                socket.join(channelRoom);
+
+                // Track member
+                if (!channelMembers.has(channelId)) {
+                    channelMembers.set(channelId, new Set());
+                }
+                channelMembers.get(channelId)!.add(user.userId);
+
+                // Clear deletion timeout if exists
+                clearChannelTimeout(channelId);
+
+                console.log(`📢 User ${user.email} joined channel: ${channelRoom}`);
+
+                // Emit updated member list to all users in channel
+                await emitChannelMemberList(io, channelId);
+
+                socket.emit('channel_joined', { channelId });
+            } catch (error) {
+                console.error('Error joining channel:', error);
+                socket.emit('error', { message: 'Failed to join channel' });
+            }
+        });
+
+        // Handle: Leave Channel
+        socket.on('leave_channel', async (data: { channelId: string }) => {
+            try {
+                if (!user) return;
+
+                const { channelId } = data;
+                const channelRoom = `channel_${channelId}`;
+
+                // Leave the channel room
+                socket.leave(channelRoom);
+
+                // Remove member
+                channelMembers.get(channelId)?.delete(user.userId);
+
+                // Check if empty and start deletion timeout
+                const memberCount = channelMembers.get(channelId)?.size || 0;
+                if (memberCount === 0) {
+                    console.log(`⏱️  Channel ${channelId} is now empty, starting deletion timer`);
+                    startChannelDeletionTimeout(channelId, io);
+                }
+
+                console.log(`📢 User ${user.email} left channel: ${channelRoom}`);
+
+                // Emit updated member list
+                await emitChannelMemberList(io, channelId);
+
+                socket.emit('channel_left', { channelId });
+            } catch (error) {
+                console.error('Error leaving channel:', error);
+            }
+        });
+
+        // Handle: Send Channel Message
+        socket.on('send_channel_message', async (data: { channelId: string; content: string }) => {
+            try {
+                if (!user) {
+                    socket.emit('error', { message: 'Not authenticated' });
+                    return;
+                }
+
+                const { channelId, content } = data;
+
+                if (!content || content.trim().length === 0) {
+                    socket.emit('error', { message: 'Message content is required' });
+                    return;
+                }
+
+                // Beta security: Rate limiting
+                const now = Date.now();
+                const userKey = user.userId;
+                const limiter = messageRateLimiter.get(userKey);
+
+                if (limiter && now < limiter.resetTime) {
+                    if (limiter.count >= MESSAGE_LIMIT) {
+                        socket.emit('error', { message: 'Too many messages, please slow down.' });
+                        return;
+                    }
+                    limiter.count++;
+                } else {
+                    messageRateLimiter.set(userKey, {
+                        count: 1,
+                        resetTime: now + WINDOW_MS,
+                    });
+                }
+
+                // Save message to database
+                const { createChannelMessage } = await import('../channels/channel.service.js');
+                const message = await createChannelMessage(channelId, user.userId, content.trim());
+
+                const channelRoom = `channel_${channelId}`;
+
+                // Broadcast to all users in the channel (including sender)
+                io.to(channelRoom).emit('new_channel_message', {
+                    id: message.id,
+                    content: message.content,
+                    channelId: message.channelId,
+                    author: {
+                        id: message.author.id,
+                        firstName: message.author.firstName,
+                        lastName: message.author.lastName,
+                        username: message.author.username,
+                        role: message.author.role,
+                    },
+                    createdAt: message.createdAt,
+                });
+
+                console.log(`💬 Channel message sent to ${channelRoom}: ${message.content.substring(0, 50)}...`);
+            } catch (error) {
+                console.error('Error sending channel message:', error);
+                socket.emit('error', { message: 'Failed to send message' });
+            }
         });
 
         // Handle: Disconnect

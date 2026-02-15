@@ -17,6 +17,7 @@ import QuestionDetail from '@/features/qna/QuestionDetail';
 import ChatPage from '@/features/chat/ChatPage';
 import ProfilePage from '@/features/profile/ProfilePage';
 import SettingsPage from '@/pages/SettingsPage';
+import ChannelView from '@/features/channels/ChannelView';
 
 import NewLandingPage from '@/pages/LandingPage';
 
@@ -89,6 +90,7 @@ function App() {
                 </AcademicLayout>
               }
             />
+            <Route path="channels/:channelId" element={<ChannelView />} />
           </Route>
 
           {/* Catch-all redirect */}
