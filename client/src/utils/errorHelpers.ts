@@ -4,14 +4,17 @@ export const getAuthErrorMessage = (error: unknown): string => {
     if (!error) return 'An unknown error occurred.';
 
     // 1. Handle Network / Timeout Issues
-    if (
-        typeof error === 'object' &&
-        error !== null &&
-        ('code' in (error as any) && (error as any).code === 'ECONNABORTED') ||
-        ('message' in (error as any) && (error as any).message?.toLowerCase().includes('network error')) ||
-        ('message' in (error as any) && (error as any).message?.toLowerCase().includes('timeout'))
-    ) {
-        return 'Connection slow. The server is waking up (it might take 10 seconds). Please retry.';
+    // 1. Handle Network / Timeout Issues
+    if (typeof error === 'object' && error !== null) {
+        const err = error as { code?: unknown; message?: unknown };
+        if (
+            err.code === 'ECONNABORTED' ||
+            (typeof err.message === 'string' &&
+                (err.message.toLowerCase().includes('network error') ||
+                    err.message.toLowerCase().includes('timeout')))
+        ) {
+            return 'Connection slow. The server is waking up (it might take 10 seconds). Please retry.';
+        }
     }
 
     // 2. Handle Axios Errors (HTTP Status Codes)

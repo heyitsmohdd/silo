@@ -26,8 +26,8 @@ interface Question {
     upvotes: number;
     downvotes: number;
     bestAnswerId: string | null;
-    answers: any[];
-    reactions: any[];
+    answers: unknown[];
+    reactions: { userId: string; type: string }[];
     category: string;
 }
 
@@ -46,7 +46,9 @@ const QuestionList = () => {
         },
     });
 
-    const questionsList = Array.isArray(data) ? data : (data?.questions || []);
+    const questionsList = useMemo(() => {
+        return Array.isArray(data) ? data : (data?.questions || []);
+    }, [data]);
 
     const filteredQuestions = useMemo(() => {
         if (!questionsList.length) return [];

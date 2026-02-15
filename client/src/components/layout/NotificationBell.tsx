@@ -99,6 +99,7 @@ export const NotificationBell = () => {
 
     // Fetch on mount and setup Socket.IO listener
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         fetchNotifications();
 
         // Get socket instance

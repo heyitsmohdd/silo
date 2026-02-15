@@ -3,7 +3,7 @@
  * Professional Discord/Slack-style chat interface with member sidebar
  */
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Send, Hash, Loader2, Trash2, Users, Crown, Clock } from 'lucide-react';
 import { fetchChannelMessages, fetchChannel, deleteChannel, type ChannelMessage, type Channel, type User } from '@/api/channelApi';
@@ -34,65 +34,9 @@ export default function ChannelView() {
     const [showJoinModal, setShowJoinModal] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Effect 1: Data Loading & UI State
-    useEffect(() => {
-        if (!channelId) return;
+    // Effects moved to bottom to fix hoisting issues
 
-        loadMessages();
-        // Reset state on channel change
-        setHasJoined(false);
-        setShowJoinModal(true);
-    }, [channelId]);
-
-    // Effect 2: Socket Subscription & Join Logic
-    useEffect(() => {
-        if (!socket || !channelId) return;
-
-        // Listen for socket events
-        console.log('🔌 Socket status in ChannelView:', socket.connected ? 'Connected' : 'Disconnected', socket.id);
-
-        if (socket.connected) {
-            socket.on('new_channel_message', (msg) => {
-                console.log('📩 New message received:', msg);
-                handleNewMessage(msg);
-            });
-            socket.on('update_member_list', (data) => {
-                console.log('👥 Member list updated event:', data);
-                handleMemberListUpdate(data);
-            });
-            socket.on('channel_deleted', handleChannelDeleted);
-            socket.on('channel_joined', (data) => {
-                console.log('✅ Joined channel confirmed:', data);
-            });
-
-            // Log when we emit join
-            console.log('Emit join_channel listener setup');
-
-            // If we have joined locally, ensure back-end knows
-            if (hasJoined) {
-                console.log('🚀 Emitting join_channel event');
-                socket.emit('join_channel', { channelId });
-            }
-        }
-
-        return () => {
-            if (hasJoined) {
-                leaveChannel();
-            }
-            if (socket) {
-                socket.off('new_channel_message');
-                socket.off('update_member_list');
-                socket.off('channel_deleted');
-                socket.off('channel_joined');
-            }
-        };
-    }, [channelId, socket, socket?.connected, hasJoined]);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    const loadMessages = async () => {
+    const loadMessages = useCallback(async () => {
         if (!channelId) return;
 
         try {
@@ -107,7 +51,7 @@ export default function ChannelView() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [channelId]);
 
     const handleJoinChannel = () => {
         setShowJoinModal(false);
@@ -123,11 +67,11 @@ export default function ChannelView() {
         navigate('/channels');
     };
 
-    const leaveChannel = () => {
+    const leaveChannel = useCallback(() => {
         if (socket && channelId) {
             socket.emit('leave_channel', { channelId });
         }
-    };
+    }, [socket, channelId]);
 
     const handleNewMessage = (message: ChannelMessage) => {
         setMessages((prev) => [...prev, message]);
@@ -138,11 +82,11 @@ export default function ChannelView() {
         console.log('👥 Member list updated:', data.members.length, 'members');
     };
 
-    const handleChannelDeleted = (data: { channelId: string }) => {
+    const handleChannelDeleted = useCallback((data: { channelId: string }) => {
         if (data.channelId === channelId) {
             navigate('/channels');
         }
-    };
+    }, [channelId, navigate]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -211,6 +155,64 @@ export default function ChannelView() {
 
     const isOwner = channel?.ownerId === currentUser?.userId;
     const isEmpty = members.length === 0;
+
+    // Effect 1: Data Loading & UI State
+    useEffect(() => {
+        if (!channelId) return;
+
+        loadMessages();
+        // Reset state on channel change
+        setHasJoined(false);
+        setShowJoinModal(true);
+    }, [channelId, loadMessages]);
+
+    // Effect 2: Socket Subscription & Join Logic
+    useEffect(() => {
+        if (!socket || !channelId) return;
+
+        // Listen for socket events
+        console.log('🔌 Socket status in ChannelView:', socket.connected ? 'Connected' : 'Disconnected', socket.id);
+
+        if (socket.connected) {
+            socket.on('new_channel_message', (msg) => {
+                console.log('📩 New message received:', msg);
+                handleNewMessage(msg);
+            });
+            socket.on('update_member_list', (data) => {
+                console.log('👥 Member list updated event:', data);
+                handleMemberListUpdate(data);
+            });
+            socket.on('channel_deleted', handleChannelDeleted);
+            socket.on('channel_joined', (data) => {
+                console.log('✅ Joined channel confirmed:', data);
+            });
+
+            // Log when we emit join
+            console.log('Emit join_channel listener setup');
+
+            // If we have joined locally, ensure back-end knows
+            if (hasJoined) {
+                console.log('🚀 Emitting join_channel event');
+                socket.emit('join_channel', { channelId });
+            }
+        }
+
+        return () => {
+            if (hasJoined) {
+                leaveChannel();
+            }
+            if (socket) {
+                socket.off('new_channel_message');
+                socket.off('update_member_list');
+                socket.off('channel_deleted');
+                socket.off('channel_joined');
+            }
+        };
+    }, [channelId, socket, socket?.connected, hasJoined, leaveChannel, handleChannelDeleted]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     if (loading) {
         return (

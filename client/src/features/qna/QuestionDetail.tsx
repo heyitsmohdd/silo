@@ -12,6 +12,14 @@ import { ListSkeleton } from '@/components/ui/Skeleton';
 import axiosClient from '@/lib/axios';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
+interface Answer {
+    id: string;
+    parentId: string | null;
+    upvotes: number;
+    downvotes: number;
+    createdAt: string;
+}
+
 const QuestionDetail = () => {
     const { questionId } = useParams<{ questionId: string }>();
     const navigate = useNavigate();
@@ -54,8 +62,8 @@ const QuestionDetail = () => {
     // 2. Upvotes (desc)
     // 3. Newest (desc)
     const rootAnswers = (data?.answers || [])
-        .filter((a: any) => !a.parentId)
-        .sort((a: any, b: any) => {
+        .filter((a: Answer) => !a.parentId)
+        .sort((a: Answer, b: Answer) => {
             if (a.id === data?.bestAnswerId) return -1;
             if (b.id === data?.bestAnswerId) return 1;
 
@@ -206,7 +214,7 @@ const QuestionDetail = () => {
                 {/* Answer List */}
                 {rootAnswers.length > 0 ? (
                     <div className="space-y-4">
-                        {rootAnswers.map((answer: any) => (
+                        {rootAnswers.map((answer: Answer) => (
                             <CommentThread
                                 key={answer.id}
                                 answer={answer}
