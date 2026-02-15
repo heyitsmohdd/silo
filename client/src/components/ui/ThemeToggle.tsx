@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react';
 const THEME_KEY = 'silo_theme';
 
 const ThemeToggle = () => {
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState(() => {
+        if (typeof window === 'undefined') return true;
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        return savedTheme === 'dark' || savedTheme === null;
+    });
 
     useEffect(() => {
-        // Hydrate from localStorage
-        const savedTheme = localStorage.getItem(THEME_KEY);
-        const prefersDark = savedTheme === 'dark' || savedTheme === null;
-
-        setIsDark(prefersDark);
-        document.documentElement.classList.toggle('dark', prefersDark);
-    }, []);
+        document.documentElement.classList.toggle('dark', isDark);
+    }, [isDark]);
 
     const toggleTheme = () => {
         const newTheme = isDark ? 'light' : 'dark';

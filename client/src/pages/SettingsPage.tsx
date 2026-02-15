@@ -10,24 +10,23 @@ const THEME_KEY = 'silo_theme';
 
 const SettingsPage = () => {
     const { user, logout } = useAuthStore();
-    const [darkMode, setDarkMode] = useState(true);
-    const [alias, setAlias] = useState('');
+    // Initial Theme Setup
+    const [darkMode, setDarkMode] = useState(() => {
+        if (typeof window === 'undefined') return true;
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        return savedTheme === 'dark' || savedTheme === null;
+    });
+
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    // Initial Identity & Theme Setup
-    useEffect(() => {
-        if (user?.userId) {
-            const identity = getIdentity(user.userId);
-            setAlias(identity.name);
-        }
+    // Derived State
+    const alias = user?.userId ? getIdentity(user.userId).name : '';
 
-        // Hydrate theme
-        const savedTheme = localStorage.getItem(THEME_KEY);
-        const prefersDark = savedTheme === 'dark' || savedTheme === null;
-        setDarkMode(prefersDark);
-        document.documentElement.classList.toggle('dark', prefersDark);
-    }, [user?.userId]);
+    useEffect(() => {
+        // Sync DOM with state
+        document.documentElement.classList.toggle('dark', darkMode);
+    }, [darkMode]);
 
     const toggleTheme = () => {
         const newTheme = !darkMode ? 'dark' : 'light';

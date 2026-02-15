@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuthStore, type User } from '@/stores/useAuthStore';
 import socketService from '@/lib/socket';
 
@@ -26,7 +26,8 @@ export interface Message {
 export const useChat = () => {
   const { token, user } = useAuthStore();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+  // Initialize with current socket state to avoid effect update
+  const [isConnected, setIsConnected] = useState(() => socketService.getSocket()?.connected ?? false);
   const hasLoadedHistory = useRef(false);
 
   useEffect(() => {
@@ -37,14 +38,13 @@ export const useChat = () => {
     // Connect socket with token
     const socket = socketService.getSocket();
 
-    // If socket already exists, just use it
-    if (socket?.connected) {
-      setIsConnected(true);
-      return;
+    // Connect fresh if needed
+    let newSocket = socket;
+    if (!socket?.connected) {
+      newSocket = socketService.connect(token);
     }
 
-    // Connect fresh
-    const newSocket = socketService.connect(token);
+    if (!newSocket) return;
 
     // Remove any existing listeners to prevent duplicates
     newSocket.removeAllListeners('connect');
@@ -91,14 +91,14 @@ export const useChat = () => {
   /**
    * Send a message to the chat
    */
-  const sendMessage = (content: string) => {
+  const sendMessage = useCallback((content: string) => {
     const socket = socketService.getSocket();
     if (!socket || !content.trim()) return;
 
     socket.emit('sendMessage', {
       content: content.trim(),
     });
-  };
+  }, []);
 
   return {
     messages,
