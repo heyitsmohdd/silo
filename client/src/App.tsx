@@ -21,6 +21,7 @@ import ChannelView from '@/features/channels/ChannelView';
 import LeaderboardPage from '@/pages/LeaderboardPage';
 
 import NewLandingPage from '@/pages/LandingPage';
+import InstallPrompt from '@/components/InstallPrompt';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <InstallPrompt />
       <BrowserRouter>
         <Routes>
           {/* Landing Page */}
