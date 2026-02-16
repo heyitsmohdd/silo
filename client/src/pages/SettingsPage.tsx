@@ -21,7 +21,7 @@ const SettingsPage = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     // Derived State
-    const alias = user?.userId ? getIdentity(user.userId).name : '';
+    const alias = user?.userId ? getIdentity(user.userId, user.username).name : '';
 
     useEffect(() => {
         // Sync DOM with state
