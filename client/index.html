@@ -7,6 +7,15 @@
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Silo - Your Batch Space</title>
+  <script>
+    // Capture PWA install prompt event early
+    window.deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('[PWA] Global beforeinstallprompt captured!');
+      e.preventDefault();
+      window.deferredPrompt = e;
+    });
+  </script>
 </head>
 
 <body>
