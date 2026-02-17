@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquare, CheckCircle2, Book, Coffee, Megaphone, VenetianMask, MessageCircle, Trash2 } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Book, Coffee, Megaphone, VenetianMask, MessageCircle, Trash2, Laptop, Calendar, Newspaper } from 'lucide-react';
 import { getIdentity } from '@/lib/identity';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -141,6 +141,9 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
     // Category Badge Helper
     const getCategoryBadge = (category: string = 'ACADEMIC') => {
         switch (category) {
+            case "TECH": return { color: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20", icon: <Laptop className="w-3 h-3" />, label: "Tech" };
+            case "EVENT": return { color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20", icon: <Calendar className="w-3 h-3" />, label: "Event" };
+            case "NEWS": return { color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", icon: <Newspaper className="w-3 h-3" />, label: "News" };
             case "ACADEMIC": return { color: "bg-blue-500/10 text-blue-500 border-blue-500/20", icon: <Book className="w-3 h-3" />, label: "Academic" };
             case "GOSSIP": return { color: "bg-purple-500/10 text-purple-500 border-purple-500/20", icon: <Coffee className="w-3 h-3" />, label: "Tea / Gossip" };
             case "RANT": return { color: "bg-red-500/10 text-red-500 border-red-500/20", icon: <Megaphone className="w-3 h-3" />, label: "Rant" };
