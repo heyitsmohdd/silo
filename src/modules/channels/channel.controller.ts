@@ -1,7 +1,7 @@
-/**
- * Channel Controller
- * HTTP handlers for channel API endpoints
- */
+// 
+// Channel Controller
+// HTTP handlers for channel API endpoints
+
 
 import { Response } from 'express';
 import { z } from 'zod';
@@ -15,10 +15,10 @@ import {
 import { deleteChannel } from './channel-cleanup.service.js';
 import { io } from '../../index.js';
 
-/**
- * GET /api/channels
- * List all public channels
- */
+// 
+// GET /api/channels
+// List all public channels
+
 export const listChannels = async (
     _req: AuthenticatedRequest,
     res: Response
@@ -32,10 +32,10 @@ export const listChannels = async (
     }
 };
 
-/**
- * GET /api/channels/:id
- * Get channel details
- */
+// 
+// GET /api/channels/:id
+// Get channel details
+
 export const getChannel = async (
     req: AuthenticatedRequest,
     res: Response
@@ -57,10 +57,10 @@ export const getChannel = async (
     }
 };
 
-/**
- * GET /api/channels/:id/messages
- * Get channel message history
- */
+// 
+// GET /api/channels/:id/messages
+// Get channel message history
+
 export const getMessages = async (
     req: AuthenticatedRequest,
     res: Response
@@ -80,18 +80,18 @@ export const getMessages = async (
     }
 };
 
-/**
- * Zod schema for channel creation
- */
+// 
+// Zod schema for channel creation
+
 const createChannelSchema = z.object({
     name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less'),
     description: z.string().optional(),
 });
 
-/**
- * POST /api/channels
- * Create a new channel
- */
+// 
+// POST /api/channels
+// Create a new channel
+
 export const createChannelHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -147,10 +147,10 @@ export const createChannelHandler = async (
     }
 };
 
-/**
- * DELETE /api/channels/:id
- * Delete a channel (owner only)
- */
+// 
+// DELETE /api/channels/:id
+// Delete a channel (owner only)
+
 export const deleteChannelHandler = async (
     req: AuthenticatedRequest,
     res: Response

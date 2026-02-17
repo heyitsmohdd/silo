@@ -1,7 +1,7 @@
-/**
- * Channel Cleanup Service
- * Handles automatic deletion of empty rooms and cron-based cleanup
- */
+// 
+// Channel Cleanup Service
+// Handles automatic deletion of empty rooms and cron-based cleanup
+
 
 import cron from 'node-cron';
 import { prisma } from '../../shared/lib/prisma.js';
@@ -9,12 +9,12 @@ import { prisma } from '../../shared/lib/prisma.js';
 // Store deletion timeouts for each channel
 const deletionTimeouts = new Map<string, NodeJS.Timeout>();
 
-/**
- * Check and delete empty rooms older than 1 hour
- * Runs on server startup and via cron job
- */
+// 
+// Check and delete empty rooms older than 1 hour
+// Runs on server startup and via cron job
+
 export const checkEmptyRooms = async () => {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const oneHourAgo = new Date(Date.now() - 60// 60// 1000);
 
     try {
         const emptyRooms = await prisma.channel.findMany({
@@ -34,10 +34,10 @@ export const checkEmptyRooms = async () => {
     }
 };
 
-/**
- * Start 60-minute deletion timeout for a channel
- * Called when the last user leaves a channel
- */
+// 
+// Start 60-minute deletion timeout for a channel
+// Called when the last user leaves a channel
+
 export const startChannelDeletionTimeout = (channelId: string, io: any) => {
     // Clear any existing timeout
     clearChannelTimeout(channelId);
@@ -45,16 +45,16 @@ export const startChannelDeletionTimeout = (channelId: string, io: any) => {
     const timeout = setTimeout(async () => {
         console.log(`⏰ 60-minute timeout reached for channel: ${channelId}`);
         await deleteChannel(channelId, io);
-    }, 60 * 60 * 1000); // 60 minutes
+    }, 60// 60// 1000); // 60 minutes
 
     deletionTimeouts.set(channelId, timeout);
     console.log(`⏱️  Started 60-minute deletion timer for channel: ${channelId}`);
 };
 
-/**
- * Clear deletion timeout for a channel
- * Called when a user joins before the timeout expires
- */
+// 
+// Clear deletion timeout for a channel
+// Called when a user joins before the timeout expires
+
 export const clearChannelTimeout = (channelId: string) => {
     const timeout = deletionTimeouts.get(channelId);
     if (timeout) {
@@ -64,9 +64,9 @@ export const clearChannelTimeout = (channelId: string) => {
     }
 };
 
-/**
- * Delete a channel and notify all users
- */
+// 
+// Delete a channel and notify all users
+
 export const deleteChannel = async (channelId: string, io?: any) => {
     try {
         const channel = await prisma.channel.findUnique({
@@ -96,15 +96,15 @@ export const deleteChannel = async (channelId: string, io?: any) => {
     }
 };
 
-/**
- * Initialize cron job for periodic cleanup
- * Runs every 30 minutes
- */
+// 
+// Initialize cron job for periodic cleanup
+// Runs every 30 minutes
+
 export const initializeChannelCleanup = () => {
     console.log('🚀 Initializing channel cleanup service...');
 
     // Run every 30 minutes
-    cron.schedule('*/30 * * * *', async () => {
+    cron.schedule('*/30// *// *', async () => {
         console.log('🧹 Running scheduled channel cleanup...');
         await checkEmptyRooms();
     });

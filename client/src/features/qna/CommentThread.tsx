@@ -30,7 +30,6 @@ const CommentThread = ({
 
     return (
         <div className={`flex flex-col ${depth > 0 ? 'ml-3 md:ml-8 border-l-2 border-zinc-800 pl-3 md:pl-4' : ''}`}>
-            {/* The Comment Itself */}
             <AnswerCard
                 answer={answer}
                 questionId={questionId}
@@ -41,7 +40,6 @@ const CommentThread = ({
                 isLast={children.length === 0 && !isReplying} // Only visually "last" if no children
             />
 
-            {/* Reply Form */}
             {isReplying && (
                 <div className="mb-4">
                     <AnswerForm
@@ -56,7 +54,6 @@ const CommentThread = ({
                 </div>
             )}
 
-            {/* Children (Recursive) */}
             {children.length > 0 && (
                 <div className="space-y-2">
                     {children.map((child) => (

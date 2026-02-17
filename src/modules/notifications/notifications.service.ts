@@ -1,10 +1,10 @@
 import { prisma } from '../../shared/lib/prisma.js';
 
-/**
- * Create a new notification
- * Includes duplicate prevention for UPVOTE notifications
- * Emits real-time Socket.IO event to the recipient
- */
+// 
+// Create a new notification
+// Includes duplicate prevention for UPVOTE notifications
+// Emits real-time Socket.IO event to the recipient
+
 export const createNotification = async (
     userId: string, // recipient
     actorId: string, // sender
@@ -71,9 +71,9 @@ export const createNotification = async (
     return notification;
 };
 
-/**
- * Get user's notifications
- */
+// 
+// Get user's notifications
+
 export const getUserNotifications = async (userId: string, limit = 20) => {
     const notifications = await prisma.notification.findMany({
         where: { userId },
@@ -101,9 +101,9 @@ export const getUserNotifications = async (userId: string, limit = 20) => {
     return { notifications, unreadCount };
 };
 
-/**
- * Mark all notifications as read for a user
- */
+// 
+// Mark all notifications as read for a user
+
 export const markNotificationsRead = async (userId: string) => {
     return prisma.notification.updateMany({
         where: {
@@ -116,9 +116,9 @@ export const markNotificationsRead = async (userId: string) => {
     });
 };
 
-/**
- * Get unread notification count
- */
+// 
+// Get unread notification count
+
 export const getUnreadCount = async (userId: string) => {
     return prisma.notification.count({
         where: {

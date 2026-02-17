@@ -132,7 +132,6 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
 
   return (
     <div className="group p-6 border border-zinc-800 rounded-lg bg-zinc-900/50 hover:border-zinc-600 transition-all duration-200 relative">
-      {/* Menu Button */}
       {canEdit && (
         <div className="absolute top-4 right-4">
           <button
@@ -143,7 +142,6 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
             <MoreVertical className="w-4 h-4 text-zinc-400" />
           </button>
 
-          {/* Dropdown Menu */}
           {showMenu && (
             <>
               <div
@@ -177,7 +175,6 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
         </div>
       )}
 
-      {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4 pr-8">
         <div className="space-y-2 flex-1 min-w-0">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -194,12 +191,10 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
         </div>
       </div>
 
-      {/* Body */}
       <p className="text-sm text-zinc-400 line-clamp-2 leading-relaxed mb-4">
         {note.content}
       </p>
 
-      {/* Footer */}
       <div className="pt-3 mt-3 border-t border-zinc-800/50 flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
           <UserIcon className="w-3.5 h-3.5" />

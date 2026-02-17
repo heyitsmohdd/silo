@@ -6,10 +6,10 @@ interface ChatInputProps {
     isConnected: boolean;
 }
 
-/**
- * ChatInput Component
- * Floating input bar with icon-only send button
- */
+// 
+// ChatInput Component
+// Floating input bar with icon-only send button
+
 const ChatInput = ({ sendMessage, isConnected }: ChatInputProps) => {
     const [input, setInput] = useState('');
 

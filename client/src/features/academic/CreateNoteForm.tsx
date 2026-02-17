@@ -46,7 +46,6 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
 
     return (
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden">
-            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/50">
                 <h2 className="text-xl font-bold text-white">Upload Academic Note</h2>
                 <button
@@ -59,7 +58,6 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                {/* Title */}
                 <div className="space-y-2">
                     <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Title</label>
                     <input
@@ -71,7 +69,6 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                     />
                 </div>
 
-                {/* Grid: Subject & File URL */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Subject</label>
@@ -94,7 +91,6 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                     </div>
                 </div>
 
-                {/* Description */}
                 <div className="space-y-2">
                     <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Description</label>
                     <textarea
@@ -106,7 +102,6 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                     />
                 </div>
 
-                {/* Submit Button */}
                 <div className="pt-2">
                     <button
                         type="submit"

@@ -126,7 +126,6 @@ const QuestionDetail = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header with Back Button and Delete */}
             <div className="flex items-center justify-between">
                 <button
                     onClick={() => navigate('/qna')}
@@ -147,9 +146,7 @@ const QuestionDetail = () => {
                 )}
             </div>
 
-            {/* Question Section */}
             <div className="flex flex-col md:flex-row gap-4 p-4 md:p-6 bg-zinc-900/30 rounded-lg">
-                {/* Voting Section - Mobile: Top Row, Desktop: Left Column */}
                 <div className="flex md:flex-col items-center gap-2 pt-1 self-start">
                     <VotingButtons
                         voteCount={voteCount}
@@ -163,9 +160,7 @@ const QuestionDetail = () => {
                     />
                 </div>
 
-                {/* Question Content - Right */}
                 <div className="flex-1 min-w-0">
-                    {/* Author Info - Top */}
                     <div className="flex items-center gap-3 mb-4">
                         <img
                             src={identity.avatar}
@@ -178,17 +173,14 @@ const QuestionDetail = () => {
                         </div>
                     </div>
 
-                    {/* Title */}
                     <h1 className="text-2xl font-bold text-zinc-100 mb-4 break-words">
                         {question.title}
                     </h1>
 
-                    {/* Question Content */}
                     <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-4 break-words">
                         {question.content}
                     </p>
 
-                    {/* Tags */}
                     {question.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                             {question.tags.map((tag: string, index: number) => (
@@ -204,7 +196,6 @@ const QuestionDetail = () => {
                 </div>
             </div>
 
-            {/* Answers Section */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-zinc-100">
@@ -212,7 +203,6 @@ const QuestionDetail = () => {
                     </h2>
                 </div>
 
-                {/* Answer List */}
                 {rootAnswers.length > 0 ? (
                     <div className="space-y-4">
                         {rootAnswers.map((answer: Answer) => (
@@ -236,7 +226,6 @@ const QuestionDetail = () => {
                 )}
             </div>
 
-            {/* Answer Form */}
             <AnswerForm questionId={questionId} onSuccess={refetch} />
 
             <ConfirmationModal

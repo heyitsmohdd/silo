@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-/**
- * Middleware to sanitize input against XSS attacks
- */
+// 
+// Middleware to sanitize input against XSS attacks
+
 
 const sanitizeString = (str: string): string => {
   if (typeof str !== 'string') return str;

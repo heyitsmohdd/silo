@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import socketService from '@/lib/socket';
 
-/**
- * Hook to manage global socket connection
- * Should be used in a top-level layout component
- */
+// 
+// Hook to manage global socket connection
+// Should be used in a top-level layout component
+
 export const useSocketConnection = () => {
     const { token, user } = useAuthStore();
 

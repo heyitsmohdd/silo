@@ -8,12 +8,10 @@ interface AuthLayoutProps {
 const AuthLayout = ({ title, children }: AuthLayoutProps) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
-      {/* Theme Toggle */}
       <div className="fixed top-4 right-4">
         <ThemeToggle />
       </div>
 
-      {/* Auth Card */}
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground mb-2 font-['Press_Start_2P']">

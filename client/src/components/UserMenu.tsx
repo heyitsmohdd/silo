@@ -46,7 +46,6 @@ const UserMenu = () => {
 
     return (
         <div className="relative" ref={menuRef}>
-            {/* Avatar Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 hover:ring-2 hover:ring-emerald-500/20 transition-all group"
@@ -62,15 +61,11 @@ const UserMenu = () => {
                 />
             </button>
 
-            {/* Dropdown Menu */}
             {isOpen && (
                 <>
-                    {/* Backdrop */}
                     <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
 
-                    {/* Menu */}
                     <div className="absolute right-0 mt-2 w-64 z-50 rounded-lg bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden">
-                        {/* User Info Section */}
                         <div className="p-4 border-b border-zinc-800">
                             <div className="flex items-center gap-3">
                                 <img
@@ -89,7 +84,6 @@ const UserMenu = () => {
                             </div>
                         </div>
 
-                        {/* Menu Items */}
                         <div className="py-2">
                             <Link
                                 to="/profile"
@@ -110,7 +104,6 @@ const UserMenu = () => {
                             </Link>
                         </div>
 
-                        {/* Logout */}
                         <div className="border-t border-zinc-800 py-2">
                             <button
                                 onClick={handleLogoutClick}

@@ -49,7 +49,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl overflow-hidden">
-      {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-zinc-800">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-zinc-800 rounded-lg">
@@ -73,9 +72,7 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
         </Button>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
-        {/* Global Error */}
         {error && (
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
             <p className="text-sm text-destructive">
@@ -84,7 +81,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           </div>
         )}
 
-        {/* Current Password */}
         <Input
           label="Current Password"
           type="password"
@@ -95,7 +91,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           disabled={isLoading}
         />
 
-        {/* New Password */}
         <Input
           label="New Password"
           type="password"
@@ -106,7 +101,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           disabled={isLoading}
         />
 
-        {/* Confirm Password */}
         <Input
           label="Confirm New Password"
           type="password"
@@ -117,7 +111,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           disabled={isLoading}
         />
 
-        {/* Password Requirements */}
         <div className="p-4 bg-zinc-900/50 border border-zinc-800/50 rounded-lg space-y-2">
           <p className="text-sm font-medium text-zinc-300">
             Password Requirements:
@@ -128,7 +121,6 @@ const ChangePassword = ({ onCancel, onSuccess }: ChangePasswordProps) => {
           </ul>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button
             type="button"

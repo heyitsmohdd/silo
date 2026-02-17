@@ -66,19 +66,19 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
 
     return (
         <>
-            {/* Backdrop */}
+
             <div
                 className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
                 onClick={onClose}
             />
 
-            {/* Modal */}
+
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
                     className="w-full max-w-md bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 overflow-hidden"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Header */}
+
                     <div className="flex items-center justify-between p-6 border-b border-zinc-800">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-emerald-500/10 rounded-lg">
@@ -101,9 +101,9 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                         </button>
                     </div>
 
-                    {/* Form */}
+
                     <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                        {/* Global Error */}
+
                         {error && (
                             <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
                                 <p className="text-sm text-red-400">
@@ -112,7 +112,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             </div>
                         )}
 
-                        {/* Username */}
+
                         <div className="space-y-2">
                             <Input
                                 label="Username"
@@ -123,7 +123,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                                 disabled={isLoading || !canChangeUsername}
                             />
 
-                            {/* 6-Month Warning */}
+
                             {!canChangeUsername && nextChangeDate && (
                                 <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                                     <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
@@ -142,7 +142,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             )}
                         </div>
 
-                        {/* Email */}
+
                         <Input
                             label="Email Address"
                             type="email"
@@ -153,7 +153,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             disabled={isLoading}
                         />
 
-                        {/* First Name (Optional) */}
+
                         <Input
                             label="First Name (Optional)"
                             type="text"
@@ -163,7 +163,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             disabled={isLoading}
                         />
 
-                        {/* Read-only Fields */}
+
                         <div className="space-y-3 p-4 bg-zinc-800/40 rounded-lg border border-zinc-800">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-zinc-400">Role</span>
@@ -185,7 +185,7 @@ const EditProfileModal = ({ user, onClose, onSuccess }: EditProfileModalProps) =
                             </div>
                         </div>
 
-                        {/* Actions */}
+
                         <div className="flex gap-3 pt-2">
                             <Button
                                 type="button"

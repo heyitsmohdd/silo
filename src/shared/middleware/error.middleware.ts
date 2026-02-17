@@ -1,13 +1,13 @@
-/**
- * Global Error Handling Middleware
- */
+// 
+// Global Error Handling Middleware
+
 
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 
-/**
- * Custom Application Error
- */
+// 
+// Custom Application Error
+
 export class AppError extends Error {
     constructor(
         public statusCode: number,
@@ -19,16 +19,16 @@ export class AppError extends Error {
     }
 }
 
-/**
- * Zod Validation Error Formatter
- */
+// 
+// Zod Validation Error Formatter
+
 const formatZodError = (error: ZodError): string => {
     return error.errors.map((err) => `${err.path.join('.')}: ${err.message}`).join(', ');
 };
 
-/**
- * Global Error Handler
- */
+// 
+// Global Error Handler
+
 export const errorHandler = (
     err: Error | AppError | ZodError,
     _req: Request,
@@ -61,9 +61,9 @@ export const errorHandler = (
     });
 };
 
-/**
- * 404 Not Found Handler
- */
+// 
+// 404 Not Found Handler
+
 export const notFoundHandler = (req: Request, res: Response): void => {
     res.status(404).json({
         error: 'Route not found',

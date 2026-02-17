@@ -1,7 +1,7 @@
-/**
- * CreateChannelModal Component
- * Modal for creating new channels
- */
+// 
+// CreateChannelModal Component
+// Modal for creating new channels
+
 
 import { useState } from 'react';
 import { X, Hash } from 'lucide-react';
@@ -55,15 +55,12 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={handleClose}
             />
 
-            {/* Modal */}
             <div className="relative bg-zinc-900 rounded-xl border border-white/10 w-full max-w-md mx-4 shadow-2xl">
-                {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                     <div className="flex items-center gap-2">
                         <Hash className="w-5 h-5 text-violet-500" />
@@ -78,9 +75,7 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
                     </button>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    {/* Name Input */}
                     <div>
                         <label htmlFor="channel-name" className="block text-sm font-medium text-zinc-300 mb-2">
                             Channel Name <span className="text-red-500">*</span>
@@ -100,7 +95,6 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
                         </p>
                     </div>
 
-                    {/* Description Input */}
                     <div>
                         <label htmlFor="channel-description" className="block text-sm font-medium text-zinc-300 mb-2">
                             Description (Optional)
@@ -116,14 +110,12 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
                         />
                     </div>
 
-                    {/* Error Message */}
                     {error && (
                         <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2">
                             <p className="text-sm text-red-400">{error}</p>
                         </div>
                     )}
 
-                    {/* Actions */}
                     <div className="flex gap-3 pt-2">
                         <button
                             type="button"

@@ -67,7 +67,6 @@ const ChatSearch = ({ messages, onResultClick }: ChatSearchProps) => {
         </button>
       </div>
 
-      {/* Search Results Dropdown */}
       {searchTerm && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-soft-lg max-h-80 overflow-y-auto z-50">
           {searchResults.length === 0 ? (

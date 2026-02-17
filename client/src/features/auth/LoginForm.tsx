@@ -49,7 +49,6 @@ const LoginForm = () => {
   return (
     <AuthLayout title="Sign in to your account">
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Global Error */}
         {error && (
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
             <p className="text-sm text-destructive">
@@ -58,7 +57,6 @@ const LoginForm = () => {
           </div>
         )}
 
-        {/* Email */}
         <Input
           label="Email Address"
           type="email"
@@ -69,7 +67,6 @@ const LoginForm = () => {
           disabled={isLoading}
         />
 
-        {/* Password */}
         <Input
           label="Password"
           type="password"
@@ -80,12 +77,10 @@ const LoginForm = () => {
           disabled={isLoading}
         />
 
-        {/* Submit */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign In'}
         </Button>
 
-        {/* Register Link */}
         <div className="pt-4 border-t border-border">
           <div className="flex justify-between gap-4">
             <p className="text-sm text-muted-foreground">

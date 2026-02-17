@@ -26,7 +26,6 @@ const QuestionFilters = ({
     return (
         <div className="space-y-3">
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                {/* Search Input - Pill Shape */}
                 <div className="flex-1 sm:max-w-md relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
                     <input
@@ -38,7 +37,6 @@ const QuestionFilters = ({
                     />
                 </div>
 
-                {/* Ghost Button: Tags Filter */}
                 <div className="relative">
                     <select
                         value={tagFilter}
@@ -55,7 +53,6 @@ const QuestionFilters = ({
                     <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500 pointer-events-none" />
                 </div>
 
-                {/* Ghost Button: Sort */}
                 <div className="relative">
                     <select
                         value={sortBy}
@@ -70,7 +67,6 @@ const QuestionFilters = ({
                 </div>
             </div>
 
-            {/* Clear Filters Button */}
             {hasFilters && (
                 <button
                     onClick={onClearFilters}

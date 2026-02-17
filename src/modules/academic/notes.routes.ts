@@ -1,6 +1,6 @@
-/**
- * Academic Notes Routes
- */
+// 
+// Academic Notes Routes
+
 
 import { Router } from 'express';
 import {
@@ -14,16 +14,16 @@ import { requireAuth } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
 
-/**
- * All routes require authentication and batch context
- */
+// 
+// All routes require authentication and batch context
+
 router.use(requireAuth);
 
-/**
- * GET /academic/notes
- * List all notes (batch-scoped)
- * Query params: ?subject=CS&search=query&limit=20&offset=0
- */
+// 
+// GET /academic/notes
+// List all notes (batch-scoped)
+// Query params: ?subject=CS&search=query&limit=20&offset=0
+
 router.get('/notes', async (req, res, next) => {
     try {
         await listNotes(req, res);
@@ -32,10 +32,10 @@ router.get('/notes', async (req, res, next) => {
     }
 });
 
-/**
- * POST /academic/notes
- * Create a new note
- */
+// 
+// POST /academic/notes
+// Create a new note
+
 router.post('/notes', async (req, res, next) => {
     try {
         await createNoteHandler(req, res);
@@ -44,10 +44,10 @@ router.post('/notes', async (req, res, next) => {
     }
 });
 
-/**
- * GET /academic/notes/:id
- * Get single note by ID (batch-scoped)
- */
+// 
+// GET /academic/notes/:id
+// Get single note by ID (batch-scoped)
+
 router.get('/notes/:id', async (req, res, next) => {
     try {
         await getNoteHandler(req, res);
@@ -56,10 +56,10 @@ router.get('/notes/:id', async (req, res, next) => {
     }
 });
 
-/**
- * PUT /academic/notes/:id
- * Update a note (author-only)
- */
+// 
+// PUT /academic/notes/:id
+// Update a note (author-only)
+
 router.put('/notes/:id', async (req, res, next) => {
     try {
         await updateNoteHandler(req, res);
@@ -68,10 +68,10 @@ router.put('/notes/:id', async (req, res, next) => {
     }
 });
 
-/**
- * DELETE /academic/notes/:id
- * Soft delete a note (author-only)
- */
+// 
+// DELETE /academic/notes/:id
+// Soft delete a note (author-only)
+
 router.delete('/notes/:id', async (req, res, next) => {
     try {
         await deleteNoteHandler(req, res);

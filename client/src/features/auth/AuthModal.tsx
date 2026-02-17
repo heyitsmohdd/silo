@@ -138,7 +138,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    {/* Logo */}
                     <div className="mb-6">
                         <span className="font-bold text-2xl text-foreground font-['Press_Start_2P']">
                             Silo
@@ -156,14 +155,12 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-5 mt-6">
-                    {/* Global Error */}
                     {error && (
                         <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
                             <p className="text-sm text-destructive">{error}</p>
                         </div>
                     )}
 
-                    {/* Email */}
                     <Input
                         label="University email"
                         type="email"
@@ -174,7 +171,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         disabled={loading}
                     />
 
-                    {/* Password */}
                     <Input
                         label="Password"
                         type="password"
@@ -186,7 +182,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         disabled={loading}
                     />
 
-                    {/* Confirm Password (Signup only) */}
                     {mode === 'signup' && (
                         <Input
                             label="Confirm password"
@@ -200,7 +195,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         />
                     )}
 
-                    {/* Role (Signup only) - DISABLED FOR BETA */}
                     {/* {mode === 'signup' && (
                         <Select
                             label="Role"
@@ -211,7 +205,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         />
                     )} */}
 
-                    {/* Year (Signup only) */}
                     {mode === 'signup' && (
                         <Select
                             label="Year"
@@ -222,7 +215,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         />
                     )}
 
-                    {/* Branch (Signup only) */}
                     {mode === 'signup' && (
                         <Select
                             label="Branch"
@@ -233,7 +225,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                         />
                     )}
 
-                    {/* Submit Button */}
                     <Button type="submit" className="w-full" disabled={loading}>
                         {loading
                             ? 'Please wait...'
@@ -242,7 +233,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                                 : 'Sign In'}
                     </Button>
 
-                    {/* Forgot Password Link (Signin only) */}
                     {mode === 'signin' && (
                         <div className="text-center">
                             <button
@@ -259,7 +249,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                     )}
                 </form>
 
-                {/* Mode Toggle */}
                 <div className="text-center text-sm text-muted-foreground mt-4 pt-4 border-t border-border">
                     {mode === 'signup' ? (
                         <>

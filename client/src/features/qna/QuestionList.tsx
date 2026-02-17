@@ -61,7 +61,7 @@ const QuestionList = () => {
             }
         },
         enabled: activeTab === 'news',
-        staleTime: 1000 * 60 * 60
+        staleTime: 1000// 60// 60
     });
 
     const questionsList = useMemo(() => {
@@ -208,9 +208,7 @@ const QuestionList = () => {
 
     return (
         <div>
-            {/* Header Container */}
             <div className="flex flex-col gap-6 mb-8">
-                {/* Top Row: Title & New Question Button */}
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion Board</h1>
                     {activeTab !== 'news' && (
@@ -224,7 +222,6 @@ const QuestionList = () => {
                     )}
                 </div>
 
-                {/* Bottom Row: Search & Filters */}
                 {questionsList.length > 0 && activeTab !== 'news' && (
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1">
@@ -270,7 +267,6 @@ const QuestionList = () => {
                     </div>
                 )}
 
-                {/* Category Tabs */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide border-b border-zinc-800/50 pb-4">
                     {tabs.map((tab) => (
                         <button
@@ -290,7 +286,6 @@ const QuestionList = () => {
                 </div>
             </div>
 
-            {/* Content Switcher */}
             {activeTab === 'news' ? (
                 <div className="space-y-3">
                     {isLoadingNews ? (
@@ -349,7 +344,6 @@ const QuestionList = () => {
                 )
             )}
 
-            {/* Modal */}
             {showModal && (
                 <AskQuestionModal
                     onClose={() => setShowModal(false)}

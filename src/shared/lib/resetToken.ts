@@ -1,17 +1,17 @@
 import crypto from 'crypto';
 
-/**
- * Password reset token utilities
- */
+// 
+// Password reset token utilities
+
 
 export interface ResetTokenData {
   email: string;
   timestamp: number;
 }
 
-/**
- * Generate a secure reset token
- */
+// 
+// Generate a secure reset token
+
 export const generateResetToken = (email: string): { token: string; expiresAt: Date } => {
   const timestamp = Date.now();
   const data: ResetTokenData = { email, timestamp };
@@ -28,14 +28,14 @@ export const generateResetToken = (email: string): { token: string; expiresAt: D
   const signedToken = `${token}.${signature}`;
 
   // Token expires in 1 hour
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 60// 60// 1000);
 
   return { token: signedToken, expiresAt };
 };
 
-/**
- * Verify a reset token
- */
+// 
+// Verify a reset token
+
 export const verifyResetToken = (signedToken: string): { valid: boolean; email?: string } => {
   try {
     const [token, signature] = signedToken.split('.');
@@ -59,7 +59,7 @@ export const verifyResetToken = (signedToken: string): { valid: boolean; email?:
 
     // Check if token has expired (1 hour)
     const tokenAge = Date.now() - data.timestamp;
-    const oneHour = 60 * 60 * 1000;
+    const oneHour = 60// 60// 1000;
 
     if (tokenAge > oneHour) {
       return { valid: false };

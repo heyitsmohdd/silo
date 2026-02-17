@@ -35,7 +35,6 @@ const RequestAccess = () => {
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 relative overflow-hidden">
-            {/* Fullscreen Background Video */}
             <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <video
                     autoPlay
@@ -47,12 +46,10 @@ const RequestAccess = () => {
                     <source src="/background-video.mp4" type="video/mp4" />
                     <source src="/background-video.webm" type="video/webm" />
                 </video>
-                {/* Dark overlay for better text readability */}
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
             </div>
 
             <div className="w-full max-w-md relative z-10">
-                {/* Logo / Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Join the Waitlist</h1>
                     <p className="text-zinc-400 text-sm">
@@ -60,7 +57,6 @@ const RequestAccess = () => {
                     </p>
                 </div>
 
-                {/* Card */}
                 <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl">
                     {status === 'success' ? (
                         <div className="text-center py-8">
@@ -123,7 +119,6 @@ const RequestAccess = () => {
                     )}
                 </div>
 
-                {/* Footer */}
                 <div className="text-center mt-6">
                     <Link
                         to="/login"

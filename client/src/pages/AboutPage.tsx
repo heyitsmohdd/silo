@@ -5,7 +5,6 @@ import Button from '@/components/ui/Button';
 const AboutPage = () => {
     return (
         <div className="min-h-screen bg-black text-white relative overflow-hidden">
-            {/* Background Video Layer */}
             <div className="fixed inset-0 w-full h-full z-0 pointer-events-none">
                 <video
                     autoPlay
@@ -20,7 +19,6 @@ const AboutPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40 backdrop-blur-[2px]" />
             </div>
 
-            {/* Navigation */}
             <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center">
                 <Link
                     to="/"
@@ -31,9 +29,7 @@ const AboutPage = () => {
                 </Link>
             </nav>
 
-            {/* Content Container */}
             <div className="relative z-10 max-w-4xl mx-auto px-6 py-24 md:py-32">
-                {/* Hero Section */}
                 <div className="text-center mb-24 space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
                     <h1 className="text-5xl md:text-7xl font-bold tracking-tighter">
                         Digital <span className="text-emerald-400">Freedom.</span>
@@ -43,7 +39,6 @@ const AboutPage = () => {
                     </p>
                 </div>
 
-                {/* Values Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
                     <ValueCard
                         icon={<Ghost className="w-8 h-8 text-violet-400" />}
@@ -67,7 +62,6 @@ const AboutPage = () => {
                     />
                 </div>
 
-                {/* Mission Statement */}
                 <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 text-center mb-24 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -87,7 +81,6 @@ const AboutPage = () => {
                     </div>
                 </div>
 
-                {/* Legal / Safety Disclaimer */}
                 <div className="border-t border-white/10 pt-12 mb-12">
                     <h3 className="text-2xl font-bold mb-4 text-zinc-200">Safety & Terms</h3>
                     <p className="text-zinc-500 max-w-2xl leading-relaxed">
@@ -98,7 +91,6 @@ const AboutPage = () => {
                     </p>
                 </div>
 
-                {/* Footer */}
                 <div className="text-center text-zinc-600 text-sm flex flex-col items-center gap-2">
                     <p>&copy; {new Date().getFullYear()} Silo. Built for students, by students.</p>
                     <Link to="/legal" className="text-zinc-600 hover:text-zinc-400 text-xs transition-colors underline">

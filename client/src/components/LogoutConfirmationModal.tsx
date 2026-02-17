@@ -13,18 +13,15 @@ const LogoutConfirmationModal = ({ isOpen, onClose, onConfirm }: LogoutConfirmat
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="bg-zinc-900 border-zinc-800 max-w-sm w-full p-0 overflow-hidden">
                 <div className="p-6 flex flex-col items-center text-center">
-                    {/* Icon */}
                     <div className="w-12 h-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
                         <LogOut className="w-6 h-6 text-zinc-400" />
                     </div>
 
-                    {/* Typography */}
                     <h2 className="text-xl font-bold text-white mb-2">Log out?</h2>
                     <p className="text-zinc-400 text-sm mb-6">
                         Are you sure you want to log out of your account?
                     </p>
 
-                    {/* Buttons */}
                     <div className="flex w-full gap-3">
                         <Button
                             variant="ghost"

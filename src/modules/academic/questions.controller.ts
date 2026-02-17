@@ -1,7 +1,7 @@
-/**
- * Academic Questions Controller
- * Request handlers for Q&A routes
- */
+// 
+// Academic Questions Controller
+// Request handlers for Q&A routes
+
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
@@ -26,10 +26,10 @@ import {
     parseBestAnswer,
 } from '../../shared/schemas/academic.schema.js';
 
-/**
- * GET /academic/questions
- * List all questions (batch-scoped with filters)
- */
+// 
+// GET /academic/questions
+// List all questions (batch-scoped with filters)
+
 export const listQuestions = async (
     req: AuthenticatedRequest,
     res: Response
@@ -60,10 +60,10 @@ export const listQuestions = async (
     });
 };
 
-/**
- * POST /academic/questions
- * Create a new question
- */
+// 
+// POST /academic/questions
+// Create a new question
+
 export const createQuestionHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -96,10 +96,10 @@ export const createQuestionHandler = async (
     });
 };
 
-/**
- * GET /academic/questions/:id
- * Get single question by ID with all answers
- */
+// 
+// GET /academic/questions/:id
+// Get single question by ID with all answers
+
 export const getQuestionHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -122,10 +122,10 @@ export const getQuestionHandler = async (
     res.status(200).json({ question });
 };
 
-/**
- * PUT /academic/questions/:id
- * Update a question (author-only)
- */
+// 
+// PUT /academic/questions/:id
+// Update a question (author-only)
+
 export const updateQuestionHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -161,10 +161,10 @@ export const updateQuestionHandler = async (
     });
 };
 
-/**
- * DELETE /academic/questions/:id
- * Soft delete a question (author-only)
- */
+// 
+// DELETE /academic/questions/:id
+// Soft delete a question (author-only)
+
 export const deleteQuestionHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -187,10 +187,10 @@ export const deleteQuestionHandler = async (
     res.status(200).json(result);
 };
 
-/**
- * POST /academic/questions/:id/answers
- * Create an answer to a question
- */
+// 
+// POST /academic/questions/:id/answers
+// Create an answer to a question
+
 export const createAnswerHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -226,10 +226,10 @@ export const createAnswerHandler = async (
     });
 };
 
-/**
- * DELETE /academic/questions/:id/answers/:answerId
- * Delete an answer (author-only)
- */
+// 
+// DELETE /academic/questions/:id/answers/:answerId
+// Delete an answer (author-only)
+
 export const deleteAnswerHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -252,10 +252,10 @@ export const deleteAnswerHandler = async (
     res.status(200).json(result);
 };
 
-/**
- * POST /academic/questions/:id/vote
- * Vote on a question
- */
+// 
+// POST /academic/questions/:id/vote
+// Vote on a question
+
 export const voteQuestionHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -283,10 +283,10 @@ export const voteQuestionHandler = async (
     });
 };
 
-/**
- * POST /academic/questions/:id/answers/:answerId/vote
- * Vote on an answer
- */
+// 
+// POST /academic/questions/:id/answers/:answerId/vote
+// Vote on an answer
+
 export const voteAnswerHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -314,10 +314,10 @@ export const voteAnswerHandler = async (
     });
 };
 
-/**
- * PUT /academic/questions/:id/best-answer
- * Mark an answer as the best answer (question author only)
- */
+// 
+// PUT /academic/questions/:id/best-answer
+// Mark an answer as the best answer (question author only)
+
 export const markBestAnswerHandler = async (
     req: AuthenticatedRequest,
     res: Response

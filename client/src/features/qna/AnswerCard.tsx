@@ -99,9 +99,7 @@ const AnswerCard = ({
     return (
         <>
             <div className={`flex gap-4 py-4 ${!isLast ? 'border-b border-zinc-800' : ''}`}>
-                {/* Left: Voting + Avatar */}
                 <div className="flex gap-3">
-                    {/* Voting Buttons */}
                     <VotingButtons
                         voteCount={voteCount}
                         upvotes={answer.upvotes}
@@ -112,7 +110,6 @@ const AnswerCard = ({
                         size="sm"
                     />
 
-                    {/* Avatar */}
                     <img
                         src={identity.avatar}
                         alt={identity.name}
@@ -120,9 +117,7 @@ const AnswerCard = ({
                     />
                 </div>
 
-                {/* Right: Content */}
                 <div className="flex-1 min-w-0">
-                    {/* Author and Time */}
                     <div className="flex items-center gap-2 mb-2">
                         <span className="text-sm font-medium text-zinc-300">{identity.name}</span>
                         <span className="text-xs text-zinc-500">•</span>
@@ -138,14 +133,11 @@ const AnswerCard = ({
                         )}
                     </div>
 
-                    {/* Answer Content */}
                     <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3 break-words">
                         {answer.content}
                     </p>
 
-                    {/* Actions Row */}
                     <div className="flex items-center gap-4">
-                        {/* Reply (placeholder) */}
                         <button
                             onClick={onReply}
                             className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
@@ -154,7 +146,6 @@ const AnswerCard = ({
                             <span>Reply</span>
                         </button>
 
-                        {/* Mark as Best */}
                         {canMarkBest && (
                             <button
                                 onClick={handleMarkBest}
@@ -165,7 +156,6 @@ const AnswerCard = ({
                             </button>
                         )}
 
-                        {/* Delete */}
                         {canDelete && (
                             <button
                                 onClick={handleDeleteClick}

@@ -1,7 +1,7 @@
-/**
- * Channel API Functions
- * HTTP requests for channel data
- */
+// 
+// Channel API Functions
+// HTTP requests for channel data
+
 
 import axios from '@/lib/axios';
 
@@ -36,17 +36,17 @@ export interface ChannelMessage {
     createdAt: string;
 }
 
-/**
- * Fetch all public channels
- */
+// 
+// Fetch all public channels
+
 export const fetchChannels = async (): Promise<Channel[]> => {
     const response = await axios.get('/api/channels');
     return response.data.channels;
 };
 
-/**
- * Fetch channel message history
- */
+// 
+// Fetch channel message history
+
 export const fetchChannelMessages = async (
     channelId: string,
     limit: number = 50
@@ -57,17 +57,17 @@ export const fetchChannelMessages = async (
     return response.data.messages;
 };
 
-/**
- * Fetch single channel details
- */
+// 
+// Fetch single channel details
+
 export const fetchChannel = async (channelId: string): Promise<Channel> => {
     const response = await axios.get(`/api/channels/${channelId}`);
     return response.data.channel;
 };
 
-/**
- * Create a new channel
- */
+// 
+// Create a new channel
+
 export const createChannel = async (
     name: string,
     description?: string
@@ -76,9 +76,9 @@ export const createChannel = async (
     return response.data.channel;
 };
 
-/**
- * Delete a channel (owner only)
- */
+// 
+// Delete a channel (owner only)
+
 export const deleteChannel = async (channelId: string): Promise<void> => {
     await axios.delete(`/api/channels/${channelId}`);
 };

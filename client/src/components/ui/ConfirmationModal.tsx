@@ -8,13 +8,13 @@ interface ConfirmationModalProps {
     onConfirm: () => void;
     title: string;
     description: string;
-    /** Text for the confirm button. Defaults to "Confirm" */
+    // Text for the confirm button. Defaults to "Confirm"
     confirmText?: string;
-    /** Text for the cancel button. Defaults to "Cancel" */
+    // Text for the cancel button. Defaults to "Cancel"
     cancelText?: string;
-    /** Visual style variant. Defaults to "danger" */
+    // Visual style variant. Defaults to "danger"
     variant?: 'danger' | 'warning' | 'info';
-    /** specifices if the action is currently loading */
+    // specifices if the action is currently loading
     isLoading?: boolean;
 }
 
@@ -63,12 +63,10 @@ const ConfirmationModal = ({
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={`bg-zinc-900 max-w-md w-full p-0 overflow-hidden border ${styles.border}`}>
                 <div className="p-6 flex flex-col items-center text-center">
-                    {/* Icon Area */}
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${styles.iconBg}`}>
                         <AlertTriangle className={`w-6 h-6 ${styles.iconColor}`} />
                     </div>
 
-                    {/* Content */}
                     <div className="space-y-2 mb-6">
                         <h2 className="text-xl font-bold text-white">
                             {title}
@@ -78,7 +76,6 @@ const ConfirmationModal = ({
                         </p>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex w-full gap-3">
                         <Button
                             variant="ghost"

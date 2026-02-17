@@ -34,7 +34,6 @@ const NewsCard = ({ item }: { item: NewsItemProps }) => {
                     <span>{item.category}</span>
                 </div>
 
-                {/* Date could go here if needed */}
             </div>
 
             <h3 className="text-zinc-100 font-semibold mb-2 group-hover:text-emerald-400 transition-colors line-clamp-2">

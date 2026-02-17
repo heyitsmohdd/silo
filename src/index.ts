@@ -1,7 +1,7 @@
-/**
- * The Academic Vault - Express Server Entry Point
- * Domain-Driven Design with Strict Multi-Tenant Batch Isolation
- */
+// 
+// The Academic Vault - Express Server Entry Point
+// Domain-Driven Design with Strict Multi-Tenant Batch Isolation
+
 
 import 'dotenv/config';
 import express from 'express';

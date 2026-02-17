@@ -1,7 +1,7 @@
-/**
- * ChannelList Component
- * Displays list of public channels in sidebar with create functionality
- */
+// 
+// ChannelList Component
+// Displays list of public channels in sidebar with create functionality
+
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -106,10 +106,10 @@ export default function ChannelList({ isModalOpen = false, onModalClose }: Chann
     );
 }
 
-/**
- * ChannelListHeader Component
- * Header for channel list with create button
- */
+// 
+// ChannelListHeader Component
+// Header for channel list with create button
+
 interface ChannelListHeaderProps {
     onCreateClick: () => void;
 }

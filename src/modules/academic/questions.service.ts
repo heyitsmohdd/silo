@@ -1,15 +1,15 @@
-/**
- * Academic Questions Service Layer
- * Business logic for Q&A CRUD with strict batch isolation
- */
+// 
+// Academic Questions Service Layer
+// Business logic for Q&A CRUD with strict batch isolation
+
 
 import { prisma } from '../../shared/lib/prisma.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
 import { Prisma } from '@prisma/client';
 
-/**
- * Create a new question (batch-scoped)
- */
+// 
+// Create a new question (batch-scoped)
+
 export const createQuestion = async (
     data: {
         title: string;
@@ -61,9 +61,9 @@ export const createQuestion = async (
     return question;
 };
 
-/**
- * Get all questions (batch-scoped with filters)
- */
+// 
+// Get all questions (batch-scoped with filters)
+
 export const getQuestions = async (
     year: number,
     branch: string,
@@ -149,9 +149,9 @@ export const getQuestions = async (
     return { questions, total };
 };
 
-/**
- * Get single question by ID (batch-scoped) with all answers
- */
+// 
+// Get single question by ID (batch-scoped) with all answers
+
 export const getQuestionById = async (
     id: string,
     year: number,
@@ -209,9 +209,9 @@ export const getQuestionById = async (
     return question;
 };
 
-/**
- * Update question (batch-scoped, author-only)
- */
+// 
+// Update question (batch-scoped, author-only)
+
 export const updateQuestion = async (
     id: string,
     authorId: string,
@@ -276,9 +276,9 @@ export const updateQuestion = async (
     return updatedQuestion;
 };
 
-/**
- * Soft delete question (batch-scoped, author-only)
- */
+// 
+// Soft delete question (batch-scoped, author-only)
+
 export const deleteQuestion = async (
     id: string,
     authorId: string,
@@ -308,9 +308,9 @@ export const deleteQuestion = async (
     return { message: 'Question deleted successfully' };
 };
 
-/**
- * Create an answer to a question (batch-scoped)
- */
+// 
+// Create an answer to a question (batch-scoped)
+
 export const createAnswer = async (
     questionId: string,
     data: {
@@ -407,9 +407,9 @@ export const createAnswer = async (
     return answer;
 };
 
-/**
- * Delete answer (batch-scoped, author-only)
- */
+// 
+// Delete answer (batch-scoped, author-only)
+
 export const deleteAnswer = async (
     questionId: string,
     answerId: string,
@@ -441,9 +441,9 @@ export const deleteAnswer = async (
     return { message: 'Answer deleted successfully' };
 };
 
-/**
- * Vote on a question
- */
+// 
+// Vote on a question
+
 export const voteQuestion = async (
     id: string,
     voteType: 'upvote' | 'downvote',
@@ -526,9 +526,9 @@ export const voteQuestion = async (
     return await prisma.question.findUnique({ where: { id } });
 };
 
-/**
- * Vote on an answer
- */
+// 
+// Vote on an answer
+
 export const voteAnswer = async (
     answerId: string,
     voteType: 'upvote' | 'downvote',
@@ -612,9 +612,9 @@ export const voteAnswer = async (
     return await prisma.answer.findUnique({ where: { id: answerId } });
 };
 
-/**
- * Mark an answer as the best answer for a question (question author only)
- */
+// 
+// Mark an answer as the best answer for a question (question author only)
+
 export const markBestAnswer = async (
     questionId: string,
     answerId: string,

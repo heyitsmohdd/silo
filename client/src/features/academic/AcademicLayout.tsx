@@ -10,7 +10,6 @@ const AcademicLayout = ({ children }: AcademicLayoutProps) => {
 
     return (
         <div className="w-full max-w-4xl mx-auto min-h-screen p-6">
-            {/* User Info - Top Right */}
             {user && (
                 <div className="flex justify-end mb-6">
                     <div className="text-sm text-zinc-400">

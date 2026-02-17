@@ -23,7 +23,7 @@ const NewsHighlights = () => {
                 return [];
             }
         },
-        staleTime: 1000 * 60 * 15,
+        staleTime: 1000// 60// 15,
     });
 
     if (isLoading) {
@@ -40,10 +40,8 @@ const NewsHighlights = () => {
 
     return (
         <div className="w-full">
-            {/* Scroll Container */}
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x items-center">
 
-                {/* Label */}
                 <div className="flex items-center gap-1.5 px-2 flex-shrink-0">
                     <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500/20" />
                     <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Trending</span>
@@ -57,7 +55,6 @@ const NewsHighlights = () => {
                         rel="noopener noreferrer"
                         className="snap-start flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900/40 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 transition-all group whitespace-nowrap"
                     >
-                        {/* Dot Indicator */}
                         <span className={`w-1.5 h-1.5 rounded-full ${item.category === 'TECH' ? 'bg-cyan-500' :
                             item.category === 'EVENT' ? 'bg-emerald-500' : 'bg-violet-500'
                             } group-hover:scale-125 transition-transform`} />

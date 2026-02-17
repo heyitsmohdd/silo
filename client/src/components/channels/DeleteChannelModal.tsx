@@ -1,7 +1,7 @@
-/**
- * DeleteChannelModal Component
- * Professional confirmation modal for deleting a channel
- */
+// 
+// DeleteChannelModal Component
+// Professional confirmation modal for deleting a channel
+
 
 import { AlertTriangle, Trash2, X } from 'lucide-react';
 
@@ -24,15 +24,12 @@ export default function DeleteChannelModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={() => !loading && onClose()}
             />
 
-            {/* Modal */}
             <div className="relative bg-zinc-900 rounded-xl border border-white/10 w-full max-w-sm mx-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                     <div className="flex items-center gap-2 text-red-500">
                         <AlertTriangle className="w-5 h-5" />
@@ -47,7 +44,6 @@ export default function DeleteChannelModal({
                     </button>
                 </div>
 
-                {/* Content */}
                 <div className="p-6">
                     <div className="mb-6">
                         <p className="text-zinc-300 text-sm leading-relaxed">
@@ -58,7 +54,6 @@ export default function DeleteChannelModal({
                         </p>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex gap-3">
                         <button
                             type="button"

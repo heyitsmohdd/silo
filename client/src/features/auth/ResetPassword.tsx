@@ -142,7 +142,6 @@ const ResetPassword = () => {
   return (
     <AuthLayout title="Create new password">
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Error */}
         {error && (
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
             <p className="text-sm text-destructive">
@@ -151,7 +150,6 @@ const ResetPassword = () => {
           </div>
         )}
 
-        {/* New Password */}
         <Input
           label="New Password"
           type="password"
@@ -162,7 +160,6 @@ const ResetPassword = () => {
           disabled={isLoading}
         />
 
-        {/* Confirm Password */}
         <Input
           label="Confirm New Password"
           type="password"
@@ -173,7 +170,6 @@ const ResetPassword = () => {
           disabled={isLoading}
         />
 
-        {/* Password Requirements */}
         <div className="p-4 bg-muted/50 rounded-lg space-y-2">
           <p className="text-sm font-medium text-foreground">
             Password Requirements:
@@ -184,12 +180,10 @@ const ResetPassword = () => {
           </ul>
         </div>
 
-        {/* Submit */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Resetting...' : 'Reset Password'}
         </Button>
 
-        {/* Login Link */}
         <div className="pt-4 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
             Remember your password?{' '}

@@ -1,7 +1,7 @@
-/**
- * Socket.io Event Handlers
- * Real-time communication with batch isolation
- */
+// 
+// Socket.io Event Handlers
+// Real-time communication with batch isolation
+
 
 import { Server, Socket } from 'socket.io';
 import { createMessage, getRoomMessages } from './message.service.js';
@@ -17,15 +17,15 @@ import { startChannelDeletionTimeout, clearChannelTimeout } from '../channels/ch
 // Beta security: Simple in-memory rate limiter for chat messages
 const messageRateLimiter = new Map<string, { count: number; resetTime: number }>();
 const MESSAGE_LIMIT = 30; // 30 messages per minute
-const WINDOW_MS = 60 * 1000; // 1 minute
+const WINDOW_MS = 60// 1000; // 1 minute
 
 // User socket registry for targeted notifications
 const userSockets = new Map<string, string>(); // userId -> socketId
 const channelMembers = new Map<string, Set<string>>(); // channelId -> Set of userIds
 
-/**
- * Emit notification to a specific user
- */
+// 
+// Emit notification to a specific user
+
 export const emitNotificationToUser = (io: Server, userId: string, notification: any) => {
     const socketId = userSockets.get(userId);
     if (socketId) {
@@ -34,9 +34,9 @@ export const emitNotificationToUser = (io: Server, userId: string, notification:
     }
 };
 
-/**
- * Emit updated member list to all users in a channel
- */
+// 
+// Emit updated member list to all users in a channel
+
 const emitChannelMemberList = async (io: Server, channelId: string) => {
     const memberIds = Array.from(channelMembers.get(channelId) || []);
 
@@ -50,9 +50,9 @@ const emitChannelMemberList = async (io: Server, channelId: string) => {
     console.log(`👥 Emitted member list for channel ${channelId}: ${members.length} members`);
 };
 
-/**
- * Initialize Socket.io handlers
- */
+// 
+// Initialize Socket.io handlers
+
 export const initializeSocketHandlers = (io: Server) => {
     // Middleware: Authenticate socket connections
     io.use((socket: Socket, next) => {

@@ -1,7 +1,7 @@
-/**
- * Leaderboard Routes
- * Routes for fetching leaderboard data
- */
+// 
+// Leaderboard Routes
+// Routes for fetching leaderboard data
+
 
 import { Router } from 'express';
 import { getWeeklyLeaderboard } from './leaderboard.controller.js';

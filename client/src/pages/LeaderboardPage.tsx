@@ -20,7 +20,6 @@ const LeaderboardPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Header */}
             <div className="text-center space-y-4">
                 <div className="inline-flex items-center justify-center p-3 rounded-full bg-amber-500/10 text-amber-500 mb-4">
                     <Trophy className="w-8 h-8" />
@@ -33,7 +32,6 @@ const LeaderboardPage = () => {
                 </p>
             </div>
 
-            {/* Leaderboard Card */}
             <div className="glass-card overflow-hidden">
                 {isLoading ? (
                     <div className="p-8 space-y-4">
@@ -53,7 +51,6 @@ const LeaderboardPage = () => {
                                 key={user.id}
                                 className="flex items-center gap-4 p-4 md:p-6 hover:bg-white/5 transition-colors group"
                             >
-                                {/* Rank */}
                                 <div className={`
                                 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-sm md:text-base flex-shrink-0
                                 ${index < 3 ? 'bg-gradient-to-br shadow-lg' : ''}
@@ -62,7 +59,6 @@ const LeaderboardPage = () => {
                                     {index + 1}
                                 </div>
 
-                                {/* User Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
                                         <h3 className="font-semibold text-zinc-100 truncate text-base md:text-lg">
@@ -77,7 +73,6 @@ const LeaderboardPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Score */}
                                 <div className="text-right">
                                     <div className="text-lg md:text-xl font-bold text-white group-hover:text-amber-500 transition-colors">
                                         {user.weeklyKarma}

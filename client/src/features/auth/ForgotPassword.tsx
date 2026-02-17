@@ -45,7 +45,6 @@ const ForgotPassword = () => {
   return (
     <AuthLayout title="Reset your password">
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Success Message */}
         {success ? (
           <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
             <p className="text-sm text-green-700 dark:text-green-400 mb-4">
@@ -54,7 +53,6 @@ const ForgotPassword = () => {
                 : 'Password reset link sent to your email!'}
             </p>
             
-            {/* Development Info */}
             {(resetToken || resetUrl) && (
               <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                 <p className="text-xs font-medium text-yellow-800 dark:text-yellow-400 mb-2">
@@ -89,7 +87,6 @@ const ForgotPassword = () => {
           </div>
         ) : (
           <>
-            {/* Error */}
             {error && (
               <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
                 <p className="text-sm text-destructive">
@@ -98,7 +95,6 @@ const ForgotPassword = () => {
               </div>
             )}
 
-            {/* Email */}
             <Input
               label="Email Address"
               type="email"
@@ -109,12 +105,10 @@ const ForgotPassword = () => {
               disabled={isLoading}
             />
 
-            {/* Submit */}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Sending...' : 'Send Reset Link'}
             </Button>
 
-            {/* Login Link */}
             <div className="pt-4 border-t border-border">
               <p className="text-sm text-muted-foreground text-center">
                 Remember your password?{' '}

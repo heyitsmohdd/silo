@@ -27,15 +27,12 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
 
     return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             />
 
-            {/* Modal Card */}
             <div className="relative z-50 w-full max-w-md mx-4 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
-                {/* Close Button */}
                 <button
                     onClick={onClose}
                     className="absolute right-4 top-4 p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"

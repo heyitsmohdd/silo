@@ -53,12 +53,10 @@ const AnswerForm = ({ questionId, onSuccess, parentId, onCancel }: AnswerFormPro
             {!isReply && <h3 className="text-lg font-bold text-zinc-100 mb-3">Your Answer</h3>}
 
             <form onSubmit={handleSubmit}>
-                {/* Unified Container - Twitter/X Style */}
                 <div
                     className={`bg-zinc-900 border rounded-xl overflow-hidden transition-all ${hasContent ? 'border-zinc-700' : 'border-zinc-800'
                         } focus-within:ring-1 focus-within:ring-zinc-600`}
                 >
-                    {/* Textarea */}
                     <textarea
                         placeholder={isReply ? "Write a reply..." : "Write your answer..."}
                         value={content}
@@ -69,7 +67,6 @@ const AnswerForm = ({ questionId, onSuccess, parentId, onCancel }: AnswerFormPro
                         autoFocus={isReply}
                     />
 
-                    {/* Bottom Bar: Character Count + Button */}
                     <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-800">
                         <span className="text-xs text-zinc-500">
                             {content.length}/2000
@@ -86,7 +83,6 @@ const AnswerForm = ({ questionId, onSuccess, parentId, onCancel }: AnswerFormPro
                                 </button>
                             )}
 
-                            {/* Show button only when typing OR if it's a reply (always show for reply to encourage action?) - Keeping logic same for consistency */}
                             {(hasContent || isReply) && (
                                 <button
                                     type="submit"
@@ -100,7 +96,6 @@ const AnswerForm = ({ questionId, onSuccess, parentId, onCancel }: AnswerFormPro
                     </div>
                 </div>
 
-                {/* Error Message */}
                 {error && (
                     <div className="mt-2 px-3 py-2 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                         {error}

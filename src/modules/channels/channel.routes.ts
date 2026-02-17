@@ -1,7 +1,7 @@
-/**
- * Channel Routes
- * API endpoints for channels
- */
+// 
+// Channel Routes
+// API endpoints for channels
+
 
 import { Router } from 'express';
 import { requireAuth } from '../../shared/middleware/auth.middleware.js';
@@ -16,39 +16,39 @@ import {
 
 const router = Router();
 
-/**
- * All routes require authentication
- */
+// 
+// All routes require authentication
+
 router.use(requireAuth);
 
-/**
- * GET /api/channels
- * List all public channels
- */
+// 
+// GET /api/channels
+// List all public channels
+
 router.get('/', listChannels);
 
-/**
- * POST /api/channels
- * Create a new channel
- */
+// 
+// POST /api/channels
+// Create a new channel
+
 router.post('/', createChannelRateLimit, createChannelHandler);
 
-/**
- * GET /api/channels/:id
- * Get channel details
- */
+// 
+// GET /api/channels/:id
+// Get channel details
+
 router.get('/:id', getChannel);
 
-/**
- * GET /api/channels/:id/messages
- * Get channel message history
- */
+// 
+// GET /api/channels/:id/messages
+// Get channel message history
+
 router.get('/:id/messages', getMessages);
 
-/**
- * DELETE /api/channels/:id
- * Delete a channel (owner only)
- */
+// 
+// DELETE /api/channels/:id
+// Delete a channel (owner only)
+
 router.delete('/:id', deleteChannelHandler);
 
 export default router;

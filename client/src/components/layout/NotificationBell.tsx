@@ -99,7 +99,7 @@ export const NotificationBell = () => {
 
     // Fetch on mount and setup Socket.IO listener
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
         fetchNotifications();
 
         // Get socket instance
@@ -147,7 +147,6 @@ export const NotificationBell = () => {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            {/* Bell Button */}
             <button
                 onClick={toggleDropdown}
                 className="relative p-2 text-zinc-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
@@ -161,15 +160,12 @@ export const NotificationBell = () => {
                 )}
             </button>
 
-            {/* Dropdown */}
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-zinc-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
-                    {/* Header */}
                     <div className="px-4 py-3 border-b border-white/10">
                         <h3 className="text-sm font-semibold text-white">Notifications</h3>
                     </div>
 
-                    {/* Notification List */}
                     <div className="max-h-96 overflow-y-auto">
                         {notifications.length === 0 ? (
                             <div className="px-4 py-8 text-center text-sm text-zinc-500">
@@ -184,12 +180,10 @@ export const NotificationBell = () => {
                                         }`}
                                 >
                                     <div className="flex items-start gap-3">
-                                        {/* Icon */}
                                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center">
                                             <Bell className="w-4 h-4 text-violet-400" />
                                         </div>
 
-                                        {/* Content */}
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm text-white">
                                                 <span className="font-medium">{getActorName(notification.actor)}</span>{' '}
@@ -200,7 +194,6 @@ export const NotificationBell = () => {
                                             </p>
                                         </div>
 
-                                        {/* Unread Indicator */}
                                         {!notification.isRead && (
                                             <div className="flex-shrink-0 w-2 h-2 rounded-full bg-violet-500" />
                                         )}

@@ -1,13 +1,13 @@
-/**
- * Channel Service Layer
- * Business logic for public chat rooms
- */
+// 
+// Channel Service Layer
+// Business logic for public chat rooms
+
 
 import { prisma } from '../../shared/lib/prisma.js';
 
-/**
- * Get all public channels
- */
+// 
+// Get all public channels
+
 export const getAllChannels = async () => {
     return prisma.channel.findMany({
         where: {
@@ -26,9 +26,9 @@ export const getAllChannels = async () => {
     });
 };
 
-/**
- * Get channel by ID
- */
+// 
+// Get channel by ID
+
 export const getChannelById = async (channelId: string) => {
     return prisma.channel.findUnique({
         where: { id: channelId },
@@ -44,9 +44,9 @@ export const getChannelById = async (channelId: string) => {
     });
 };
 
-/**
- * Get channel messages with pagination
- */
+// 
+// Get channel messages with pagination
+
 export const getChannelMessages = async (
     channelId: string,
     limit: number = 50
@@ -73,9 +73,9 @@ export const getChannelMessages = async (
     });
 };
 
-/**
- * Create a new channel message
- */
+// 
+// Create a new channel message
+
 export const createChannelMessage = async (
     channelId: string,
     authorId: string,
@@ -101,9 +101,9 @@ export const createChannelMessage = async (
     });
 };
 
-/**
- * Create a new channel
- */
+// 
+// Create a new channel
+
 export const createChannel = async (
     name: string,
     description: string | null,
@@ -129,9 +129,9 @@ export const createChannel = async (
     });
 };
 
-/**
- * Get channel members (users currently in the channel)
- */
+// 
+// Get channel members (users currently in the channel)
+
 export const getChannelMembers = async (userIds: string[]) => {
     return prisma.user.findMany({
         where: {

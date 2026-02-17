@@ -1,17 +1,17 @@
-/**
- * Authentication Controller
- * Request handlers for auth routes
- */
+// 
+// Authentication Controller
+// Request handlers for auth routes
+
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
 import { registerUser, loginUser, handleForgotPassword, handleVerifyResetToken, handleResetPassword, updateUserProfile, changeUserPassword } from './auth.service.js';
 import { parseRegisterUser, parseLoginRequest } from '../../shared/schemas/auth.schema.js';
 
-/**
- * POST /auth/register
- * Register a new user with instant account creation
- */
+// 
+// POST /auth/register
+// Register a new user with instant account creation
+
 export const register = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const data = parseRegisterUser(req.body);
 
@@ -24,10 +24,10 @@ export const register = async (req: AuthenticatedRequest, res: Response): Promis
     });
 };
 
-/**
- * POST /auth/login
- * Login existing user
- */
+// 
+// POST /auth/login
+// Login existing user
+
 export const login = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const { email, password } = parseLoginRequest(req.body);
 
@@ -40,10 +40,10 @@ export const login = async (req: AuthenticatedRequest, res: Response): Promise<v
     });
 };
 
-/**
- * GET /auth/me
- * Get current authenticated user
- */
+// 
+// GET /auth/me
+// Get current authenticated user
+
 export const getCurrentUser = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     if (!req.user) {
         res.status(401).json({ error: 'Not authenticated' });
@@ -55,10 +55,10 @@ export const getCurrentUser = async (req: AuthenticatedRequest, res: Response): 
     });
 };
 
-/**
- * POST /auth/forgot-password
- * Send password reset link to email
- */
+// 
+// POST /auth/forgot-password
+// Send password reset link to email
+
 export const forgotPassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const { email } = req.body;
 
@@ -86,10 +86,10 @@ export const forgotPassword = async (req: AuthenticatedRequest, res: Response): 
     });
 };
 
-/**
- * POST /auth/verify-reset-token
- * Verify password reset token validity
- */
+// 
+// POST /auth/verify-reset-token
+// Verify password reset token validity
+
 export const verifyResetToken = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const { token } = req.body;
 
@@ -111,10 +111,10 @@ export const verifyResetToken = async (req: AuthenticatedRequest, res: Response)
     });
 };
 
-/**
- * POST /auth/reset-password
- * Reset password with valid token
- */
+// 
+// POST /auth/reset-password
+// Reset password with valid token
+
 export const resetPassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const { token, newPassword } = req.body;
 
@@ -145,10 +145,10 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response): P
     });
 };
 
-/**
- * PUT /auth/profile
- * Update user profile (email, firstName, lastName, username)
- */
+// 
+// PUT /auth/profile
+// Update user profile (email, firstName, lastName, username)
+
 export const updateProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     if (!req.user) {
         res.status(401).json({ error: 'Not authenticated' });
@@ -178,10 +178,10 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
     }
 };
 
-/**
- * PUT /auth/change-password
- * Change user password
- */
+// 
+// PUT /auth/change-password
+// Change user password
+
 export const changePassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     if (!req.user) {
         res.status(401).json({ error: 'Not authenticated' });
@@ -221,10 +221,10 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
     }
 };
 
-/**
- * POST /auth/backfill
- * Temporary endpoint to backfill missing usernames
- */
+// 
+// POST /auth/backfill
+// Temporary endpoint to backfill missing usernames
+
 export const backfillUsernames = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
         const { uniqueNamesGenerator, adjectives, animals } = await import('unique-names-generator');

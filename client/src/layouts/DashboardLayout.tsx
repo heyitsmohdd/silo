@@ -18,34 +18,27 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-zinc-950 relative">
-      {/* Sidebar - Desktop */}
       <aside className="hidden md:flex w-64 h-[calc(100vh-2rem)] m-4 glass-sidebar rounded-2xl flex-col">
         <SidebarContent onNavigate={closeMobileMenu} />
       </aside>
 
-      {/* Sidebar - Mobile Overlay */}
       {isMobileMenuOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
             onClick={closeMobileMenu}
           />
 
-          {/* Sidebar */}
           <aside className="fixed left-0 top-0 bottom-0 w-64 glass-sidebar z-50 md:hidden">
             <SidebarContent onNavigate={closeMobileMenu} isMobile />
           </aside>
         </>
       )}
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative z-0">
-        {/* Header */}
         <header className="h-14 glass-header sticky top-0 z-40 border-b border-white/5">
           <div className="h-full flex items-center justify-between px-4 md:px-6">
             <div className="flex items-center gap-3">
-              {/* Hamburger Menu - Mobile Only */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="md:hidden p-2 rounded-md hover:bg-zinc-800/40 transition-colors"
@@ -63,7 +56,6 @@ const DashboardLayout = () => {
               </div>
             </div>
 
-            {/* Right Side: Notifications + User Menu */}
             <div className="flex items-center gap-3">
               <NotificationBell />
               <UserMenu />
@@ -71,16 +63,12 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8 relative">
           <div className="max-w-[1600px] mx-auto flex gap-6">
-            {/* Middle Column - Main Content */}
             <div className="flex-1 min-w-0">
               <Outlet />
             </div>
 
-            {/* Right Column - News Sidebar */}
-            {/* Visible only on Dashboard (/) and Q&A (/qna), hidden on mobile/tablet */}
 
           </div>
         </main>
@@ -107,7 +95,6 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         onClose={() => setIsContactModalOpen(false)}
       />
 
-      {/* Logo */}
       <div className="h-14 flex items-center px-6 border-b border-white/5">
         <Link to="/" className="hover:opacity-70 transition-opacity">
           <h1 className="text-sm font-bold text-white font-['Press_Start_2P']">
@@ -125,7 +112,6 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         )}
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
@@ -139,12 +125,10 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           <span>Contact</span>
         </button>
 
-        {/* Weekly Stars Widget */}
         <div className="pt-2">
           <WeeklyStarsWidget />
         </div>
 
-        {/* Community Rooms Section */}
         <div className="pt-4 mt-4 border-t border-white/5">
           <ChannelListHeader onCreateClick={() => setIsCreateChannelOpen(true)} />
           <ChannelList

@@ -63,7 +63,7 @@ const LandingPage = () => {
 
     return (
         <div className="relative min-h-screen bg-black text-white overflow-hidden">
-            {/* Fullscreen Background Video */}
+
             <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <video
                     autoPlay
@@ -75,16 +75,16 @@ const LandingPage = () => {
                     <source src="/background-video.mp4" type="video/mp4" />
                     <source src="/background-video.webm" type="video/webm" />
                 </video>
-                {/* Dark overlay for better text readability */}
+
                 <div className="absolute inset-0 bg-black/50" />
             </div>
 
-            {/* Header - Mobile Responsive */}
+
             <header className="fixed top-0 w-full z-50 py-4 md:py-6">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-center">
                     <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-4 md:px-6 py-2 md:py-3 flex items-center gap-6 md:gap-12 w-fit max-w-full">
 
-                        {/* Logo on the left */}
+
                         <Link
                             to="/"
                             className="font-bold text-xl text-white font-['Press_Start_2P'] hover:opacity-70 transition-opacity"
@@ -93,14 +93,14 @@ const LandingPage = () => {
                             {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
                         </Link>
 
-                        {/* Middle Icon */}
+
                         <a href="mailto:siloedu00@gmail.com" className="text-white/20 hover:text-white/80 transition-colors duration-300">
                             <Mail className="w-5 h-5 md:w-6 md:h-6" />
                         </a>
 
-                        {/* About Us link and CTA */}
+
                         <div className="flex items-center">
-                            {/* About Us Button (Replaces Get Started) */}
+
                             <Link
                                 to="/about"
                                 className="px-4 md:px-6 py-1.5 md:py-2 bg-white text-black rounded-md text-xs md:text-sm font-medium hover:bg-white/90 transition-all duration-300 whitespace-nowrap"
@@ -112,10 +112,10 @@ const LandingPage = () => {
                 </div>
             </header>
 
-            {/* Hero Section */}
+
             <main className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-8 pt-20">
                 <div className="max-w-5xl mx-auto text-center w-full">
-                    {/* Main Headline with Typewriter */}
+
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[1.1] mb-4 md:mb-6">
                         Your space for{' '}
                         <span className="text-emerald-400">
@@ -124,20 +124,20 @@ const LandingPage = () => {
                         </span>
                     </h1>
 
-                    {/* Subheadline */}
-                    {/* Subheadline */}
+
+
                     <p className="text-base md:text-lg text-white/90 leading-relaxed md:leading-[2] mb-6 md:mb-8 max-w-2xl mx-auto px-4">
                         Speak freely, share openly, and connect without barriers.
                         <br className="hidden md:block" />
                         The anonymous network for your campus.
                     </p>
 
-                    {/* Social Proof */}
+
                     <p className="text-xs text-white/50 mb-6 md:mb-8">
                         Join 100+ students from your batch
                     </p>
 
-                    {/* CTA Button */}
+
                     <Link
                         to="/request-access"
                         className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
@@ -147,7 +147,7 @@ const LandingPage = () => {
                 </div>
             </main>
 
-            {/* Footer */}
+
             <footer className="relative z-10 border-t border-white/10 bg-black py-8 md:py-12 px-4">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
                     <div className="flex items-center gap-2">

@@ -1,7 +1,7 @@
-/**
- * Academic Reactions Controller
- * Request handlers for reaction routes
- */
+// 
+// Academic Reactions Controller
+// Request handlers for reaction routes
+
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
@@ -14,10 +14,10 @@ const reactionSchema = z.object({
     type: z.string().min(1),
 });
 
-/**
- * POST /academic/reactions
- * Toggle a reaction on a question
- */
+// 
+// POST /academic/reactions
+// Toggle a reaction on a question
+
 export const toggleReactionHandler = async (
     req: AuthenticatedRequest,
     res: Response

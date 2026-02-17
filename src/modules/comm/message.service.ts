@@ -1,14 +1,14 @@
-/**
- * Message Service Layer
- * Business logic for real-time chat with batch isolation
- */
+// 
+// Message Service Layer
+// Business logic for real-time chat with batch isolation
+
 
 import { prisma } from '../../shared/lib/prisma.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
 
-/**
- * Create a new message (batch-scoped)
- */
+// 
+// Create a new message (batch-scoped)
+
 export const createMessage = async (data: {
     content: string;
     roomId: string;
@@ -41,9 +41,9 @@ export const createMessage = async (data: {
     return message;
 };
 
-/**
- * Get messages for a room (batch-scoped)
- */
+// 
+// Get messages for a room (batch-scoped)
+
 export const getRoomMessages = async (
     roomId: string,
     year: number,
@@ -76,9 +76,9 @@ export const getRoomMessages = async (
     return messages.reverse(); // Return in chronological order
 };
 
-/**
- * Delete message (soft delete, author-only)
- */
+// 
+// Delete message (soft delete, author-only)
+
 export const deleteMessage = async (
     messageId: string,
     senderId: string,

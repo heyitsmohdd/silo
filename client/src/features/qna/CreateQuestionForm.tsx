@@ -51,7 +51,6 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
             <h2 className="text-xl font-semibold mb-4">Ask a Question</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Title */}
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium mb-1.5">
                         Question Title
@@ -70,7 +69,6 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
                     </p>
                 </div>
 
-                {/* Content */}
                 <div>
                     <label htmlFor="content" className="block text-sm font-medium mb-1.5">
                         Details
@@ -89,7 +87,6 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
                     </p>
                 </div>
 
-                {/* Tags */}
                 <div>
                     <label htmlFor="tags" className="block text-sm font-medium mb-1.5">
                         Tags
@@ -108,14 +105,12 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
                     </p>
                 </div>
 
-                {/* Error Message */}
                 {error && (
                     <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
                         {error}
                     </div>
                 )}
 
-                {/* Actions */}
                 <div className="flex gap-3 justify-end pt-2">
                     <Button
                         type="submit"

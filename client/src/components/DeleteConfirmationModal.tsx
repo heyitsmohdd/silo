@@ -55,7 +55,6 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className={`bg-zinc-900 max-w-md w-full p-0 overflow-hidden transition-colors duration-500 ${isSubmitted ? 'border-emerald-500/50' : 'border-red-500/50'}`}>
                 <div className="p-6 flex flex-col items-center text-center">
-                    {/* Icon Area */}
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-colors duration-500 ${isSubmitted ? 'bg-emerald-500/10' : 'bg-red-500/10'}`}>
                         {isSubmitted ? (
                             <CheckCircle className="w-6 h-6 text-emerald-500 animate-in zoom-in spin-in-90 duration-300" />
@@ -64,7 +63,6 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
                         )}
                     </div>
 
-                    {/* Content */}
                     <div className="space-y-2 mb-6">
                         <h2 className="text-xl font-bold text-white transition-all duration-300">
                             {isSubmitted ? 'Opening your email app...' : 'Delete your account?'}
@@ -77,7 +75,6 @@ const DeleteConfirmationModal = ({ isOpen, onClose }: DeleteConfirmationModalPro
                         </p>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex w-full gap-3">
                         {isSubmitted ? (
                             <Button

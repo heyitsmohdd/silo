@@ -159,7 +159,6 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
             onClick={onClick}
             className="flex gap-3 md:gap-4 p-4 md:p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all cursor-pointer group shadow-sm hover:shadow-md"
         >
-            {/* Voting Column */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 className="flex flex-col items-center pt-1"
@@ -175,9 +174,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                 />
             </div>
 
-            {/* Content Column */}
             <div className="flex-1 flex flex-col gap-2 md:gap-3 min-w-0">
-                {/* Header: Badge (Only show if NOT Academic) */}
                 <div className="flex items-center justify-between">
                     {question.category !== 'ACADEMIC' && (
                         <div className={`flex items-center gap-2 px-2.5 py-1 text-xs font-medium rounded-full border ${badge.color}`}>
@@ -186,7 +183,6 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                         </div>
                     )}
 
-                    {/* Delete button for author */}
                     {isAuthor && (
                         <button
                             onClick={handleDeleteClick}
@@ -198,7 +194,6 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                     )}
                 </div>
 
-                {/* Content */}
                 <div>
                     <div className="flex items-start gap-2 mb-2">
                         <h3 className="text-lg font-bold text-zinc-100 leading-tight group-hover:text-primary transition-colors line-clamp-2 flex-1 break-words">
@@ -213,27 +208,22 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                     </p>
                 </div>
 
-                {/* Meta Row (Restored): Avatar + Posted by + Time + Answers + Tags */}
                 <div className="flex items-center gap-3 flex-wrap text-xs text-zinc-500 mb-4">
-                    {/* Avatar */}
                     <img
                         src={identity.avatar}
                         alt={identity.name}
                         className="w-5 h-5 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
                     />
 
-                    {/* Posted by & Time */}
                     <span>
                         Posted by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
                     </span>
 
-                    {/* Answer Count */}
                     <div className="flex items-center gap-1 hover:text-zinc-300 transition-colors">
                         <MessageSquare className="w-3.5 h-3.5" />
                         <span>{answerCount} {answerCount === 1 ? 'answer' : 'answers'}</span>
                     </div>
 
-                    {/* Tags */}
                     <div className="flex items-center gap-2 ml-auto sm:ml-0">
                         {question.tags.slice(0, 2).map((tag, index) => (
                             <span
@@ -251,7 +241,6 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                     </div>
                 </div>
 
-                {/* Footer: Reactions */}
                 <div className="flex items-center gap-2 pt-3 border-t border-zinc-800/50">
                     {reactionCounts.map(({ emoji, count, userReacted }) => (
                         <button

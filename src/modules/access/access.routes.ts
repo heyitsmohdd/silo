@@ -5,10 +5,10 @@ import { prisma } from '../../shared/lib/prisma.js';
 
 const router = Router();
 
-/**
- * POST /access/request
- * Submit an email for access approval (Waitlist)
- */
+// 
+// POST /access/request
+// Submit an email for access approval (Waitlist)
+
 router.post('/request', async (req, res, next) => {
     try {
         // 1. Validate email

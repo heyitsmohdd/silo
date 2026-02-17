@@ -63,7 +63,6 @@ const VotingButtons = ({
 
     return (
         <div className={cn("flex flex-col items-center gap-1", className)}>
-            {/* Upvote Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();
@@ -83,7 +82,6 @@ const VotingButtons = ({
                 />
             </button>
 
-            {/* Vote Count */}
             <span
                 className={`font-bold ${voteCount > 0
                     ? 'text-green-500'
@@ -95,7 +93,6 @@ const VotingButtons = ({
                 {voteCount}
             </span>
 
-            {/* Downvote Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();

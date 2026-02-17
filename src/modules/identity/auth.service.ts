@@ -14,9 +14,9 @@ if (!JWT_SECRET) {
 
 const JWT_EXPIRES_IN = '3d'; // Token valid for 7 days
 
-/**
- * Register a new user
- */
+// 
+// Register a new user
+
 export const registerUser = async (data: {
     email: string;
     password: string;
@@ -28,7 +28,7 @@ export const registerUser = async (data: {
 }): Promise<{ user: SafeUser; token: string }> => {
     const { email, password, year, branch, role, firstName, lastName } = data;
 
-    // VIP WHITELIST CHECK: Verify email is in allowed list
+    // Verify email is in allowed list
     const allowedEmail = await prisma.allowedEmail.findUnique({
         where: { email: email.toLowerCase() },
     });
@@ -37,7 +37,7 @@ export const registerUser = async (data: {
         throw new AppError(403, 'Access Denied: You are not on the VIP list.');
     }
 
-    // Check if user already exists
+
     const existingUser = await prisma.user.findUnique({
         where: { email },
     });
@@ -46,10 +46,9 @@ export const registerUser = async (data: {
         throw new AppError(409, 'User with this email already exists');
     }
 
-    // Hash password
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await prisma.user.create({
         data: {
             email,
@@ -68,23 +67,23 @@ export const registerUser = async (data: {
         },
     });
 
-    // Generate JWT
+
     const token = generateToken(user as unknown as any);
 
-    // Return user without password
+
     const { password: _, ...safeUser } = user;
 
     return { user: safeUser as unknown as SafeUser, token };
 };
 
-/**
- * Login existing user
- */
+// 
+// Login existing user
+
 export const loginUser = async (
     email: string,
     password: string
 ): Promise<{ user: SafeUser; token: string }> => {
-    // Find user
+
     const user = await prisma.user.findUnique({
         where: { email },
     });
@@ -93,30 +92,30 @@ export const loginUser = async (
         throw new AppError(401, 'Invalid email or password');
     }
 
-    // Check if user is soft-deleted
+
     if (user.isDeleted) {
         throw new AppError(403, 'This account has been deactivated');
     }
 
-    // Verify password
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
         throw new AppError(401, 'Invalid email or password');
     }
 
-    // Generate JWT
+
     const token = generateToken(user as unknown as any); // Force cast for now or better type mapping
 
-    // Return user without password
+
     const { password: _, ...safeUser } = user;
 
     return { user: safeUser as unknown as SafeUser, token };
 };
 
-/**
- * Generate JWT token
- */
+// 
+// Generate JWT token
+
 const generateToken = (user: {
     id: string;
     email: string;
@@ -137,15 +136,15 @@ const generateToken = (user: {
     return jwt.sign(payload, JWT_SECRET!, { expiresIn: JWT_EXPIRES_IN });
 };
 
-/**
- * Handle forgot password request
- */
+// 
+// Handle forgot password request
+
 export const handleForgotPassword = async (email: string): Promise<{
     success: boolean;
     token?: string;
     error?: string;
 }> => {
-    // Find user by email
+
     const user = await prisma.user.findUnique({
         where: { email },
     });
@@ -155,12 +154,12 @@ export const handleForgotPassword = async (email: string): Promise<{
         return { success: true };
     }
 
-    // Check if user is soft-deleted
+
     if (user.isDeleted) {
         return { success: true };
     }
 
-    // Generate reset token
+
     const { token } = generateResetToken(email);
 
     // In production, send email with reset token
@@ -173,9 +172,9 @@ export const handleForgotPassword = async (email: string): Promise<{
     return { success: true, token };
 };
 
-/**
- * Handle verify reset token
- */
+// 
+// Handle verify reset token
+
 export const handleVerifyResetToken = async (token: string): Promise<{
     valid: boolean;
     email?: string;
@@ -189,9 +188,9 @@ export const handleVerifyResetToken = async (token: string): Promise<{
     return { valid: true, email: result.email };
 };
 
-/**
- * Handle reset password
- */
+// 
+// Handle reset password
+
 export const handleResetPassword = async (token: string, newPassword: string): Promise<{
     success: boolean;
     error?: string;
@@ -202,7 +201,7 @@ export const handleResetPassword = async (token: string, newPassword: string): P
         return { success: false, error: 'Invalid or expired reset token' };
     }
 
-    // Find user by email
+
     const user = await prisma.user.findUnique({
         where: { email: result.email },
     });
@@ -215,10 +214,9 @@ export const handleResetPassword = async (token: string, newPassword: string): P
         return { success: false, error: 'This account has been deactivated' };
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
         where: { id: user.id },
         data: { password: hashedPassword },
@@ -227,9 +225,9 @@ export const handleResetPassword = async (token: string, newPassword: string): P
     return { success: true };
 };
 
-/**
- * Update user profile
- */
+// 
+// Update user profile
+
 export const updateUserProfile = async (
     userId: string,
     data: {
@@ -239,7 +237,7 @@ export const updateUserProfile = async (
         username?: string;
     }
 ): Promise<SafeUser> => {
-    // Find user
+
     const user = await prisma.user.findUnique({
         where: { id: userId },
     });
@@ -291,7 +289,7 @@ export const updateUserProfile = async (
         }
     }
 
-    // Update user
+
     const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -310,15 +308,15 @@ export const updateUserProfile = async (
     return safeUser as unknown as SafeUser;
 };
 
-/**
- * Change user password
- */
+// 
+// Change user password
+
 export const changeUserPassword = async (
     userId: string,
     currentPassword: string,
     newPassword: string
 ): Promise<{ success: boolean; error?: string }> => {
-    // Find user
+
     const user = await prisma.user.findUnique({
         where: { id: userId },
     });
@@ -331,24 +329,26 @@ export const changeUserPassword = async (
         return { success: false, error: 'This account has been deactivated' };
     }
 
-    // Verify current password
+
     const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
 
     if (!isPasswordValid) {
         return { success: false, error: 'Current password is incorrect' };
     }
 
-    // Check if new password is same as current
+
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
 
     if (isSamePassword) {
         return { success: false, error: 'New password must be different from current password' };
     }
 
+
+
+
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password
     await prisma.user.update({
         where: { id: userId },
         data: { password: hashedPassword },

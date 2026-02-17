@@ -1,15 +1,15 @@
-/**
- * Academic Reactions Service Layer
- * Business logic for toggling reactions
- */
+// 
+// Academic Reactions Service Layer
+// Business logic for toggling reactions
+
 
 import { prisma } from '../../shared/lib/prisma.js';
 
-/**
- * Toggle a reaction on a question
- * If exists -> remove it
- * If not exists -> create it
- */
+// 
+// Toggle a reaction on a question
+// If exists -> remove it
+// If not exists -> create it
+
 export const toggleReaction = async (
     questionId: string,
     userId: string,

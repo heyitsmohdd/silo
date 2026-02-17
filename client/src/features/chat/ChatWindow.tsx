@@ -11,10 +11,10 @@ interface ChatWindowProps {
   sendMessage: (content: string) => void;
 }
 
-/**
- * ChatWindow Component
- * GitHub Discussions / Discord style message list with avatars
- */
+// 
+// ChatWindow Component
+// GitHub Discussions / Discord style message list with avatars
+
 const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +36,6 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header - Mobile Responsive */}
       <div className="flex-shrink-0 glass-header border-b border-white/5 px-4 md:px-6 py-3 md:py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
           <div>
@@ -48,13 +47,11 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
             </p>
           </div>
           <div className="flex items-center gap-3 md:gap-4">
-            {/* Search */}
             <ChatSearch
               messages={messages}
               onResultClick={handleSearchResultClick}
             />
 
-            {/* Connection Status */}
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
               <span className="text-xs md:text-sm font-medium text-zinc-400">
@@ -65,7 +62,6 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
         </div>
       </div>
 
-      {/* Messages List - Scrollable */}
       <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-4">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -87,7 +83,6 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                 className={`flex gap-3 transition-all duration-300 ${isNewSender ? 'mt-4' : 'mt-1'
                   }`}
               >
-                {/* Avatar - Left Side */}
                 {isNewSender ? (
                   <img
                     src={identity.avatar}
@@ -98,9 +93,7 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                   <div className="w-8 md:w-10 flex-shrink-0" />
                 )}
 
-                {/* Message Block - Right Side */}
                 <div className="flex-1 min-w-0">
-                  {/* Header: Name + Timestamp */}
                   {isNewSender && (
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="font-bold text-sm text-zinc-200">
@@ -120,7 +113,6 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
                     </div>
                   )}
 
-                  {/* Message Content */}
                   <div
                     className={`rounded-lg px-3 py-2 break-words ${isMe
                       ? 'bg-zinc-800/30 border border-zinc-700/50'
@@ -139,7 +131,6 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - Fixed at Bottom */}
       <ChatInput sendMessage={sendMessage} isConnected={isConnected} />
     </div>
   );

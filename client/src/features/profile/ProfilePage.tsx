@@ -43,10 +43,8 @@ const ProfilePage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Header Card - Anonymous Identity */}
       <div className="glass-card p-8 overflow-hidden border border-zinc-800">
         <div className="flex items-center gap-6">
-          {/* Large Robot Avatar */}
           <div className="relative flex-shrink-0">
             <img
               src={identity.avatar}
@@ -56,7 +54,6 @@ const ProfilePage = () => {
             <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-green-500 ring-4 ring-zinc-950 animate-pulse" />
           </div>
 
-          {/* Anonymous Codename */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-white tracking-tight">
@@ -67,7 +64,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Secondary Metadata */}
             <div className="flex items-center gap-4 mt-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/40 border border-zinc-700">
                 <Shield className="w-3 h-3 text-zinc-400" />
@@ -90,7 +86,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Profile Details */}
       <div className="glass-card p-6 border border-zinc-800">
         <div className="space-y-6">
           <div className="flex items-center justify-between mb-6">
@@ -98,7 +93,6 @@ const ProfilePage = () => {
           </div>
 
           <div className="space-y-4">
-            {/* Email */}
             <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
               <Mail className="w-4 h-4 text-zinc-500 mt-0.5" />
               <div className="flex-1">
@@ -107,7 +101,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Role */}
             <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
               <Shield className="w-4 h-4 text-zinc-500 mt-0.5" />
               <div className="flex-1">
@@ -116,7 +109,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Batch Info */}
             <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
               <Calendar className="w-4 h-4 text-zinc-500 mt-0.5" />
               <div className="flex-1">
@@ -135,7 +127,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* First Name (Optional) */}
             {user.firstName && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800">
                 <UserIcon className="w-4 h-4 text-zinc-500 mt-0.5" />
@@ -147,7 +138,6 @@ const ProfilePage = () => {
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
             <Button
               onClick={() => setActiveModal('edit')}
@@ -169,7 +159,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Danger Zone */}
       <div className="space-y-3">
         <Button
           onClick={() => setActiveModal('delete')}
@@ -181,7 +170,6 @@ const ProfilePage = () => {
         </Button>
       </div>
 
-      {/* Modals */}
       {activeModal === 'edit' && (
         <EditProfileModal
           user={user}

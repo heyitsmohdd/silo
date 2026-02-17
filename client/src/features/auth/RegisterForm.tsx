@@ -80,7 +80,6 @@ const RegisterForm = () => {
   return (
     <AuthLayout title="Create New Account">
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Global Error */}
         {error && (
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
             <p className="text-sm text-destructive">
@@ -89,7 +88,6 @@ const RegisterForm = () => {
           </div>
         )}
 
-        {/* Email */}
         <Input
           label="Email Address"
           type="email"
@@ -100,7 +98,6 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Password */}
         <Input
           label="Password"
           type="password"
@@ -111,7 +108,6 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Confirm Password */}
         <Input
           label="Confirm Password"
           type="password"
@@ -122,7 +118,6 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Role */}
         <Select
           label="Role"
           value={role}
@@ -131,7 +126,6 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Year */}
         <Select
           label="Year"
           value={year}
@@ -140,7 +134,6 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Branch */}
         <Select
           label="Branch"
           value={branch}
@@ -149,12 +142,10 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        {/* Submit */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Creating account...' : 'Create Account'}
         </Button>
 
-        {/* Login Link */}
         <div className="pt-4 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
             Already have an account?{' '}

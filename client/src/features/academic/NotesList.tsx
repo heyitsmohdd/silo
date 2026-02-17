@@ -74,7 +74,7 @@ const NotesList = () => {
   const hasFilters = Boolean(searchTerm || subjectFilter || sortBy !== 'newest');
 
   const paginatedNotes = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const startIndex = (currentPage - 1)// ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     return filteredNotes.slice(startIndex, endIndex);
   }, [filteredNotes, currentPage]);
@@ -114,7 +114,6 @@ const NotesList = () => {
 
   return (
     <div>
-      {/* Header: Title & Upload Button */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Academic Notes</h1>
         {isProfessor && (
@@ -128,9 +127,7 @@ const NotesList = () => {
         )}
       </div>
 
-      {/* Toolbar: Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
-        {/* Search Bar - Left */}
         {notesList.length > 0 && (
           <input
             type="text"
@@ -144,10 +141,8 @@ const NotesList = () => {
           />
         )}
 
-        {/* Filters - Center/Right */}
         {notesList.length > 0 && (
           <div className="flex gap-2">
-            {/* Subject Filter */}
             <select
               value={subjectFilter}
               onChange={(e) => {
@@ -164,7 +159,6 @@ const NotesList = () => {
               ))}
             </select>
 
-            {/* Sort Filter */}
             <select
               value={sortBy}
               onChange={(e) => {
@@ -178,7 +172,6 @@ const NotesList = () => {
               <option value="title">Title (A-Z)</option>
             </select>
 
-            {/* Clear Filters */}
             {hasFilters && (
               <button
                 onClick={handleClearFilters}
@@ -191,7 +184,6 @@ const NotesList = () => {
         )}
       </div>
 
-      {/* Create Form Modal */}
       {showForm && isProfessor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="w-full max-w-2xl animate-in zoom-in-95 duration-200">
@@ -200,7 +192,6 @@ const NotesList = () => {
         </div>
       )}
 
-      {/* Notes Grid */}
       {paginatedNotes.length === 0 ? (
         <EmptyState
           icon={FileText}
@@ -238,7 +229,6 @@ const NotesList = () => {
             ))}
           </div>
 
-          {/* Pagination */}
           <Pagination
             totalItems={filteredNotes.length}
             itemsPerPage={ITEMS_PER_PAGE}
@@ -246,7 +236,6 @@ const NotesList = () => {
             onPageChange={setCurrentPage}
           />
 
-          {/* Results Count */}
           <p className="text-sm text-zinc-400 text-center">
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredNotes.length)} of {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''}
             {hasFilters && ` (filtered from ${notesList.length} total)`}

@@ -48,7 +48,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
 
   return (
     <div className="bg-card border border-border rounded-lg shadow-soft-lg overflow-hidden">
-      {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg">
@@ -72,9 +71,7 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
         </Button>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
-        {/* Global Error */}
         {error && (
           <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
             <p className="text-sm text-destructive">
@@ -83,7 +80,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
           </div>
         )}
 
-        {/* Email */}
         <Input
           label="Email Address"
           type="email"
@@ -94,7 +90,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
           disabled={isLoading}
         />
 
-        {/* First Name */}
         <Input
           label="First Name"
           type="text"
@@ -104,7 +99,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
           disabled={isLoading}
         />
 
-        {/* Last Name */}
         <Input
           label="Last Name"
           type="text"
@@ -114,7 +108,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
           disabled={isLoading}
         />
 
-        {/* Read-only Fields */}
         <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Role</span>
@@ -136,7 +129,6 @@ const EditProfile = ({ user, onCancel, onSuccess }: EditProfileProps) => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button
             type="button"

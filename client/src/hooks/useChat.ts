@@ -19,10 +19,10 @@ export interface Message {
   createdAt: string;
 }
 
-/**
- * Custom hook for chat functionality
- * Manages socket connection, message state, and messaging actions
- */
+// 
+// Custom hook for chat functionality
+// Manages socket connection, message state, and messaging actions
+
 export const useChat = () => {
   const { token, user } = useAuthStore();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -88,9 +88,9 @@ export const useChat = () => {
     };
   }, [token]);
 
-  /**
-   * Send a message to the chat
-   */
+  // 
+  // Send a message to the chat
+  
   const sendMessage = useCallback((content: string) => {
     const socket = socketService.getSocket();
     if (!socket || !content.trim()) return;

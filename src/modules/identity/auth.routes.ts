@@ -4,11 +4,11 @@ import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
 
 const router = Router();
 
-/**
- * POST /auth/register
- * Self-registration with Email, Password, Role, Year, Branch
- * Returns JWT token immediately
- */
+// 
+// POST /auth/register
+// Self-registration with Email, Password, Role, Year, Branch
+// Returns JWT token immediately
+
 router.post('/register', async (req, res, next) => {
     try {
         await register(req, res);
@@ -17,11 +17,11 @@ router.post('/register', async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/login
- * Login with Email and Password
- * Returns JWT token
- */
+// 
+// POST /auth/login
+// Login with Email and Password
+// Returns JWT token
+
 router.post('/login', async (req, res, next) => {
     try {
         await login(req, res);
@@ -30,11 +30,11 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/me
- * Get current authenticated user
- * Requires JWT token
- */
+// 
+// POST /auth/me
+// Get current authenticated user
+// Requires JWT token
+
 router.get('/me', verifyJWT, async (req, res, next) => {
     try {
         await getCurrentUser(req, res);
@@ -43,10 +43,10 @@ router.get('/me', verifyJWT, async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/forgot-password
- * Request password reset link
- */
+// 
+// POST /auth/forgot-password
+// Request password reset link
+
 router.post('/forgot-password', async (req, res, next) => {
     try {
         await forgotPassword(req, res);
@@ -55,10 +55,10 @@ router.post('/forgot-password', async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/verify-reset-token
- * Verify password reset token
- */
+// 
+// POST /auth/verify-reset-token
+// Verify password reset token
+
 router.post('/verify-reset-token', async (req, res, next) => {
     try {
         await verifyResetToken(req, res);
@@ -67,10 +67,10 @@ router.post('/verify-reset-token', async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/reset-password
- * Reset password with valid token
- */
+// 
+// POST /auth/reset-password
+// Reset password with valid token
+
 router.post('/reset-password', async (req, res, next) => {
     try {
         await resetPassword(req, res);
@@ -79,11 +79,11 @@ router.post('/reset-password', async (req, res, next) => {
     }
 });
 
-/**
- * PUT /auth/profile
- * Update user profile (email, firstName, lastName)
- * Requires JWT token
- */
+// 
+// PUT /auth/profile
+// Update user profile (email, firstName, lastName)
+// Requires JWT token
+
 router.put('/profile', verifyJWT, async (req, res, next) => {
     try {
         await updateProfile(req, res);
@@ -92,11 +92,11 @@ router.put('/profile', verifyJWT, async (req, res, next) => {
     }
 });
 
-/**
- * PUT /auth/change-password
- * Change user password
- * Requires JWT token
- */
+// 
+// PUT /auth/change-password
+// Change user password
+// Requires JWT token
+
 router.put('/change-password', verifyJWT, async (req, res, next) => {
     try {
         await changePassword(req, res);
@@ -105,10 +105,10 @@ router.put('/change-password', verifyJWT, async (req, res, next) => {
     }
 });
 
-/**
- * POST /auth/backfill
- * Backfill missing usernames
- */
+// 
+// POST /auth/backfill
+// Backfill missing usernames
+
 router.post('/backfill', async (req, res, next) => {
     try {
         await backfillUsernames(req, res);

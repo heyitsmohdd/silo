@@ -91,7 +91,6 @@ export default function InstallPrompt() {
     return (
         <div className="fixed bottom-4 left-4 right-4 z-50 animate-in slide-in-from-bottom-5 duration-500 md:left-auto md:right-4 md:w-96">
             <div className="glass-card p-4 border border-white/10 shadow-2xl bg-zinc-950/90 backdrop-blur-xl relative overflow-hidden">
-                {/* Decorative gradient blob */}
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl" />
 
                 <button

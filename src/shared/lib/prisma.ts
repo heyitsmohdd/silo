@@ -1,7 +1,7 @@
-/**
- * Prisma Client Singleton
- * Single instance across application
- */
+// 
+// Prisma Client Singleton
+// Single instance across application
+
 
 import { PrismaClient } from '@prisma/client';
 

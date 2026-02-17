@@ -1,7 +1,7 @@
-/**
- * Academic Notes Controller
- * Request handlers for notes routes
- */
+// 
+// Academic Notes Controller
+// Request handlers for notes routes
+
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../shared/types/express.types.js';
@@ -18,10 +18,10 @@ import {
     parseNoteQuery,
 } from '../../shared/schemas/academic.schema.js';
 
-/**
- * GET /academic/notes
- * List all notes (batch-scoped with filters)
- */
+// 
+// GET /academic/notes
+// List all notes (batch-scoped with filters)
+
 export const listNotes = async (
     req: AuthenticatedRequest,
     res: Response
@@ -51,10 +51,10 @@ export const listNotes = async (
     });
 };
 
-/**
- * POST /academic/notes
- * Create a new note
- */
+// 
+// POST /academic/notes
+// Create a new note
+
 export const createNoteHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -83,10 +83,10 @@ export const createNoteHandler = async (
     });
 };
 
-/**
- * GET /academic/notes/:id
- * Get single note by ID
- */
+// 
+// GET /academic/notes/:id
+// Get single note by ID
+
 export const getNoteHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -109,10 +109,10 @@ export const getNoteHandler = async (
     res.status(200).json({ note });
 };
 
-/**
- * PUT /academic/notes/:id
- * Update a note (author-only)
- */
+// 
+// PUT /academic/notes/:id
+// Update a note (author-only)
+
 export const updateNoteHandler = async (
     req: AuthenticatedRequest,
     res: Response
@@ -139,10 +139,10 @@ export const updateNoteHandler = async (
     });
 };
 
-/**
- * DELETE /academic/notes/:id
- * Soft delete a note (author-only)
- */
+// 
+// DELETE /academic/notes/:id
+// Soft delete a note (author-only)
+
 export const deleteNoteHandler = async (
     req: AuthenticatedRequest,
     res: Response

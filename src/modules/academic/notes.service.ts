@@ -1,15 +1,15 @@
-/**
- * Academic Notes Service Layer
- * Business logic for notes CRUD with strict batch isolation
- */
+// 
+// Academic Notes Service Layer
+// Business logic for notes CRUD with strict batch isolation
+
 
 import { prisma } from '../../shared/lib/prisma.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
 import { Prisma } from '@prisma/client';
 
-/**
- * Create a new note (batch-scoped)
- */
+// 
+// Create a new note (batch-scoped)
+
 export const createNote = async (
     data: {
         title: string;
@@ -49,9 +49,9 @@ export const createNote = async (
     return note;
 };
 
-/**
- * Get all notes (batch-scoped with filters)
- */
+// 
+// Get all notes (batch-scoped with filters)
+
 export const getNotes = async (
     year: number,
     branch: string,
@@ -104,9 +104,9 @@ export const getNotes = async (
     return { notes, total };
 };
 
-/**
- * Get single note by ID (batch-scoped)
- */
+// 
+// Get single note by ID (batch-scoped)
+
 export const getNoteById = async (
     id: string,
     year: number,
@@ -139,9 +139,9 @@ export const getNoteById = async (
     return note;
 };
 
-/**
- * Update note (batch-scoped, author-only)
- */
+// 
+// Update note (batch-scoped, author-only)
+
 export const updateNote = async (
     id: string,
     authorId: string,
@@ -195,9 +195,9 @@ export const updateNote = async (
     return updatedNote;
 };
 
-/**
- * Soft delete note (batch-scoped, author-only)
- */
+// 
+// Soft delete note (batch-scoped, author-only)
+
 export const deleteNote = async (
     id: string,
     authorId: string,

@@ -53,13 +53,11 @@ const SettingsPage = () => {
 
     return (
         <div className="w-full max-w-2xl mx-auto space-y-8 animate-in fade-in-50 duration-500 pb-12">
-            {/* Page Header */}
             <div>
                 <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
                 <p className="text-zinc-400">Manage your account and preferences.</p>
             </div>
 
-            {/* 1. Identity Section (New) */}
             <section className="space-y-4">
                 <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
                     <User className="w-5 h-5 text-zinc-400" />
@@ -74,7 +72,6 @@ const SettingsPage = () => {
                 </div>
             </section>
 
-            {/* 2. Appearance Section */}
             <section className="space-y-4">
                 <div className="flex items-center gap-2 text-zinc-100 border-b border-white/5 pb-2">
                     <Moon className="w-5 h-5 text-zinc-400" />
@@ -87,7 +84,6 @@ const SettingsPage = () => {
                         <div className="text-sm text-zinc-400">Adjust the appearance of the application</div>
                     </div>
 
-                    {/* Toggle Switch */}
                     <button
                         onClick={toggleTheme}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${darkMode ? 'bg-emerald-500' : 'bg-zinc-700'
@@ -105,7 +101,6 @@ const SettingsPage = () => {
 
 
 
-            {/* 4. Danger Zone */}
             < section className="pt-4" >
                 <div className="border border-red-500/20 bg-red-500/5 rounded-xl p-6">
                     <div className="flex items-start justify-between gap-4">
@@ -129,14 +124,12 @@ const SettingsPage = () => {
                 </div>
             </section >
 
-            {/* Delete Account Confirmation Modal */}
             < DeleteConfirmationModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
             />
 
-            {/* Logout Confirmation Modal */}
             < LogoutConfirmationModal
                 isOpen={showLogoutModal}
                 onClose={() => setShowLogoutModal(false)}

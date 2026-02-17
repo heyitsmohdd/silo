@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-/**
- * Validation schemas for API requests
- */
+// 
+// Validation schemas for API requests
+
 
 // Auth schemas
 export const loginSchema = z.object({

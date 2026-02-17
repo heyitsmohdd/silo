@@ -62,19 +62,16 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
 
     return (
         <>
-            {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
                 onClick={onClose}
             />
 
-            {/* Modal */}
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
                     className="w-full max-w-2xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col max-h-[90vh]"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-zinc-800 flex-shrink-0">
                         <h2 className="text-xl font-bold text-zinc-100">
                             Start a Discussion
@@ -87,17 +84,14 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                         </button>
                     </div>
 
-                    {/* Form - Scrollable Area & Fixed Footer */}
                     <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
                         <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
-                            {/* Error Message */}
                             {error && (
                                 <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
                                     <p className="text-sm text-red-400">{error}</p>
                                 </div>
                             )}
 
-                            {/* Category (Flair) */}
                             <div>
                                 <label htmlFor="category" className="block text-sm font-medium text-zinc-300 mb-2">
                                     I want to post...
@@ -118,7 +112,6 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 </select>
                             </div>
 
-                            {/* Title */}
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-2">
                                     Title <span className="text-zinc-500">(minimum 5 characters)</span>
@@ -138,7 +131,6 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 </p>
                             </div>
 
-                            {/* Content */}
                             <div>
                                 <label htmlFor="content" className="block text-sm font-medium text-zinc-300 mb-2">
                                     Details <span className="text-zinc-500">(minimum 10 characters)</span>
@@ -157,7 +149,6 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                 </p>
                             </div>
 
-                            {/* Tags */}
                             <div>
                                 <label htmlFor="tags" className="block text-sm font-medium text-zinc-300 mb-2">
                                     Tags
@@ -178,7 +169,6 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                             </div>
                         </div>
 
-                        {/* Footer - Fixed */}
                         <div className="flex gap-3 p-6 border-t border-zinc-800 bg-zinc-900/50 flex-shrink-0">
                             <button
                                 type="button"

@@ -11,7 +11,7 @@ let newsCache: NewsCache = {
     timestamp: 0,
 };
 
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+const CACHE_DURATION = 60// 60// 1000; // 1 hour
 
 
 
@@ -25,7 +25,7 @@ export const getLatestNews = async (_req: Request, res: Response) => {
             return res.json(newsCache.data);
         }
 
-        const apiKey = process.env.NEWS_API_KEY;
+        const apiKey = process.env['NEWS_API_KEY'];
 
         if (!apiKey) {
             console.warn('NEWS_API_KEY not found.');
@@ -67,6 +67,6 @@ export const getLatestNews = async (_req: Request, res: Response) => {
             console.warn('Serving expired cache due to error');
             return res.json(newsCache.data);
         }
-        res.json([]);
+        return res.json([]);
     }
 };

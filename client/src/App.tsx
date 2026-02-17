@@ -23,7 +23,7 @@ import LeaderboardPage from '@/pages/LeaderboardPage';
 import NewLandingPage from '@/pages/LandingPage';
 import InstallPrompt from '@/components/InstallPrompt';
 
-// Create React Query client
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -45,18 +45,15 @@ function App() {
       <InstallPrompt />
       <BrowserRouter>
         <Routes>
-          {/* Landing Page */}
           <Route path="/welcome" element={<NewLandingPage />} />
           <Route path="/about" element={<AboutPage />} />
 
-          {/* Public Routes (kept for direct access) */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/request-access" element={<RequestAccess />} />
 
-          {/* Protected Routes */}
           <Route
             path="/"
             element={
@@ -97,7 +94,7 @@ function App() {
             <Route path="leaderboard" element={<LeaderboardPage />} />
           </Route>
 
-          {/* Catch-all redirect */}
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

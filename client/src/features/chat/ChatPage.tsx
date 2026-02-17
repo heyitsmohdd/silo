@@ -1,10 +1,10 @@
 import { useChat } from '@/hooks/useChat';
 import ChatWindow from './ChatWindow';
 
-/**
- * ChatPage Component
- * Main page that orchestrates the chat functionality
- */
+// 
+// ChatPage Component
+// Main page that orchestrates the chat functionality
+
 const ChatPage = () => {
   const { messages, sendMessage, isConnected, currentUser } = useChat();
 

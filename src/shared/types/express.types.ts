@@ -1,6 +1,6 @@
-/**
- * Extended Express Request with Batch Context
- */
+// 
+// Extended Express Request with Batch Context
+
 
 import { Request } from 'express';
 import { JWTPayload } from './auth.types.js';

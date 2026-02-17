@@ -1,7 +1,7 @@
-/**
- * ChannelView Component
- * Professional Discord/Slack-style chat interface with member sidebar
- */
+// 
+// ChannelView Component
+// Professional Discord/Slack-style chat interface with member sidebar
+
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -18,7 +18,7 @@ export default function ChannelView() {
     const navigate = useNavigate();
     const currentUser = useAuthStore((state) => state.user);
 
-    // Get reactive socket instance
+
     const socket = useSocket();
 
     const [channel, setChannel] = useState<Channel | null>(null);
@@ -34,7 +34,7 @@ export default function ChannelView() {
     const [showJoinModal, setShowJoinModal] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Effects moved to bottom to fix hoisting issues
+    // Effects moved to bottom to prevent hoisting issues
 
     const loadMessages = useCallback(async () => {
         if (!channelId) return;
@@ -156,7 +156,7 @@ export default function ChannelView() {
     const isOwner = channel?.ownerId === currentUser?.userId;
     const isEmpty = members.length === 0;
 
-    // Effect 1: Data Loading & UI State
+
     useEffect(() => {
         if (!channelId) return;
 
@@ -166,11 +166,11 @@ export default function ChannelView() {
         setShowJoinModal(true);
     }, [channelId, loadMessages]);
 
-    // Effect 2: Socket Subscription & Join Logic
+
     useEffect(() => {
         if (!socket || !channelId) return;
 
-        // Listen for socket events
+
         console.log('🔌 Socket status in ChannelView:', socket.connected ? 'Connected' : 'Disconnected', socket.id);
 
         if (socket.connected) {
@@ -187,7 +187,7 @@ export default function ChannelView() {
                 console.log('✅ Joined channel confirmed:', data);
             });
 
-            // Log when we emit join
+
             console.log('Emit join_channel listener setup');
 
             // If we have joined locally, ensure back-end knows
@@ -222,7 +222,7 @@ export default function ChannelView() {
         );
     }
 
-    // Show join modal if user hasn't joined yet
+
     if (!hasJoined && !loading) {
         return (
             <>
@@ -247,9 +247,7 @@ export default function ChannelView() {
 
     return (
         <div className="flex h-full bg-zinc-950">
-            {/* Main Chat Area */}
             <div className="flex-1 flex flex-col">
-                {/* Channel Header */}
                 <div className="border-b border-white/5 px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Hash className="w-5 h-5 text-violet-500" />
@@ -270,7 +268,6 @@ export default function ChannelView() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {/* Toggle Members Button (Mobile) */}
                         <button
                             onClick={() => setShowMembers(!showMembers)}
                             className="lg:hidden p-2 rounded-md hover:bg-white/5 transition-colors"
@@ -279,7 +276,6 @@ export default function ChannelView() {
                             <Users className="w-5 h-5 text-zinc-400" />
                         </button>
 
-                        {/* Delete Button (Owner Only) */}
                         {isOwner && !channel?.isDefault && (
                             <button
                                 onClick={handleDeleteClick}
@@ -292,7 +288,6 @@ export default function ChannelView() {
                     </div>
                 </div>
 
-                {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
                     {messages.map((message) => (
                         <div key={message.id} className="group">
@@ -312,7 +307,6 @@ export default function ChannelView() {
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* Message Input */}
                 <div className="border-t border-white/5 p-4">
                     <form onSubmit={handleSendMessage} className="flex gap-2">
                         <input
@@ -338,7 +332,6 @@ export default function ChannelView() {
                 </div>
             </div>
 
-            {/* Member Sidebar */}
             {showMembers && (
                 <div className="w-60 border-l border-white/5 bg-zinc-950/50 flex flex-col hidden lg:flex">
                     <div className="px-4 py-4 border-b border-white/5">
@@ -360,20 +353,16 @@ export default function ChannelView() {
                                         key={member.id}
                                         className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-white/5 transition-colors"
                                     >
-                                        {/* Avatar */}
                                         <div className="relative">
                                             <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-xs font-semibold">
                                                 {getInitials(member)}
                                             </div>
-                                            {/* Online Indicator */}
                                             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-950" />
                                         </div>
 
-                                        {/* Name */}
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm text-white truncate flex items-center gap-1">
                                                 {getDisplayName(member)}
-                                                {/* Owner Crown */}
                                                 {member.id === channel?.ownerId && (
                                                     <Crown className="w-3 h-3 text-amber-500 flex-shrink-0" />
                                                 )}
@@ -387,7 +376,6 @@ export default function ChannelView() {
                 </div>
             )}
 
-            {/* Delete Confirmation Modal */}
             <DeleteChannelModal
                 isOpen={isDeleteModalOpen}
                 channelName={channel?.name || ''}

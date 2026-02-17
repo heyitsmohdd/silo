@@ -1,7 +1,7 @@
-/**
- * JoinChannelModal Component
- * Confirmation modal for joining a channel
- */
+// 
+// JoinChannelModal Component
+// Confirmation modal for joining a channel
+
 
 import { Hash, Users, X } from 'lucide-react';
 
@@ -26,15 +26,12 @@ export default function JoinChannelModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
 
-            {/* Modal */}
             <div className="relative bg-zinc-900 rounded-xl border border-white/10 w-full max-w-md mx-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-                {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                     <div className="flex items-center gap-2 text-violet-500">
                         <Hash className="w-5 h-5" />
@@ -48,7 +45,6 @@ export default function JoinChannelModal({
                     </button>
                 </div>
 
-                {/* Content */}
                 <div className="p-6">
                     <div className="mb-6">
                         <div className="flex items-center gap-2 mb-2">
@@ -74,7 +70,6 @@ export default function JoinChannelModal({
                         </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex gap-3">
                         <button
                             type="button"

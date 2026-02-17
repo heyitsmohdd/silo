@@ -39,10 +39,8 @@ const WeeklyStarsWidget = () => {
 
     return (
         <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 border border-amber-500/20 relative overflow-hidden group">
-            {/* Background Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-            {/* Header */}
             <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="flex items-center gap-2 text-amber-500">
                     <Trophy className="w-4 h-4" />
@@ -56,11 +54,9 @@ const WeeklyStarsWidget = () => {
                 </Link>
             </div>
 
-            {/* List - Only Top 1 */}
             <div className="space-y-3 relative z-10">
                 {topThree.slice(0, 1).map((user, index) => (
                     <div key={user.id} className="flex items-center gap-3">
-                        {/* Rank Badge */}
                         <div className={`
               w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
               bg-gradient-to-br from-yellow-400 to-amber-600 text-black shadow-lg shadow-amber-500/20
@@ -68,7 +64,6 @@ const WeeklyStarsWidget = () => {
                             {index + 1}
                         </div>
 
-                        {/* Avatar & Name */}
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
                                 <span className="text-sm font-medium text-zinc-200 truncate">
