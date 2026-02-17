@@ -21,6 +21,7 @@ import channelRoutes from './modules/channels/channel.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
 import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
+import newsRoutes from './modules/news/news.routes.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -136,6 +137,7 @@ app.use('/api/access', accessRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/channels', channelRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/news', newsRoutes);
 
 // ============================================================================
 // ERROR HANDLING
@@ -160,5 +162,4 @@ httpServer.listen(PORT, () => {
 
 export default app;
 
-// Force restart for Prisma Client update
-// Username fix update
+
