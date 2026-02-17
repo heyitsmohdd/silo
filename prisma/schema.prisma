@@ -287,6 +287,9 @@ enum Category {
   RANT
   CONFESSION
   OTHER
+  TECH
+  EVENT
+  NEWS
 }
 
 // ============================================================================
@@ -433,3 +436,24 @@ model ChannelMessage {
   @@map("channel_messages")
 }
 
+
+// ============================================================================
+// NEWS MODEL
+// ============================================================================
+
+model NewsItem {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String
+  content     String       @db.Text
+  category    NewsCategory
+  externalLink String?     @map("external_link")
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@map("news_items")
+}
+
+enum NewsCategory {
+  TECH
+  EVENT
+  BLOG
+}
