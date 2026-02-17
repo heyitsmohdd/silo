@@ -30,3 +30,11 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
+# Client dependencies
+client/node_modules/
+client/dist/
+
+# Temp files
+.tmp/
+*.tmp
