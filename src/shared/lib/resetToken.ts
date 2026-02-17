@@ -28,7 +28,7 @@ export const generateResetToken = (email: string): { token: string; expiresAt: D
   const signedToken = `${token}.${signature}`;
 
   // Token expires in 1 hour
-  const expiresAt = new Date(Date.now() + 60// 60// 1000);
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
   return { token: signedToken, expiresAt };
 };

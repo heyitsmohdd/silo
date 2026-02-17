@@ -1,5 +1,7 @@
 # Silo
 
+![Build Status](https://github.com/heyitsmohdd/silo/actions/workflows/ci.yml/badge.svg)
+
 A batch-isolated academic collaboration platform that provides students with a private space to share notes, ask questions, and communicate without the noise of chaotic WhatsApp groups or scattered Google Docs.
 
 ## Why Silo?
