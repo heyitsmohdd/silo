@@ -72,8 +72,17 @@ const DashboardLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 relative">
+          <div className="max-w-[1600px] mx-auto flex gap-6">
+            {/* Middle Column - Main Content */}
+            <div className="flex-1 min-w-0">
+              <Outlet />
+            </div>
+
+            {/* Right Column - News Sidebar */}
+            {/* Visible only on Dashboard (/) and Q&A (/qna), hidden on mobile/tablet */}
+
+          </div>
         </main>
       </div>
     </div>

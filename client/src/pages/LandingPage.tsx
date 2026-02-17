@@ -146,6 +146,32 @@ const LandingPage = () => {
                     </Link>
                 </div>
             </main>
+
+            {/* Footer */}
+            <footer className="relative z-10 border-t border-white/10 bg-black py-8 md:py-12 px-4">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
+                    <div className="flex items-center gap-2">
+                        <span className="font-['Press_Start_2P'] text-sm md:text-base">Silo</span>
+                        <span className="text-zinc-600">|</span>
+                        <span className="text-zinc-500 text-sm">Built for students, by students.</span>
+                    </div>
+
+                    <div className="flex items-center gap-8">
+                        <Link
+                            to="/legal"
+                            className="text-zinc-400 hover:text-white text-sm transition-colors"
+                        >
+                            Legal & Safety
+                        </Link>
+                        <a
+                            href="mailto:siloedu00@gmail.com"
+                            className="text-zinc-400 hover:text-white text-sm transition-colors"
+                        >
+                            Contact
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 };

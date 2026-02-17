@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Shield, Ghost, MessageSquare, Heart } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -90,7 +89,7 @@ const AboutPage = () => {
 
                 {/* Legal / Safety Disclaimer */}
                 <div className="border-t border-white/10 pt-12 mb-12">
-                    <h3 className="text-2xl font-bold mb-4 text-zinc-200">Legal & Safety</h3>
+                    <h3 className="text-2xl font-bold mb-4 text-zinc-200">Safety & Terms</h3>
                     <p className="text-zinc-500 max-w-2xl leading-relaxed">
                         <span className="text-zinc-300 font-medium">This is a student project, not Big Tech.</span>{' '}
                         We are currently in public beta. To ensure the safety of our community, we reserve the right to
@@ -100,8 +99,11 @@ const AboutPage = () => {
                 </div>
 
                 {/* Footer */}
-                <div className="text-center text-zinc-600 text-sm">
-                    <p>&copy; {new Date().getFullYear()} Silo. Built for the students.</p>
+                <div className="text-center text-zinc-600 text-sm flex flex-col items-center gap-2">
+                    <p>&copy; {new Date().getFullYear()} Silo. Built for students, by students.</p>
+                    <Link to="/legal" className="text-zinc-600 hover:text-zinc-400 text-xs transition-colors underline">
+                        Legal & Safety
+                    </Link>
                 </div>
             </div>
         </div>

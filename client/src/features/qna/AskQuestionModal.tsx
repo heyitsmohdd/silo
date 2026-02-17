@@ -8,7 +8,7 @@ interface AskQuestionModalProps {
 }
 
 const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
-    const [category, setCategory] = useState('ACADEMIC');
+    const [category, setCategory] = useState('TECH');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState('');
@@ -108,7 +108,9 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                                     onChange={(e) => setCategory(e.target.value)}
                                     className="w-full px-3 py-3 rounded-md bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-zinc-500 transition-all appearance-none"
                                 >
-                                    <option value="ACADEMIC">📚 Academic Question</option>
+                                    <option value="TECH">💻 Tech</option>
+                                    <option value="EVENT">📅 Event</option>
+                                    <option value="NEWS">📰 News</option>
                                     <option value="GOSSIP">☕ Tea / Gossip</option>
                                     <option value="RANT">📢 Rant</option>
                                     <option value="CONFESSION">🎭 Confession</option>
