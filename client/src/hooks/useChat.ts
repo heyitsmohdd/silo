@@ -19,6 +19,11 @@ export interface Message {
   createdAt: string;
 }
 
+export interface TypingUser {
+  userId: string;
+  firstName: string;
+}
+
 // 
 // Custom hook for chat functionality
 // Manages socket connection, message state, and messaging actions
@@ -26,6 +31,7 @@ export interface Message {
 export const useChat = () => {
   const { token, user } = useAuthStore();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   // Initialize with current socket state to avoid effect update
   const [isConnected, setIsConnected] = useState(() => socketService.getSocket()?.connected ?? false);
   const hasLoadedHistory = useRef(false);
@@ -52,6 +58,7 @@ export const useChat = () => {
     newSocket.removeAllListeners('connect_error');
     newSocket.removeAllListeners('newMessage');
     newSocket.removeAllListeners('messageHistory');
+    newSocket.removeAllListeners('userTyping');
 
     // Connection state handlers
     newSocket.on('connect', () => {
@@ -81,6 +88,17 @@ export const useChat = () => {
       setMessages((prev) => [...prev, message]);
     });
 
+    newSocket.on('userTyping', (data: { userId: string; firstName: string; isTyping: boolean }) => {
+      setTypingUsers((prev) => {
+        if (data.isTyping) {
+          if (prev.some(u => u.userId === data.userId)) return prev;
+          return [...prev, { userId: data.userId, firstName: data.firstName }];
+        } else {
+          return prev.filter(u => u.userId !== data.userId);
+        }
+      });
+    });
+
     // Cleanup on unmount
     return () => {
       socketService.disconnect();
@@ -90,7 +108,7 @@ export const useChat = () => {
 
   // 
   // Send a message to the chat
-  
+
   const sendMessage = useCallback((content: string) => {
     const socket = socketService.getSocket();
     if (!socket || !content.trim()) return;
@@ -100,9 +118,17 @@ export const useChat = () => {
     });
   }, []);
 
+  const sendTyping = useCallback((isTyping: boolean) => {
+    const socket = socketService.getSocket();
+    if (!socket) return;
+    socket.emit('typing', { isTyping });
+  }, []);
+
   return {
     messages,
     sendMessage,
+    sendTyping,
+    typingUsers,
     isConnected,
     currentUser: user,
   };
