@@ -347,10 +347,43 @@ export const initializeSocketHandlers = (io: Server) => {
             }
         });
 
+        // Handle: Channel Typing Indicator
+        socket.on('channel_typing', (data: { channelId: string; isTyping: boolean }) => {
+            const { channelId, isTyping } = data;
+            const channelRoom = `channel_${channelId}`;
+
+            // Safe access to firstName since it might not be in JWTPayload
+            const firstName = (user as any).firstName || user.email.split('@')[0];
+
+            socket.to(channelRoom).emit('channel_typing', {
+                userId: user.userId,
+                username: user.username,
+                firstName,
+                isTyping,
+                channelId
+            });
+        });
+
         // Handle: Disconnect
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             userSockets.delete(user.userId);
             console.log(`❌ User disconnected: ${user.email}`);
+
+            // Remove user from all channels they were part of
+            for (const [channelId, members] of channelMembers.entries()) {
+                if (members.has(user.userId)) {
+                    members.delete(user.userId);
+                    console.log(`info: Removed disconnected user ${user.email} from channel ${channelId}`);
+
+                    // Check if empty and start deletion timeout
+                    if (members.size === 0) {
+                        startChannelDeletionTimeout(channelId, io);
+                    }
+
+                    // Emit updated member list
+                    await emitChannelMemberList(io, channelId);
+                }
+            }
         });
     });
 };
