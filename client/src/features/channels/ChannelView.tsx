@@ -12,6 +12,14 @@ import DeleteChannelModal from '@/components/channels/DeleteChannelModal';
 import JoinChannelModal from '@/components/channels/JoinChannelModal';
 
 import { useSocket } from '@/hooks/useSocket';
+import { TypingIndicator } from '@/components/ui/TypingIndicator';
+import { useBlocker } from 'react-router-dom';
+import LeaveChannelModal from '@/components/channels/LeaveChannelModal';
+
+interface TypingUser {
+    userId: string;
+    firstName: string;
+}
 
 export default function ChannelView() {
     const { channelId } = useParams<{ channelId: string }>();
@@ -32,6 +40,8 @@ export default function ChannelView() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
     const [showJoinModal, setShowJoinModal] = useState(false);
+    const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+    const typingTimeoutRef = useRef<any>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Effects moved to bottom to prevent hoisting issues
@@ -53,10 +63,47 @@ export default function ChannelView() {
         }
     }, [channelId]);
 
+    // Auto-join if owner or if already a member locally (re-join)
+    useEffect(() => {
+        if (!channel || !currentUser || hasJoined) return;
+
+        const isOwner = channel.ownerId === currentUser.userId;
+        // Check if we are already in the member list
+        const isMember = members.some(m => m.id === currentUser.userId);
+
+        if (isOwner || isMember) {
+            console.log('👑 Auto-joining channel (Owner/Member detected)');
+            setHasJoined(true);
+            setShowJoinModal(false);
+            if (socket) {
+                // Ensure we join the socket room
+                socket.emit('join_channel', { channelId });
+            }
+        }
+    }, [channel, currentUser, hasJoined, socket, channelId, members]);
+
+    // Only block if we are joined AND NOT deleting
+    const blocker = useBlocker(
+        ({ currentLocation, nextLocation }) =>
+            hasJoined && !isDeleting && currentLocation.pathname !== nextLocation.pathname
+    );
+
+    const handleConfirmLeave = () => {
+        if (blocker.state === 'blocked') {
+            blocker.proceed();
+        }
+        setHasJoined(false);
+    };
+
+    const handleCancelLeave = () => {
+        if (blocker.state === 'blocked') {
+            blocker.reset();
+        }
+    };
+
     const handleJoinChannel = () => {
         setShowJoinModal(false);
         setHasJoined(true);
-
         if (socket && channelId) {
             socket.emit('join_channel', { channelId });
         }
@@ -101,6 +148,7 @@ export default function ChannelView() {
                 content: newMessage.trim(),
             });
             setNewMessage('');
+            handleTyping(false);
         }
 
         setSending(false);
@@ -116,6 +164,7 @@ export default function ChannelView() {
         setIsDeleting(true);
         try {
             await deleteChannel(channelId);
+            setHasJoined(false); // Prevent leave modal
             setIsDeleteModalOpen(false);
             navigate('/channels');
         } catch (error) {
@@ -156,6 +205,29 @@ export default function ChannelView() {
     const isOwner = channel?.ownerId === currentUser?.userId;
     const isEmpty = members.length === 0;
 
+    const handleTyping = (isTyping: boolean) => {
+        if (!socket || !channelId) return;
+
+        socket.emit('channel_typing', { channelId, isTyping });
+
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        if (isTyping) {
+            typingTimeoutRef.current = setTimeout(() => {
+                socket.emit('channel_typing', { channelId, isTyping: false });
+            }, 3000);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewMessage(e.target.value);
+        if (e.target.value.length > 0) {
+            handleTyping(true);
+        }
+    };
+
 
     useEffect(() => {
         if (!channelId) return;
@@ -186,6 +258,19 @@ export default function ChannelView() {
             socket.on('channel_joined', (data) => {
                 console.log('✅ Joined channel confirmed:', data);
             });
+            socket.on('channel_typing', (data) => {
+                if (data.channelId !== channelId) return;
+
+                setTypingUsers((prev) => {
+                    const exists = prev.some(u => u.userId === data.userId);
+                    if (data.isTyping) {
+                        if (exists) return prev;
+                        return [...prev, { userId: data.userId, firstName: data.firstName || 'User' }];
+                    } else {
+                        return prev.filter(u => u.userId !== data.userId);
+                    }
+                });
+            });
 
 
             console.log('Emit join_channel listener setup');
@@ -205,7 +290,9 @@ export default function ChannelView() {
                 socket.off('new_channel_message');
                 socket.off('update_member_list');
                 socket.off('channel_deleted');
+                socket.off('channel_deleted');
                 socket.off('channel_joined');
+                socket.off('channel_typing');
             }
         };
     }, [channelId, socket, socket?.connected, hasJoined, leaveChannel, handleChannelDeleted]);
@@ -307,12 +394,18 @@ export default function ChannelView() {
                     <div ref={messagesEndRef} />
                 </div>
 
-                <div className="border-t border-white/5 p-4">
+                <div className="border-t border-white/5 p-4 bg-zinc-950 relative">
+                    <div className="absolute bottom-full left-4 mb-2">
+                        <TypingIndicator
+                            isTyping={typingUsers.length > 0}
+                            names={typingUsers.map(u => u.firstName)}
+                        />
+                    </div>
                     <form onSubmit={handleSendMessage} className="flex gap-2">
                         <input
                             type="text"
                             value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
+                            onChange={handleInputChange}
                             placeholder={`Message #${channel?.name || 'channel'}`}
                             className="flex-1 bg-zinc-900 text-white px-4 py-2.5 rounded-lg border border-white/10 focus:outline-none focus:border-violet-500 transition-colors text-sm"
                             disabled={sending}
@@ -382,6 +475,13 @@ export default function ChannelView() {
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleConfirmDelete}
                 loading={isDeleting}
+            />
+
+            <LeaveChannelModal
+                isOpen={blocker.state === 'blocked'}
+                channelName={channel?.name || ''}
+                onClose={handleCancelLeave}
+                onConfirm={handleConfirmLeave}
             />
         </div>
     );
