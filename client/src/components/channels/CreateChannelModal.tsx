@@ -4,6 +4,7 @@
 
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Hash } from 'lucide-react';
 import { createChannel } from '@/api/channelApi';
 
@@ -53,7 +54,7 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
         }
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -135,6 +136,7 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
