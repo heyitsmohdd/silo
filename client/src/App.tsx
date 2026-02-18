@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -39,65 +39,69 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/welcome" replace />;
 };
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route path="/welcome" element={<NewLandingPage />} />
+      <Route path="/about" element={<AboutPage />} />
+
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/request-access" element={<RequestAccess />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<DashboardPlaceholder />} />
+        <Route path="chat" element={<ChatPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="settings" element={<SettingsPage />} />
+        <Route
+          path="notes"
+          element={
+            <AcademicLayout>
+              <NotesList />
+            </AcademicLayout>
+          }
+        />
+        <Route
+          path="qna"
+          element={
+            <AcademicLayout>
+              <QuestionList />
+            </AcademicLayout>
+          }
+        />
+        <Route
+          path="qna/:questionId"
+          element={
+            <AcademicLayout>
+              <QuestionDetail />
+            </AcademicLayout>
+          }
+        />
+        <Route path="channels/:channelId" element={<ChannelView />} />
+        <Route path="leaderboard" element={<LeaderboardPage />} />
+      </Route>
+
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </>
+  )
+);
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <InstallPrompt />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/welcome" element={<NewLandingPage />} />
-          <Route path="/about" element={<AboutPage />} />
-
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/request-access" element={<RequestAccess />} />
-
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<DashboardPlaceholder />} />
-            <Route path="chat" element={<ChatPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route
-              path="notes"
-              element={
-                <AcademicLayout>
-                  <NotesList />
-                </AcademicLayout>
-              }
-            />
-            <Route
-              path="qna"
-              element={
-                <AcademicLayout>
-                  <QuestionList />
-                </AcademicLayout>
-              }
-            />
-            <Route
-              path="qna/:questionId"
-              element={
-                <AcademicLayout>
-                  <QuestionDetail />
-                </AcademicLayout>
-              }
-            />
-            <Route path="channels/:channelId" element={<ChannelView />} />
-            <Route path="leaderboard" element={<LeaderboardPage />} />
-          </Route>
-
-
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 }
