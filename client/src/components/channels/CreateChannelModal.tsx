@@ -6,12 +6,12 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Hash } from 'lucide-react';
-import { createChannel } from '@/api/channelApi';
+import { createChannel, type Channel } from '@/api/channelApi';
 
 interface CreateChannelModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (channel?: Channel) => void;
 }
 
 export default function CreateChannelModal({ isOpen, onClose, onSuccess }: CreateChannelModalProps) {
@@ -33,10 +33,10 @@ export default function CreateChannelModal({ isOpen, onClose, onSuccess }: Creat
 
         setLoading(true);
         try {
-            await createChannel(name.trim(), description.trim() || undefined);
+            const newChannel = await createChannel(name.trim(), description.trim() || undefined);
             setName('');
             setDescription('');
-            onSuccess();
+            onSuccess(newChannel);
             onClose();
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to create channel');
