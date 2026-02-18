@@ -1,21 +1,17 @@
 import { useEffect, useRef } from 'react';
-import type { Message, User } from '@/hooks/useChat';
+import type { Message } from '@/hooks/useChat';
 import ChatInput from './ChatInput';
 import ChatSearch from './ChatSearch';
 import { getIdentity } from '@/lib/identity';
-
-interface ChatWindowProps {
-  messages: Message[];
-  isConnected: boolean;
-  currentUser: User | null;
-  sendMessage: (content: string) => void;
-}
+import { TypingIndicator } from '@/components/ui/TypingIndicator';
+import { useChat } from '@/hooks/useChat';
 
 // 
 // ChatWindow Component
 // GitHub Discussions / Discord style message list with avatars
 
-const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWindowProps) => {
+const ChatWindow = () => {
+  const { messages, isConnected, currentUser, sendMessage, sendTyping, typingUsers } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom on new messages
@@ -131,7 +127,17 @@ const ChatWindow = ({ messages, isConnected, currentUser, sendMessage }: ChatWin
         <div ref={messagesEndRef} />
       </div>
 
-      <ChatInput sendMessage={sendMessage} isConnected={isConnected} />
+      <div className="flex-shrink-0 bg-zinc-950">
+        <TypingIndicator
+          isTyping={typingUsers.length > 0}
+          names={typingUsers.map(u => u.firstName)}
+        />
+        <ChatInput
+          sendMessage={sendMessage}
+          onTyping={sendTyping}
+          isConnected={isConnected}
+        />
+      </div>
     </div>
   );
 };
