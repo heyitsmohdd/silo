@@ -49,8 +49,17 @@ export default function ChannelList({ isModalOpen = false, onModalClose }: Chann
     };
 
     const handleChannelCreated = (newChannel: Channel) => {
-        setChannels((prev) => [...prev, newChannel]);
+        setChannels((prev) => {
+            if (prev.some(c => c.id === newChannel.id)) return prev;
+            return [...prev, newChannel];
+        });
         console.log('✅ New channel added to list:', newChannel.name);
+    };
+
+    const handleCreateSuccess = (channel?: Channel) => {
+        if (channel) {
+            navigate(`/channels/${channel.id}`);
+        }
     };
 
     const handleChannelClick = (channelId: string) => {
@@ -80,7 +89,7 @@ export default function ChannelList({ isModalOpen = false, onModalClose }: Chann
             <CreateChannelModal
                 isOpen={isModalOpen}
                 onClose={handleModalClose}
-                onSuccess={loadChannels}
+                onSuccess={handleCreateSuccess}
             />
 
             <div className="space-y-1">
