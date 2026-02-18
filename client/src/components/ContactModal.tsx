@@ -12,7 +12,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        setTimeout(() => setMounted(true), 0);
         // Handle escape key
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {

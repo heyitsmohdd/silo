@@ -26,16 +26,7 @@ export const NotificationBell = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
-    // Fetch notifications
-    const fetchNotifications = async () => {
-        try {
-            const response = await axios.get('/api/notifications');
-            setNotifications(response.data.notifications);
-            setUnreadCount(response.data.unreadCount);
-        } catch (error) {
-            console.error('Failed to fetch notifications:', error);
-        }
-    };
+
 
     // Mark all as read
     const markAsRead = async () => {
@@ -99,7 +90,16 @@ export const NotificationBell = () => {
 
     // Fetch on mount and setup Socket.IO listener
     useEffect(() => {
-         
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get('/api/notifications');
+                setNotifications(response.data.notifications);
+                setUnreadCount(response.data.unreadCount);
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error);
+            }
+        };
+
         fetchNotifications();
 
         // Get socket instance

@@ -56,7 +56,7 @@ const QuestionList = () => {
             try {
                 const res = await axiosClient.get('/api/news');
                 return res.data;
-            } catch (e) {
+            } catch {
                 return [];
             }
         },

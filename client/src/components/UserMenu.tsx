@@ -12,9 +12,7 @@ const UserMenu = () => {
     const menuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
-    if (!user) return null;
-
-    const identity = getIdentity(user.userId, user.username);
+    const identity = user ? getIdentity(user.userId, user.username) : { name: '', avatar: '' };
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -43,6 +41,8 @@ const UserMenu = () => {
         navigate('/login');
         setShowLogoutModal(false);
     };
+
+    if (!user) return null;
 
     return (
         <div className="relative" ref={menuRef}>

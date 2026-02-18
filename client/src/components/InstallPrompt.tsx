@@ -10,31 +10,36 @@ interface BeforeInstallPromptEvent extends Event {
 export default function InstallPrompt() {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [showPrompt, setShowPrompt] = useState(false);
-    const [isIOS, setIsIOS] = useState(false);
-    const [isStandalone, setIsStandalone] = useState(false);
+    const [isIOS] = useState(() => {
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        return /iphone|ipad|ipod/.test(userAgent);
+    });
+    const [isStandalone] = useState(() => {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+            (window.navigator as any).standalone ||
+            document.referrer.includes('android-app://');
+    });
 
     useEffect(() => {
         // Check if already installed
-        const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
-            (window.navigator as any).standalone ||
-            document.referrer.includes('android-app://');
+        const isStandaloneMode = isStandalone;
 
         console.log('[PWA] Standalone mode:', isStandaloneMode);
-        setIsStandalone(isStandaloneMode);
+        // setIsStandalone(isStandaloneMode); // Removed as we init in state
 
         if (isStandaloneMode) return;
 
         // Detect iOS
-        const userAgent = window.navigator.userAgent.toLowerCase();
-        const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+        const isIosDevice = isIOS;
         console.log('[PWA] Is iOS:', isIosDevice);
-        setIsIOS(isIosDevice);
 
         // Check for global deferred prompt (captured in index.html)
         if ((window as any).deferredPrompt && !isIosDevice) {
             console.log('[PWA] Found existing global prompt!');
-            setDeferredPrompt((window as any).deferredPrompt);
-            setShowPrompt(true);
+            setTimeout(() => {
+                setDeferredPrompt((window as any).deferredPrompt);
+                setShowPrompt(true);
+            }, 0);
         }
 
         // Handle beforeinstallprompt for Android/Desktop (if it fires later)
@@ -59,7 +64,7 @@ export default function InstallPrompt() {
             // Check session storage to not annoy user every refresh
             const hasSeenPrompt = sessionStorage.getItem('silo_install_prompt_seen');
             if (!hasSeenPrompt) {
-                setShowPrompt(true);
+                setTimeout(() => setShowPrompt(true), 0);
             }
         }
 

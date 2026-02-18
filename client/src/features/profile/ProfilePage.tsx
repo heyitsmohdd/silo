@@ -36,7 +36,7 @@ const ProfilePage = () => {
       await axiosClient.delete('/auth/account');
       logout();
       window.location.href = '/login';
-    } catch (error) {
+    } catch {
       alert('Failed to delete account. Please try again.');
     }
   };
