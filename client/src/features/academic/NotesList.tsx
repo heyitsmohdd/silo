@@ -28,7 +28,7 @@ const NotesList = () => {
     },
   });
 
-  const notesList = Array.isArray(notes) ? notes : (notes?.notes || []);
+  const notesList = useMemo(() => Array.isArray(notes) ? notes : (notes?.notes || []), [notes]);
 
   const filteredNotes = useMemo(() => {
     let filtered = [...notesList];

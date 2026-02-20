@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Mail } from 'lucide-react';
 
+const phrases = ['Privacy', 'Authenticity', 'Freedom', 'Honest Opinions'];
+
 const LandingPage = () => {
     // Logo typewriter effect
     const [logoText, setLogoText] = useState('');
@@ -34,7 +36,7 @@ const LandingPage = () => {
     const [loopNum, setLoopNum] = useState(0);
     const [typingSpeed, setTypingSpeed] = useState(150);
 
-    const phrases = ['Privacy', 'Authenticity', 'Freedom', 'Honest Opinions'];
+
 
     useEffect(() => {
         const handleType = () => {
@@ -59,7 +61,7 @@ const LandingPage = () => {
 
         const timer = setTimeout(handleType, typingSpeed);
         return () => clearTimeout(timer);
-    }, [typewriterText, isDeleting, loopNum, typingSpeed, phrases]);
+    }, [typewriterText, isDeleting, loopNum, typingSpeed]);
 
     return (
         <div className="relative min-h-screen bg-black text-white overflow-hidden">

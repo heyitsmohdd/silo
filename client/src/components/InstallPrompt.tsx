@@ -71,7 +71,7 @@ export default function InstallPrompt() {
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
         };
-    }, []);
+    }, [isIOS, isStandalone]);
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) return;
