@@ -7,19 +7,9 @@ interface TypingIndicatorProps {
 
 export function TypingIndicator({ isTyping, names }: TypingIndicatorProps) {
     const [dots, setDots] = useState('');
-    const [visibleNames, setVisibleNames] = useState<string[]>([]);
 
     useEffect(() => {
-        if (isTyping) {
-            setVisibleNames(names);
-        }
-    }, [isTyping, names]);
-
-    useEffect(() => {
-        if (!isTyping) {
-            setDots('');
-            return;
-        }
+        if (!isTyping) return;
 
         const interval = setInterval(() => {
             setDots((prev) => {
@@ -31,17 +21,16 @@ export function TypingIndicator({ isTyping, names }: TypingIndicatorProps) {
         return () => clearInterval(interval);
     }, [isTyping]);
 
-    if (!isTyping || visibleNames.length === 0) return null;
+    if (!isTyping || names.length === 0) return null;
 
     let text = '';
-    const nameList = visibleNames;
 
-    if (nameList.length === 1) {
-        text = `${nameList[0]} is typing${dots}`;
-    } else if (nameList.length === 2) {
-        text = `${nameList[0]} and ${nameList[1]} are typing${dots}`;
-    } else if (nameList.length > 2) {
-        text = `${nameList[0]} and ${nameList.length - 1} others are typing${dots}`;
+    if (names.length === 1) {
+        text = `${names[0]} is typing${dots}`;
+    } else if (names.length === 2) {
+        text = `${names[0]} and ${names[1]} are typing${dots}`;
+    } else if (names.length > 2) {
+        text = `${names[0]} and ${names.length - 1} others are typing${dots}`;
     }
 
     return (
