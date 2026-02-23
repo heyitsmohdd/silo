@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Mail } from 'lucide-react';
+import { siteConfig } from '../config/site';
 
 const phrases = ['Privacy', 'Authenticity', 'Freedom', 'Honest Opinions'];
 
@@ -116,7 +117,7 @@ const LandingPage = () => {
                     </p>
 
 
-                    {import.meta.env.VITE_ENABLE_WAITLIST !== 'false' ? (
+                    {siteConfig.features.enableWaitlist ? (
                         <Link
                             to="/request-access"
                             className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"

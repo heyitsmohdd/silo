@@ -1,6 +1,9 @@
+import { siteConfig } from '../../shared/config/site.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../shared/lib/prisma.js';
+
+// ... (omitting top imports for brevity if modifying specific block, but let's replace the whole file head)
 import { Role, JWTPayload, SafeUser } from '../../shared/types/auth.types.js';
 import { AppError } from '../../shared/middleware/error.middleware.js';
 import { generateResetToken, verifyResetToken } from '../../shared/lib/resetToken.js';
@@ -28,8 +31,8 @@ export const registerUser = async (data: {
 }): Promise<{ user: SafeUser; token: string }> => {
     const { email, password, year, branch, role, firstName, lastName } = data;
 
-    // Verify email is in allowed list
-    if (process.env['VITE_ENABLE_WAITLIST'] !== 'false') {
+    // Verify email is in allowed list if waitlist is enabled
+    if (siteConfig.features.enableWaitlist) {
         const allowedEmail = await prisma.allowedEmail.findUnique({
             where: { email: email.toLowerCase() },
         });
