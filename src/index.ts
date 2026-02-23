@@ -25,6 +25,12 @@ import newsRoutes from './modules/news/news.routes.js';
 
 const app = express();
 app.set('trust proxy', 1);
+
+// Lightweight Health Check (Bypasses middleware & logging)
+app.get('/api/health', (_req, res) => {
+    res.status(200).json({ status: 'Alive', time: new Date().toISOString() });
+});
+
 const httpServer = createServer(app);
 const PORT = process.env['PORT'] ?? 3000;
 
@@ -113,17 +119,6 @@ app.use(generalRateLimit);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ============================================================================
-// HEALTH CHECK
-// ============================================================================
-
-app.get('/health', (_req, res) => {
-    res.json({
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        environment: process.env['NODE_ENV'] ?? 'development',
-    });
-});
 
 // ============================================================================
 // ROUTES
