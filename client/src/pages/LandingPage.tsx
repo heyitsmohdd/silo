@@ -5,30 +5,7 @@ import { Mail } from 'lucide-react';
 const phrases = ['Privacy', 'Authenticity', 'Freedom', 'Honest Opinions'];
 
 const LandingPage = () => {
-    // Logo typewriter effect
-    const [logoText, setLogoText] = useState('');
-    const fullLogoText = 'Silo';
 
-    useEffect(() => {
-        let currentIndex = 0;
-        let typingInterval: number;
-
-        const startDelay = setTimeout(() => {
-            typingInterval = setInterval(() => {
-                if (currentIndex <= fullLogoText.length) {
-                    setLogoText(fullLogoText.slice(0, currentIndex));
-                    currentIndex++;
-                } else {
-                    clearInterval(typingInterval);
-                }
-            }, 100);
-        }, 2000);
-
-        return () => {
-            clearTimeout(startDelay);
-            if (typingInterval) clearInterval(typingInterval);
-        };
-    }, []);
 
     // Hero typewriter effect
     const [typewriterText, setTypewriterText] = useState('');
@@ -91,8 +68,7 @@ const LandingPage = () => {
                             to="/"
                             className="font-bold text-xl text-white font-['Press_Start_2P'] hover:opacity-70 transition-opacity"
                         >
-                            {logoText}
-                            {logoText.length < fullLogoText.length && <span className="animate-pulse">|</span>}
+                            Silo
                         </Link>
 
 
@@ -140,12 +116,21 @@ const LandingPage = () => {
                     </p>
 
 
-                    <Link
-                        to="/request-access"
-                        className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
-                    >
-                        Get Started
-                    </Link>
+                    {import.meta.env.VITE_ENABLE_WAITLIST !== 'false' ? (
+                        <Link
+                            to="/request-access"
+                            className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
+                        >
+                            Join Waitlist
+                        </Link>
+                    ) : (
+                        <Link
+                            to="/register"
+                            className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-black text-base md:text-lg font-semibold rounded-full hover:bg-white/90 transition-all hover:scale-105 active:scale-95"
+                        >
+                            Sign Up Now
+                        </Link>
+                    )}
                 </div>
             </main>
 

@@ -22,6 +22,7 @@ import LeaderboardPage from '@/pages/LeaderboardPage';
 
 import NewLandingPage from '@/pages/LandingPage';
 import InstallPrompt from '@/components/InstallPrompt';
+import LegalPage from '@/pages/LegalPage';
 
 
 const queryClient = new QueryClient({
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
     <>
       <Route path="/welcome" element={<NewLandingPage />} />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/legal" element={<LegalPage />} />
 
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />

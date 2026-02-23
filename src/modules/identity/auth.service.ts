@@ -29,12 +29,14 @@ export const registerUser = async (data: {
     const { email, password, year, branch, role, firstName, lastName } = data;
 
     // Verify email is in allowed list
-    const allowedEmail = await prisma.allowedEmail.findUnique({
-        where: { email: email.toLowerCase() },
-    });
+    if (process.env['VITE_ENABLE_WAITLIST'] !== 'false') {
+        const allowedEmail = await prisma.allowedEmail.findUnique({
+            where: { email: email.toLowerCase() },
+        });
 
-    if (!allowedEmail) {
-        throw new AppError(403, 'Access Denied: You are not on the VIP list.');
+        if (!allowedEmail) {
+            throw new AppError(403, 'Access Denied: You are not on the VIP list.');
+        }
     }
 
 
