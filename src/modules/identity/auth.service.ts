@@ -94,7 +94,7 @@ export const loginUser = async (
     });
 
     if (!user) {
-        throw new AppError(401, 'Invalid email or password');
+        throw new AppError(404, 'Account not found. Please Sign Up first.');
     }
 
 
