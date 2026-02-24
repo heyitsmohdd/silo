@@ -209,8 +209,8 @@ const QuestionList = () => {
     return (
         <div>
             <div className="flex flex-col gap-6 mb-8">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion Board</h1>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion</h1>
                     {activeTab !== 'news' && (
                         <button
                             onClick={() => setShowModal(true)}

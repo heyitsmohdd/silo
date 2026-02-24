@@ -224,11 +224,12 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                         <span>{answerCount} {answerCount === 1 ? 'answer' : 'answers'}</span>
                     </div>
 
-                    <div className="flex items-center gap-2 ml-auto sm:ml-0">
+                    <div className="flex flex-wrap items-center gap-2 ml-auto sm:ml-0">
                         {question.tags.slice(0, 2).map((tag, index) => (
                             <span
                                 key={index}
-                                className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-zinc-800/60 text-zinc-400 border border-zinc-700"
+                                className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-zinc-800/60 text-zinc-400 border border-zinc-700 max-w-[120px] sm:max-w-none truncate"
+                                title={tag}
                             >
                                 {tag}
                             </span>
@@ -241,7 +242,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-3 border-t border-zinc-800/50">
+                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-zinc-800/50">
                     {reactionCounts.map(({ emoji, count, userReacted }) => (
                         <button
                             key={emoji}
