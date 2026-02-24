@@ -42,9 +42,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="glass-card p-8 overflow-hidden border border-zinc-800">
-        <div className="flex items-center gap-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="glass-card p-4 sm:p-8 overflow-hidden border border-zinc-800">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
           <div className="relative flex-shrink-0">
             <img
               src={identity.avatar}
@@ -55,8 +55,8 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-white tracking-tight">
+            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 {identity.name}
               </h1>
               <div className="px-2.5 py-0.5 rounded-md bg-zinc-800/60 border border-zinc-700">
@@ -64,7 +64,7 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 mt-3">
+            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-3 sm:gap-4 mt-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/40 border border-zinc-700">
                 <Shield className="w-3 h-3 text-zinc-400" />
                 <span className="text-xs font-medium text-zinc-300">
@@ -79,15 +79,15 @@ const ProfilePage = () => {
 
           <button
             onClick={handleLogout}
-            className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors font-medium"
+            className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors font-medium mt-4 sm:mt-0"
           >
             Sign Out
           </button>
         </div>
       </div>
 
-      <div className="glass-card p-6 border border-zinc-800">
-        <div className="space-y-6">
+      <div className="glass-card p-4 sm:p-6 border border-zinc-800">
+        <div className="space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-zinc-100">Account Information</h2>
           </div>
@@ -138,7 +138,7 @@ const ProfilePage = () => {
             )}
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               onClick={() => setActiveModal('edit')}
               variant="ghost"
@@ -184,7 +184,7 @@ const ProfilePage = () => {
       {activeModal === 'password' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveModal(null)} />
-          <div className="relative w-full max-w-md">
+          <div className="relative w-full max-w-md mx-4 sm:mx-0">
             <ChangePassword
               onCancel={() => setActiveModal(null)}
               onSuccess={() => {
@@ -200,8 +200,8 @@ const ProfilePage = () => {
         <>
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => setActiveModal(null)} />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-zinc-900/95 backdrop-blur-md border border-red-500/20 rounded-xl shadow-2xl shadow-black/50 p-6">
-              <div className="space-y-6">
+            <div className="w-full max-w-md mx-4 sm:mx-0 bg-zinc-900/95 backdrop-blur-md border border-red-500/20 rounded-xl shadow-2xl shadow-black/50 p-4 sm:p-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-red-500/10 rounded-full">
                     <Trash2 className="w-6 h-6 text-red-400" />
@@ -219,7 +219,7 @@ const ProfilePage = () => {
                   <p>• You will be logged out immediately</p>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button
                     onClick={() => setActiveModal(null)}
                     className="flex-1 px-4 py-2 rounded-lg border border-zinc-700 hover:bg-zinc-800/40 transition-colors text-zinc-100"
