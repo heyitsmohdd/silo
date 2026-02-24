@@ -32,7 +32,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                 onClick={onClose}
             />
 
-            <div className="relative z-50 w-full max-w-md mx-4 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-6">
+            <div className="relative z-50 w-full max-w-md mx-4 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 p-4 sm:p-6">
                 <button
                     onClick={onClose}
                     className="absolute right-4 top-4 p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
@@ -57,7 +57,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
                     <div className="grid w-full gap-3">
                         <a
                             href={`mailto:${adminEmail}?subject=Silo Bug Report`}
-                            className="flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/50 hover:border-zinc-600 transition-all group cursor-pointer"
+                            className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/50 hover:border-zinc-600 transition-all group cursor-pointer"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-red-500/10 text-red-500">
@@ -73,7 +73,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
 
                         <a
                             href={`mailto:${adminEmail}?subject=Silo Feedback`}
-                            className="flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/50 hover:border-zinc-600 transition-all group cursor-pointer"
+                            className="flex items-center justify-between p-3 sm:p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/50 hover:border-zinc-600 transition-all group cursor-pointer"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
