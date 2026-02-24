@@ -4,6 +4,8 @@
 
 A batch-isolated academic collaboration platform that provides students with a private space to share notes, ask questions, and communicate without the noise of chaotic WhatsApp groups or scattered Google Docs.
 
+**Built for students, by students.**
+
 ## Why Silo?
 
 Traditional student collaboration tools have several problems:
@@ -266,15 +268,17 @@ silo/
 
 ## Contributing
 
-This is a private academic project. For issues or feature requests, contact the development team.
+Silo is an open-source project built for students, by students! We welcome contributions from the community. Whether it's fixing bugs, adding new features, or improving documentation, feel free to open issues or submit pull requests.
+
+Please review our [Contributing Guidelines](CONTRIBUTING.md) for details on how to set up the project locally, our code style, and the pull request process.
 
 ## License
 
-Private - All Rights Reserved
+This project is open-source and licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For support or questions about using Silo, contact your batch administrator.
+For support, feature requests, or questions about using Silo, feel free to open an issue in this repository or contact the maintainers at `siloedu00@gmail.com`.
 
 ---
 
