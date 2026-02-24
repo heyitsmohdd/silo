@@ -70,7 +70,7 @@ export function DialogContent({ children, onClose, className }: DialogContentPro
                     <span className="sr-only">Close</span>
                 </button>
             )}
-            <div className="p-6">{children}</div>
+            <div className="p-4 sm:p-6">{children}</div>
         </div>
     );
 }
