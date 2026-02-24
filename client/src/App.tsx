@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 
 import { useAuthStore } from '@/stores/useAuthStore';
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -24,6 +25,7 @@ import NewLandingPage from '@/pages/LandingPage';
 import InstallPrompt from '@/components/InstallPrompt';
 import LegalPage from '@/pages/LegalPage';
 
+import { siteConfig } from '@/config/site';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -101,10 +103,16 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <InstallPrompt />
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <HelmetProvider>
+      <Helmet>
+        <title>{siteConfig.name}</title>
+        <meta name="description" content={siteConfig.description} />
+      </Helmet>
+      <QueryClientProvider client={queryClient}>
+        <InstallPrompt />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

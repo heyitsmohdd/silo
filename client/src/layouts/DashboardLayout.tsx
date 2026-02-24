@@ -7,6 +7,7 @@ import { NotificationBell } from '@/components/layout/NotificationBell';
 import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
 import { useSocketConnection } from '@/hooks/useSocketConnection';
 import WeeklyStarsWidget from '@/components/leaderboard/WeeklyStarsWidget';
+import { siteConfig } from '@/config/site';
 
 const DashboardLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -98,7 +99,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
       <div className="h-14 flex items-center px-6 border-b border-white/5">
         <Link to="/" className="hover:opacity-70 transition-opacity">
           <h1 className="text-sm font-bold text-white font-['Press_Start_2P']">
-            Silo
+            {siteConfig.name}
           </h1>
         </Link>
         {isMobile && (

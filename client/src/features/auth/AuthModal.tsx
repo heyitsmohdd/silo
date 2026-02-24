@@ -5,6 +5,7 @@ import axiosClient from '@/lib/axios';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
+import { siteConfig } from '@/config/site';
 import {
     Dialog,
     DialogContent,
@@ -140,7 +141,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 <DialogHeader>
                     <div className="mb-6">
                         <span className="font-bold text-2xl text-foreground font-['Press_Start_2P']">
-                            Silo
+                            {siteConfig.name}
                         </span>
                     </div>
 

@@ -13,6 +13,11 @@ export interface ResetTokenData {
 // Generate a secure reset token
 
 export const generateResetToken = (email: string): { token: string; expiresAt: Date } => {
+  const JWT_SECRET = process.env['JWT_SECRET'];
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is missing for token generation.');
+  }
+
   const timestamp = Date.now();
   const data: ResetTokenData = { email, timestamp };
 
@@ -21,7 +26,7 @@ export const generateResetToken = (email: string): { token: string; expiresAt: D
 
   // Add a random signature for security
   const signature = crypto
-    .createHmac('sha256', process.env['JWT_SECRET'] || 'secret')
+    .createHmac('sha256', JWT_SECRET)
     .update(token)
     .digest('hex');
 
@@ -38,6 +43,12 @@ export const generateResetToken = (email: string): { token: string; expiresAt: D
 
 export const verifyResetToken = (signedToken: string): { valid: boolean; email?: string } => {
   try {
+    const JWT_SECRET = process.env['JWT_SECRET'];
+    if (!JWT_SECRET) {
+      console.error('JWT_SECRET environment variable is missing for token verification.');
+      return { valid: false };
+    }
+
     const [token, signature] = signedToken.split('.');
 
     if (!token || !signature) {
@@ -46,7 +57,7 @@ export const verifyResetToken = (signedToken: string): { valid: boolean; email?:
 
     // Verify signature
     const expectedSignature = crypto
-      .createHmac('sha256', process.env['JWT_SECRET'] || 'secret')
+      .createHmac('sha256', JWT_SECRET)
       .update(token)
       .digest('hex');
 

@@ -69,7 +69,7 @@ const LandingPage = () => {
                             to="/"
                             className="font-bold text-xl text-white font-['Press_Start_2P'] hover:opacity-70 transition-opacity"
                         >
-                            Silo
+                            {siteConfig.name}
                         </Link>
 
 
@@ -139,7 +139,7 @@ const LandingPage = () => {
             <footer className="relative z-10 border-t border-white/10 bg-black py-8 md:py-12 px-4">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
                     <div className="flex items-center gap-2">
-                        <span className="font-['Press_Start_2P'] text-sm md:text-base">Silo</span>
+                        <span className="font-['Press_Start_2P'] text-sm md:text-base">{siteConfig.name}</span>
                         <span className="text-zinc-600">|</span>
                         <span className="text-zinc-500 text-sm">Built for students, by students.</span>
                     </div>

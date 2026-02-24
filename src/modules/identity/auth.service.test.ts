@@ -4,6 +4,14 @@ import { prisma } from '../../shared/lib/prisma';
 import { AppError } from '../../shared/middleware/error.middleware';
 
 // Mock dependencies
+vi.mock('../../shared/config/site.js', () => ({
+    siteConfig: {
+        features: {
+            enableWaitlist: true,
+        },
+    },
+}));
+
 vi.mock('../../shared/lib/prisma', () => ({
     prisma: {
         user: {
