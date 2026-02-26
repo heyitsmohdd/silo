@@ -25,7 +25,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             'transition-colors duration-150',
             // Placeholder and disabled states
             'placeholder:text-muted-foreground',
-            'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted',
+            'appearance-none disabled:cursor-not-allowed disabled:opacity-100 disabled:bg-zinc-900/50 disabled:text-zinc-500 disabled:border-zinc-800',
             // Focus state - clear, visible
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
             // Error state
