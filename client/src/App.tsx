@@ -20,6 +20,7 @@ import ProfilePage from '@/features/profile/ProfilePage';
 import SettingsPage from '@/pages/SettingsPage';
 import ChannelView from '@/features/channels/ChannelView';
 import LeaderboardPage from '@/pages/LeaderboardPage';
+import MessagesPage from '@/features/dm/MessagesPage';
 
 import NewLandingPage from '@/pages/LandingPage';
 import InstallPrompt from '@/components/InstallPrompt';
@@ -93,6 +94,8 @@ const router = createBrowserRouter(
         />
         <Route path="channels/:channelId" element={<ChannelView />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
+        <Route path="messages" element={<MessagesPage />} />
+        <Route path="messages/:id" element={<MessagesPage />} />
       </Route>
 
 

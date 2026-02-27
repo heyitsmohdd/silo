@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, Menu, X, HelpCircle, Bug, Trophy } from 'lucide-react';
+import { FileText, MessageSquare, Menu, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
@@ -116,7 +116,8 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
       <nav className="flex-1 p-3 space-y-1">
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} />
-        <NavLink to="/chat" icon={MessageSquare} label="Chat" onClick={onNavigate} />
+        <NavLink to="/chat" icon={MessageSquare} label="Batch Chat" onClick={onNavigate} />
+        <NavLink to="/messages" icon={Send} label="Messages" onClick={onNavigate} />
         <NavLink to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={onNavigate} />
         <button
           onClick={() => setIsContactModalOpen(true)}

@@ -19,6 +19,7 @@ import accessRoutes from './modules/access/access.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 import pushRoutes from './modules/notifications/push.routes.js';
 import channelRoutes from './modules/channels/channel.routes.js';
+import dmRoutes from './modules/dm/dm.routes.js';
 import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
 import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
@@ -133,6 +134,7 @@ app.use('/api/access', accessRoutes);
 app.use('/api/notifications/push', pushRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/channels', channelRoutes);
+app.use('/api/dm', dmRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/news', newsRoutes);
 
