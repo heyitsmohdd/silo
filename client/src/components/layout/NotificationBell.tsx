@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, BellRing } from 'lucide-react';
 import axios from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
 import socketService from '@/lib/socket';
@@ -23,6 +23,8 @@ export const NotificationBell = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
+    const [pushStatus, setPushStatus] = useState<'default' | 'granted' | 'denied' | 'unsupported'>('default');
+    const [isSubscribing, setIsSubscribing] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
@@ -124,6 +126,57 @@ export const NotificationBell = () => {
         }
     }, []);
 
+    // Check push notification support on mount
+    useEffect(() => {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            setPushStatus('unsupported');
+            return;
+        }
+        setPushStatus(Notification.permission);
+    }, []);
+
+    const urlB64ToUint8Array = (base64String: string) => {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    };
+
+    const subscribeToPush = async () => {
+        setIsSubscribing(true);
+        try {
+            const permission = await Notification.requestPermission();
+            setPushStatus(permission as typeof pushStatus);
+
+            if (permission !== 'granted') return;
+
+            const registration = await navigator.serviceWorker.ready;
+
+            // Get public key from env
+            const applicationServerKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlB64ToUint8Array(applicationServerKey)
+            });
+
+            // Send subscription to backend
+            await axios.post('/api/notifications/push/subscribe', subscription.toJSON());
+            console.log('Successfully subscribed to push notifications');
+
+        } catch (error) {
+            console.error('Failed to subscribe to push notifications:', error);
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
+
     // Get actor display name
     const getActorName = (actor: Notification['actor']) => {
         if (actor.username) return actor.username;
@@ -165,6 +218,22 @@ export const NotificationBell = () => {
                     <div className="px-4 py-3 border-b border-white/10">
                         <h3 className="text-sm font-semibold text-white">Notifications</h3>
                     </div>
+
+                    {pushStatus === 'default' && (
+                        <div className="px-4 py-3 bg-violet-500/10 border-b border-violet-500/20 flex flex-col gap-2">
+                            <p className="text-xs text-zinc-300">
+                                Get notified immediately when someone replies to your question or mentions you!
+                            </p>
+                            <button
+                                onClick={subscribeToPush}
+                                disabled={isSubscribing}
+                                className="flex items-center justify-center gap-2 w-full py-1.5 px-3 bg-violet-500 hover:bg-violet-600 text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50"
+                            >
+                                <BellRing className="w-3.5 h-3.5" />
+                                {isSubscribing ? 'Enabling...' : 'Enable Push Notifications'}
+                            </button>
+                        </div>
+                    )}
 
                     <div className="max-h-96 overflow-y-auto">
                         {notifications.length === 0 ? (
