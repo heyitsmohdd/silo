@@ -5,6 +5,8 @@ import ChatSearch from './ChatSearch';
 import { getIdentity } from '@/lib/identity';
 import { TypingIndicator } from '@/components/ui/TypingIndicator';
 import { useChat } from '@/hooks/useChat';
+import UserProfileModal from '../profile/UserProfileModal';
+import { useState } from 'react';
 
 // 
 // ChatWindow Component
@@ -13,6 +15,7 @@ import { useChat } from '@/hooks/useChat';
 const ChatWindow = () => {
   const { messages, isConnected, currentUser, sendMessage, sendTyping, typingUsers } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [selectedUser, setSelectedUser] = useState<{ id: string; identity: any } | null>(null);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -80,11 +83,17 @@ const ChatWindow = () => {
                   }`}
               >
                 {isNewSender ? (
-                  <img
-                    src={identity.avatar}
-                    alt={identity.name}
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-900 ring-2 ring-zinc-800 flex-shrink-0"
-                  />
+                  <button
+                    onClick={() => setSelectedUser({ id: message.sender.id, identity })}
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full flex-shrink-0 transition-transform hover:scale-110 active:scale-95"
+                    title="View Profile"
+                  >
+                    <img
+                      src={identity.avatar}
+                      alt={identity.name}
+                      className="w-full h-full rounded-full bg-zinc-900 ring-2 ring-zinc-800"
+                    />
+                  </button>
                 ) : (
                   <div className="w-8 md:w-10 flex-shrink-0" />
                 )}
@@ -138,6 +147,14 @@ const ChatWindow = () => {
           isConnected={isConnected}
         />
       </div>
+
+      {selectedUser && (
+        <UserProfileModal
+          userId={selectedUser.id}
+          identity={selectedUser.identity}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
     </div>
   );
 };

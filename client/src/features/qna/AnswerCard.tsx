@@ -5,6 +5,7 @@ import { getIdentity } from '@/lib/identity';
 import VotingButtons from './VotingButtons';
 import axiosClient from '@/lib/axios';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
+import UserProfileModal from '../profile/UserProfileModal';
 
 interface AnswerCardProps {
     answer: {
@@ -43,6 +44,7 @@ const AnswerCard = ({
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isMarkingBest, setIsMarkingBest] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     const identity = getIdentity(answer.authorId, answer.author.username);
     const canDelete = user?.userId === answer.authorId;
@@ -110,11 +112,17 @@ const AnswerCard = ({
                         size="sm"
                     />
 
-                    <img
-                        src={identity.avatar}
-                        alt={identity.name}
-                        className="w-8 h-8 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
-                    />
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsProfileModalOpen(true); }}
+                        className="transition-transform hover:scale-110 active:scale-95"
+                        title="View Profile"
+                    >
+                        <img
+                            src={identity.avatar}
+                            alt={identity.name}
+                            className="w-8 h-8 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                        />
+                    </button>
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -178,6 +186,14 @@ const AnswerCard = ({
                 variant="danger"
                 isLoading={isDeleting}
             />
+
+            {isProfileModalOpen && (
+                <UserProfileModal
+                    userId={answer.authorId}
+                    identity={identity}
+                    onClose={() => setIsProfileModalOpen(false)}
+                />
+            )}
         </>
     );
 };
