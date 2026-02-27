@@ -9,11 +9,19 @@ import type { Socket } from 'socket.io-client';
 import socketService from '@/lib/socket';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Dialog';
 
+type TargetUser = {
+    id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+};
+
 const DMChatWindow = () => {
     const { id: conversationId } = useParams();
     const { user } = useAuthStore();
     const [messages, setMessages] = useState<DirectMessage[]>([]);
-    const [targetUser, setTargetUser] = useState<any>(null);
+    const [targetUser, setTargetUser] = useState<TargetUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [hasMore, setHasMore] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -23,6 +31,7 @@ const DMChatWindow = () => {
     const [blockedByMe, setBlockedByMe] = useState(false);
     const [blockedByThem, setBlockedByThem] = useState(false);
     const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -40,22 +49,19 @@ const DMChatWindow = () => {
         const fetchInitialData = async () => {
             setIsLoading(true);
             try {
-                // Fetch basic conversation info to verify access and get the target user
-                const convRes = await axiosClient.get('/api/dm/conversations');
-                const conversation = convRes.data.conversations.find((c: any) => c.id === conversationId);
+                // Fetch just this single conversation — much more efficient
+                const convRes = await axiosClient.get(`/api/dm/conversations/${conversationId}`);
+                const conversation = convRes.data.conversation;
 
-                // Fetch exact block status
                 if (conversation) {
-                    const target = conversation.participants[0];
+                    const target: TargetUser = conversation.participants[0];
                     setTargetUser(target);
                     const blockRes = await axiosClient.get(`/api/dm/block/status/${target.id}`);
-
                     setIsBlocked(blockRes.data.isBlocked);
                     setBlockedByMe(blockRes.data.blockedByMe);
                     setBlockedByThem(blockRes.data.blockedByThem);
                 }
 
-                // Fetch messages
                 await fetchMessages(null);
                 scrollToBottom();
             } catch (error) {
@@ -94,9 +100,13 @@ const DMChatWindow = () => {
             }
         };
 
-        const handleError = (data: any) => {
+        const handleError = (data: { message: string }) => {
             if (data.message === 'Message cannot be delivered') {
-                alert('You cannot send a message to this user. They may have blocked you.');
+                setErrorMessage('You cannot send a message to this user.');
+                setTimeout(() => setErrorMessage(null), 4000);
+            } else if (data.message === 'Too many messages, please slow down.') {
+                setErrorMessage('Slow down! You are sending messages too fast.');
+                setTimeout(() => setErrorMessage(null), 4000);
             }
         };
 
@@ -194,7 +204,6 @@ const DMChatWindow = () => {
 
     const handleBlockUser = async () => {
         if (!targetUser) return;
-
         try {
             await axiosClient.post('/api/dm/block', { targetUserId: targetUser.id });
             setIsBlocked(true);
@@ -202,13 +211,13 @@ const DMChatWindow = () => {
             setIsBlockModalOpen(false);
         } catch (error) {
             console.error('Failed to block user:', error);
-            alert('Failed to block user.');
+            setErrorMessage('Failed to block user. Please try again.');
+            setTimeout(() => setErrorMessage(null), 4000);
         }
     };
 
     const handleUnblockUser = async () => {
         if (!targetUser) return;
-
         try {
             await axiosClient.post('/api/dm/unblock', { targetUserId: targetUser.id });
             setBlockedByMe(false);
@@ -217,7 +226,8 @@ const DMChatWindow = () => {
             }
         } catch (error) {
             console.error('Failed to unblock user:', error);
-            alert('Failed to unblock user.');
+            setErrorMessage('Failed to unblock user. Please try again.');
+            setTimeout(() => setErrorMessage(null), 4000);
         }
     };
 
@@ -273,6 +283,12 @@ const DMChatWindow = () => {
                 className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-4"
             >
                 <div ref={messagesEndRef} />
+
+                {errorMessage && (
+                    <div className="sticky bottom-0 mb-2 mx-auto px-4 py-2 bg-red-900/60 border border-red-700/50 text-red-300 text-xs rounded-xl text-center">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {messages.map((message) => {
                     const isMe = message.senderId === user?.userId;
