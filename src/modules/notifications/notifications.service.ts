@@ -3,11 +3,18 @@ import webpush from 'web-push';
 
 const mailto = process.env['EMAIL_USER'] || 'test@test.com';
 
-webpush.setVapidDetails(
-    `mailto:${mailto}`,
-    process.env['VAPID_PUBLIC_KEY'] || '',
-    process.env['VAPID_PRIVATE_KEY'] || ''
-);
+const vapidPublicKey = process.env['VAPID_PUBLIC_KEY'];
+const vapidPrivateKey = process.env['VAPID_PRIVATE_KEY'];
+
+if (vapidPublicKey && vapidPrivateKey) {
+    webpush.setVapidDetails(
+        `mailto:${mailto}`,
+        vapidPublicKey,
+        vapidPrivateKey
+    );
+} else {
+    console.warn('⚠️ VAPID keys not configured. Web Push notifications will be disabled.');
+}
 
 // 
 // Create a new notification
