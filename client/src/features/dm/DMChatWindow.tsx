@@ -41,6 +41,32 @@ const DMChatWindow = () => {
     // Socket ref
     const socketRef = useRef<Socket | null>(null);
 
+    // Fetch messages logic (Cursor based)
+    const fetchMessages = useCallback(async (cursor: string | null) => {
+        if (!conversationId) return;
+
+        try {
+            const endpoint = `/api/dm/messages/${conversationId}${cursor ? `?cursor=${cursor}` : ''}`;
+            const res = await axiosClient.get(endpoint);
+
+            const newMessages = res.data.messages;
+
+            if (cursor) {
+                // Prepend older messages when scrolling up
+                setMessages(prev => [...prev, ...newMessages]);
+            } else {
+                // Initial load
+                setMessages(newMessages);
+            }
+
+            setNextCursor(res.data.nextCursor);
+            setHasMore(!!res.data.nextCursor);
+
+        } catch (error) {
+            console.error('Failed to fetch messages:', error);
+        }
+    }, [conversationId]);
+
     // Initial Fetch & Socket Setup
     useEffect(() => {
         if (!conversationId || !user) return;
@@ -119,33 +145,7 @@ const DMChatWindow = () => {
             socket.off('receive_dm', handleReceiveDm);
             socket.off('error', handleError);
         };
-    }, [conversationId, user]);
-
-    // Fetch messages logic (Cursor based)
-    const fetchMessages = async (cursor: string | null) => {
-        if (!conversationId) return;
-
-        try {
-            const endpoint = `/api/dm/messages/${conversationId}${cursor ? `?cursor=${cursor}` : ''}`;
-            const res = await axiosClient.get(endpoint);
-
-            const newMessages = res.data.messages;
-
-            if (cursor) {
-                // Prepend older messages when scrolling up
-                setMessages(prev => [...prev, ...newMessages]);
-            } else {
-                // Initial load
-                setMessages(newMessages);
-            }
-
-            setNextCursor(res.data.nextCursor);
-            setHasMore(!!res.data.nextCursor);
-
-        } catch (error) {
-            console.error('Failed to fetch messages:', error);
-        }
-    };
+    }, [conversationId, user, fetchMessages]);
 
     // Infinite Scroll Observer Setup
     const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -166,7 +166,7 @@ const DMChatWindow = () => {
                 }
             });
         }
-    }, [hasMore, isLoading, isLoadingMore, nextCursor]);
+    }, [hasMore, isLoading, isLoadingMore, nextCursor, fetchMessages]);
 
     useEffect(() => {
         const element = topElementRef.current;

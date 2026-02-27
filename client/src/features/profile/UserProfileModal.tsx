@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X } from 'lucide-react';
 import axiosClient from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -18,11 +18,6 @@ const UserProfileModal = ({ userId, identity, onClose }: UserProfileModalProps) 
     const { user } = useAuthStore();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const [userProfile, setUserProfile] = useState<{
-        role?: string;
-        year?: number;
-        branch?: string;
-    } | null>(null);
 
     // Don't show modal if clicking own avatar
     const isSelf = user?.userId === userId;
