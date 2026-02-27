@@ -24,7 +24,7 @@ if (vapidPublicKey && vapidPrivateKey) {
 export const createNotification = async (
     userId: string, // recipient
     actorId: string, // sender
-    type: 'REPLY' | 'UPVOTE' | 'MENTION',
+    type: 'REPLY' | 'UPVOTE' | 'MENTION' | 'DIRECT_MESSAGE',
     message: string,
     resourceId?: string
 ) => {
@@ -39,17 +39,17 @@ export const createNotification = async (
                 actorId,
                 type: 'UPVOTE',
                 resourceId,
-            },
+            }
         });
 
-        if (existing) return; // Already notified about this upvote
+        if (existing) return;
     }
 
     const notification = await prisma.notification.create({
         data: {
             userId,
             actorId,
-            type,
+            type: type as any,
             message,
             resourceId,
         },
@@ -60,9 +60,9 @@ export const createNotification = async (
                     username: true,
                     firstName: true,
                     lastName: true,
-                },
-            },
-        },
+                }
+            }
+        }
     });
 
     // Emit real-time notification via Socket.IO

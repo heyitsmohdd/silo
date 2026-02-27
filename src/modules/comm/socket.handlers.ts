@@ -19,7 +19,7 @@ import { prisma } from '../../shared/lib/prisma.js';
 // Simple in-memory rate limiter for chat messages
 const messageRateLimiter = new Map<string, { count: number; resetTime: number }>();
 const MESSAGE_LIMIT = 30; // 30 messages per minute
-const WINDOW_MS = 60// 1000; // 1 minute
+const WINDOW_MS = 60 * 1000; // 1 minute
 
 // User socket registry for targeted notifications
 const userSockets = new Map<string, string>(); // userId -> socketId
@@ -485,7 +485,8 @@ export const initializeSocketHandlers = (io: Server) => {
                     targetUser.id,
                     user.userId,
                     'DIRECT_MESSAGE',
-                    `New message from ${(user as any).firstName || user.username}`
+                    `New message from ${(user as any).firstName || user.username}`,
+                    conversationId
                 );
 
             } catch (error) {
