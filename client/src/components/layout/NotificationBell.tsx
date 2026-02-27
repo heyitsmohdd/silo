@@ -6,7 +6,7 @@ import socketService from '@/lib/socket';
 
 interface Notification {
     id: string;
-    type: 'REPLY' | 'UPVOTE' | 'MENTION';
+    type: 'REPLY' | 'UPVOTE' | 'MENTION' | 'DIRECT_MESSAGE';
     message: string;
     resourceId: string | null;
     isRead: boolean;
@@ -54,7 +54,10 @@ export const NotificationBell = () => {
         console.log('📍 Resource ID:', notification.resourceId);
 
         if (notification.resourceId) {
-            const targetPath = `/qna/${notification.resourceId}`;
+            const targetPath = notification.type === 'DIRECT_MESSAGE'
+                ? `/messages/${notification.resourceId}`
+                : `/qna/${notification.resourceId}`;
+
             console.log('🧭 Navigating to:', targetPath);
 
             // Navigate first, then close dropdown
