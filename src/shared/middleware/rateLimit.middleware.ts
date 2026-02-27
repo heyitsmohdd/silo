@@ -28,7 +28,7 @@ export const uploadRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
-// Beta security: Limit question creation to prevent spam
+// Limit question creation to prevent spam
 export const questionRateLimit = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // 5 questions per hour
@@ -37,7 +37,7 @@ export const questionRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
-// Beta security: Limit chat messages to prevent spam
+// Limit chat messages to prevent spam
 export const chatRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 30, // 30 messages per minute
