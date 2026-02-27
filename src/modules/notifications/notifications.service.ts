@@ -1,4 +1,13 @@
 import { prisma } from '../../shared/lib/prisma.js';
+import webpush from 'web-push';
+
+const mailto = process.env['EMAIL_USER'] || 'test@test.com';
+
+webpush.setVapidDetails(
+    `mailto:${mailto}`,
+    process.env['VAPID_PUBLIC_KEY'] || '',
+    process.env['VAPID_PRIVATE_KEY'] || ''
+);
 
 // 
 // Create a new notification
@@ -66,6 +75,41 @@ export const createNotification = async (
     } catch (error) {
         console.error('Failed to emit notification via socket:', error);
         // Don't throw - notification is still saved in DB
+    }
+
+    // Trigger Web Push Notification
+    try {
+        const subscriptions = await prisma.pushSubscription.findMany({
+            where: { userId }
+        });
+
+        const payload = JSON.stringify({
+            title: 'Silo',
+            message: message,
+            url: resourceId ? `/qna/${resourceId}` : '/'
+        });
+
+        // Send push to all registered devices of the user
+        const pushPromises = subscriptions.map((sub: any) =>
+            webpush.sendNotification({
+                endpoint: sub.endpoint,
+                keys: {
+                    auth: sub.auth,
+                    p256dh: sub.p256dh
+                }
+            }, payload).catch(e => {
+                if (e.statusCode === 410 || e.statusCode === 404) {
+                    // Subscription has expired or is no longer valid
+                    return prisma.pushSubscription.delete({ where: { id: sub.id } });
+                }
+                console.error('Error sending push notification:', e);
+                return undefined;
+            })
+        );
+
+        await Promise.allSettled(pushPromises);
+    } catch (error) {
+        console.error('Failed to process web push notifications:', error);
     }
 
     return notification;
