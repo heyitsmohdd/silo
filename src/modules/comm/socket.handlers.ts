@@ -12,12 +12,14 @@ import {
     generateRoomId,
 } from '../../shared/lib/socket-auth.js';
 import { getChannelMembers } from '../channels/channel.service.js';
+import { createNotification } from '../notifications/notifications.service.js';
 import { startChannelDeletionTimeout, clearChannelTimeout } from '../channels/channel-cleanup.service.js';
+import { prisma } from '../../shared/lib/prisma.js';
 
-// Beta security: Simple in-memory rate limiter for chat messages
+// Simple in-memory rate limiter for chat messages
 const messageRateLimiter = new Map<string, { count: number; resetTime: number }>();
 const MESSAGE_LIMIT = 30; // 30 messages per minute
-const WINDOW_MS = 60// 1000; // 1 minute
+const WINDOW_MS = 60 * 1000; // 1 minute
 
 // User socket registry for targeted notifications
 const userSockets = new Map<string, string>(); // userId -> socketId
@@ -119,7 +121,7 @@ export const initializeSocketHandlers = (io: Server) => {
                     return;
                 }
 
-                // Beta security: Rate limiting
+                // Rate limiting
                 const now = Date.now();
                 const userKey = user.userId;
                 const limiter = messageRateLimiter.get(userKey);
@@ -301,7 +303,7 @@ export const initializeSocketHandlers = (io: Server) => {
                     return;
                 }
 
-                // Beta security: Rate limiting
+                // Rate limiting
                 const now = Date.now();
                 const userKey = user.userId;
                 const limiter = messageRateLimiter.get(userKey);
@@ -361,6 +363,144 @@ export const initializeSocketHandlers = (io: Server) => {
                 firstName,
                 isTyping,
                 channelId
+            });
+        });
+
+        // ========================================================================
+        // DIRECT MESSAGING EVENTS (Private 1-on-1)
+        // ========================================================================
+
+        // Join private DM room
+        socket.on('join_dm', async (data: { conversationId: string }) => {
+            try {
+                if (!user) return;
+                const { conversationId } = data;
+
+                // Verify user is part of the conversation
+                const conversation = await prisma.conversation.findFirst({
+                    where: {
+                        id: conversationId,
+                        participants: { some: { id: user.userId } }
+                    }
+                });
+
+                if (!conversation) return;
+
+                const dmRoom = `dm_${conversationId}`;
+                socket.join(dmRoom);
+                console.log(`🔒 User ${user.email} joined DM room: ${dmRoom}`);
+
+                socket.emit('dm_joined', { conversationId });
+            } catch (error) {
+                console.error('Error joining DM:', error);
+            }
+        });
+
+        // Send private DM
+        socket.on('send_dm', async (data: { conversationId: string; content: string }) => {
+            try {
+                if (!user) return;
+                const { conversationId, content } = data;
+
+                if (!content || content.trim().length === 0) return;
+
+                // Fetch conversation to verify membership and find the OTHER user
+                const conversation = await prisma.conversation.findFirst({
+                    where: {
+                        id: conversationId,
+                        participants: { some: { id: user.userId } }
+                    },
+                    include: {
+                        participants: {
+                            where: { id: { not: user.userId } }
+                        }
+                    }
+                });
+
+                if (!conversation) return;
+                const targetUser = conversation.participants[0];
+                if (!targetUser) return;
+
+                // Security: Check if either user has blocked the other
+                const isBlocked = await prisma.block.findFirst({
+                    where: {
+                        OR: [
+                            { blockerId: user.userId, blockedId: targetUser.id },
+                            { blockerId: targetUser.id, blockedId: user.userId }
+                        ]
+                    }
+                });
+
+                if (isBlocked) {
+                    socket.emit('error', { message: 'Message cannot be delivered' });
+                    return;
+                }
+
+                // Rate limiting
+                const now = Date.now();
+                const limiter = messageRateLimiter.get(user.userId);
+                if (limiter && now < limiter.resetTime) {
+                    if (limiter.count >= MESSAGE_LIMIT) {
+                        socket.emit('error', { message: 'Too many messages, please slow down.' });
+                        return;
+                    }
+                    limiter.count++;
+                } else {
+                    messageRateLimiter.set(user.userId, { count: 1, resetTime: now + WINDOW_MS });
+                }
+
+                // Save message and update conversation timestamp using a transaction
+                const [message] = await prisma.$transaction([
+                    prisma.directMessage.create({
+                        data: {
+                            content: content.trim(),
+                            senderId: user.userId,
+                            conversationId
+                        },
+                        include: {
+                            sender: { select: { id: true, firstName: true, username: true } }
+                        }
+                    }),
+                    prisma.conversation.update({
+                        where: { id: conversationId },
+                        data: { updatedAt: new Date() }
+                    })
+                ]);
+
+                const dmRoom = `dm_${conversationId}`;
+                console.log(`📣 [Socket] Broadcasting to room ${dmRoom}:`, { id: message.id, senderId: message.senderId });
+
+                // Broadcast to both users in the room
+                io.to(dmRoom).emit('receive_dm', {
+                    id: message.id,
+                    content: message.content,
+                    conversationId: message.conversationId,
+                    senderId: message.senderId,
+                    sender: message.sender,
+                    createdAt: message.createdAt
+                });
+
+                // Fire notification to the target user
+                await createNotification(
+                    targetUser.id,
+                    user.userId,
+                    'DIRECT_MESSAGE',
+                    `New message from ${(user as any).firstName || user.username}`,
+                    conversationId
+                );
+
+            } catch (error) {
+                console.error('Error sending DM:', error);
+                socket.emit('error', { message: 'Failed to send message' });
+            }
+        });
+
+        socket.on('typing_dm', (data: { conversationId: string; isTyping: boolean }) => {
+            const { conversationId, isTyping } = data;
+            socket.to(`dm_${conversationId}`).emit('typing_dm', {
+                conversationId,
+                userId: user?.userId,
+                isTyping
             });
         });
 

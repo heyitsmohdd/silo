@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import axiosClient from '@/lib/axios';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import VotingButtons from './VotingButtons';
+import UserProfileModal from '../profile/UserProfileModal';
 
 
 interface Reaction {
@@ -51,6 +52,7 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     // Handle delete click (opens modal)
     const handleDeleteClick = (e: React.MouseEvent) => {
@@ -209,11 +211,17 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap text-xs text-zinc-500 mb-4">
-                    <img
-                        src={identity.avatar}
-                        alt={identity.name}
-                        className="w-5 h-5 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
-                    />
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsProfileModalOpen(true); }}
+                        className="transition-transform hover:scale-110 active:scale-95 z-10"
+                        title="View Profile"
+                    >
+                        <img
+                            src={identity.avatar}
+                            alt={identity.name}
+                            className="w-6 h-6 rounded-full bg-zinc-900 ring-1 ring-zinc-800"
+                        />
+                    </button>
 
                     <span>
                         Posted by <span className="text-zinc-400 font-medium">{identity.name}</span> • {formatTimeAgo(question.createdAt)}
@@ -271,6 +279,14 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                 variant="danger"
                 isLoading={isDeleting}
             />
+
+            {isProfileModalOpen && (
+                <UserProfileModal
+                    userId={question.authorId}
+                    identity={identity}
+                    onClose={() => setIsProfileModalOpen(false)}
+                />
+            )}
         </div>
     );
 };
