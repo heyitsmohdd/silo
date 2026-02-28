@@ -355,7 +355,7 @@ export const initializeSocketHandlers = (io: Server) => {
             const channelRoom = `channel_${channelId}`;
 
             // Safe access to firstName since it might not be in JWTPayload
-            const firstName = (user as any).firstName || user.email.split('@')[0];
+            const firstName = user.firstName || user.email.split('@')[0];
 
             socket.to(channelRoom).emit('channel_typing', {
                 userId: user.userId,
@@ -485,7 +485,7 @@ export const initializeSocketHandlers = (io: Server) => {
                     targetUser.id,
                     user.userId,
                     'DIRECT_MESSAGE',
-                    `New message from ${(user as any).firstName || user.username}`,
+                    `New message from ${user.firstName || user.username}`,
                     conversationId
                 );
 
