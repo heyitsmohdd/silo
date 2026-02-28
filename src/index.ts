@@ -24,6 +24,8 @@ import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
 import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
 import newsRoutes from './modules/news/news.routes.js';
+import { logger } from './shared/utils/logger.js';
+import { prisma } from './shared/lib/prisma.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -41,6 +43,7 @@ const PORT = process.env['PORT'] ?? 3000;
 // ============================================================================
 
 const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') ?? [
+    'https://siloedu.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
@@ -55,13 +58,16 @@ app.use(
             // Allow requests with no origin (like mobile apps or curl requests)
             if (!origin) return callback(null, true);
 
-            if (allowedOrigins.indexOf(origin) === -1) {
-                // For debugging, allow all localhost origins
-                if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-                    return callback(null, true);
+            if (process.env['NODE_ENV'] === 'production') {
+                if (!allowedOrigins.includes(origin) || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+                    const msg = 'The CORS policy for this site strictly prohibits the specified Origin in production environments.';
+                    return callback(new Error(msg), false);
                 }
-                const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-                return callback(new Error(msg), false);
+            } else {
+                if (!allowedOrigins.includes(origin) && !origin.startsWith('http://localhost') && !origin.startsWith('http://127.0.0.1')) {
+                    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+                    return callback(new Error(msg), false);
+                }
             }
             return callback(null, true);
         },
@@ -77,11 +83,15 @@ const io = new Server(httpServer, {
     cors: {
         origin: (origin, callback) => {
             if (!origin) return callback(null, true);
-            if (allowedOrigins.indexOf(origin) === -1) {
-                if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-                    return callback(null, true);
+
+            if (process.env['NODE_ENV'] === 'production') {
+                if (!allowedOrigins.includes(origin) || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+                    return callback(new Error('Not allowed by CORS strictly in production'), false);
                 }
-                return callback(new Error('Not allowed by CORS'), false);
+            } else {
+                if (!allowedOrigins.includes(origin) && !origin.startsWith('http://localhost') && !origin.startsWith('http://127.0.0.1')) {
+                    return callback(new Error('Not allowed by CORS'), false);
+                }
             }
             return callback(null, true);
         },
@@ -150,14 +160,39 @@ app.use(errorHandler);
 // ============================================================================
 
 httpServer.listen(PORT, () => {
-    console.log(`🚀 Academic Vault API running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
-    console.log(`🔒 JWT Secret: ${process.env['JWT_SECRET'] ? 'Configured' : 'MISSING!'}`);
-    console.log(`💬 Socket.io: Enabled with JWT authentication`);
+    logger.info(`🚀 Academic Vault API running on port ${PORT}`);
+    logger.info(`📍 Environment: ${process.env['NODE_ENV'] ?? 'development'}`);
+    logger.info(`🔒 JWT Secret: ${process.env['JWT_SECRET'] ? 'Configured' : 'MISSING!'}`);
+    logger.info(`💬 Socket.io: Enabled with JWT authentication`);
 
     // Initialize channel cleanup service
     initializeChannelCleanup();
 });
+
+const gracefulShutdown = async (signal: string) => {
+    logger.info(`Received ${signal}. Starting graceful shutdown...`);
+
+    httpServer.close(async () => {
+        logger.info('HTTP server closed.');
+        try {
+            await prisma.$disconnect();
+            logger.info('Prisma disconnected successfully.');
+            process.exit(0);
+        } catch (error) {
+            logger.error('Error during Prisma disconnection', error as Error);
+            process.exit(1);
+        }
+    });
+
+    // Force close after 10 seconds if needed
+    setTimeout(() => {
+        logger.error('Could not close connections in time, forcefully shutting down');
+        process.exit(1);
+    }, 10000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 export default app;
 
