@@ -38,6 +38,7 @@ client/dist/
 
 # Temp files
 .tmp/
+tmp/
 *.tmp
 AGENT.md
 
