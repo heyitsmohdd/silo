@@ -110,8 +110,7 @@ export const loginUser = async (
     }
 
 
-    const token = generateToken(user as unknown as any); // Force cast for now or better type mapping
-
+    const token = generateToken(user as any);
 
     const { password: _, ...safeUser } = user;
 
@@ -161,6 +160,7 @@ export const handleForgotPassword = async (email: string): Promise<{
 
 
     if (user.isDeleted) {
+        console.warn(`[SECURITY] Password reset requested for deactivated account: ${email}`);
         return { success: true };
     }
 
@@ -196,27 +196,23 @@ export const handleVerifyResetToken = async (token: string): Promise<{
 // 
 // Handle reset password
 
-export const handleResetPassword = async (token: string, newPassword: string): Promise<{
-    success: boolean;
-    error?: string;
-}> => {
+export const handleResetPassword = async (token: string, newPassword: string): Promise<{ success: true }> => {
     const result = verifyResetToken(token);
 
     if (!result.valid || !result.email) {
-        return { success: false, error: 'Invalid or expired reset token' };
+        throw new AppError(400, 'Invalid or expired reset token');
     }
-
 
     const user = await prisma.user.findUnique({
         where: { email: result.email },
     });
 
     if (!user) {
-        return { success: false, error: 'User not found' };
+        throw new AppError(404, 'User not found');
     }
 
     if (user.isDeleted) {
-        return { success: false, error: 'This account has been deactivated' };
+        throw new AppError(403, 'This account has been deactivated');
     }
 
 
@@ -320,32 +316,30 @@ export const changeUserPassword = async (
     userId: string,
     currentPassword: string,
     newPassword: string
-): Promise<{ success: boolean; error?: string }> => {
+): Promise<{ success: true }> => {
 
     const user = await prisma.user.findUnique({
         where: { id: userId },
     });
 
     if (!user) {
-        return { success: false, error: 'User not found' };
+        throw new AppError(404, 'User not found');
     }
 
     if (user.isDeleted) {
-        return { success: false, error: 'This account has been deactivated' };
+        throw new AppError(403, 'This account has been deactivated');
     }
-
 
     const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
 
     if (!isPasswordValid) {
-        return { success: false, error: 'Current password is incorrect' };
+        throw new AppError(401, 'Current password is incorrect');
     }
-
 
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
 
     if (isSamePassword) {
-        return { success: false, error: 'New password must be different from current password' };
+        throw new AppError(400, 'New password must be different from current password');
     }
 
 

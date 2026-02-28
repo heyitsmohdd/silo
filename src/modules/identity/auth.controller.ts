@@ -133,12 +133,7 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response): P
         return;
     }
 
-    const result = await handleResetPassword(token, newPassword);
-
-    if (!result.success) {
-        res.status(400).json({ error: result.error });
-        return;
-    }
+    await handleResetPassword(token, newPassword);
 
     res.status(200).json({
         message: 'Password reset successful',
@@ -206,12 +201,7 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
     }
 
     try {
-        const result = await changeUserPassword(req.user.userId, currentPassword, newPassword);
-
-        if (!result.success) {
-            res.status(400).json({ error: result.error });
-            return;
-        }
+        await changeUserPassword(req.user.userId, currentPassword, newPassword);
 
         res.status(200).json({
             message: 'Password changed successfully',
