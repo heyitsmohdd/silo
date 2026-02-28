@@ -60,5 +60,8 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  esbuild: {
+    pure: mode === 'production' ? ['console.log', 'console.info'] : [],
+  },
 }))
 
