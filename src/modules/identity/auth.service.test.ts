@@ -17,6 +17,7 @@ vi.mock('../../shared/lib/prisma', () => ({
         user: {
             findUnique: vi.fn(),
             create: vi.fn(),
+            update: vi.fn(),
         },
         allowedEmail: {
             findUnique: vi.fn(),
@@ -44,9 +45,9 @@ vi.mock('unique-names-generator', () => ({
     animals: [],
 }));
 
-vi.mock('../../shared/lib/resetToken', () => ({
-    generateResetToken: vi.fn().mockReturnValue({ token: 'mock-reset-token', expires: new Date() }),
-    verifyResetToken: vi.fn(),
+vi.mock('../../shared/lib/resetToken.js', () => ({
+    generateResetToken: vi.fn().mockImplementation(() => ({ token: 'mock-reset-token', expiresAt: new Date() })),
+    verifyResetToken: vi.fn().mockImplementation(() => ({ valid: true, email: 'test@example.com' })),
 }));
 
 describe('AuthService', () => {
@@ -71,8 +72,7 @@ describe('AuthService', () => {
                 id: '1',
                 email: 'test@example.com',
                 createdAt: new Date(),
-                updatedAt: new Date(),
-            });
+            } as any);
 
             // Mock user existence check (user does not exist)
             vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
@@ -120,8 +120,7 @@ describe('AuthService', () => {
                 id: '1',
                 email: 'test@example.com',
                 createdAt: new Date(),
-                updatedAt: new Date(),
-            });
+            } as any);
 
             // Mock user existence check (user exists)
             vi.mocked(prisma.user.findUnique).mockResolvedValue({
@@ -226,9 +225,9 @@ describe('AuthService', () => {
 
         it('should throw error if new username is already taken', async () => {
             vi.mocked(prisma.user.findUnique)
-                .mockResolvedValueOnce(mockUser as any) // auth user
-                .mockResolvedValueOnce(null) // email check
-                .mockResolvedValueOnce({ id: 'other-user', username: 'taken-username' } as any); // username check
+                .mockResolvedValueOnce(mockUser as any) // auth user check
+                // No email check since data.email is undefined
+                .mockResolvedValueOnce({ id: 'other-user', username: 'taken-username' } as any); // username uniqueness check
 
             await expect(updateUserProfile('user-123', { username: 'taken-username' }))
                 .rejects.toThrow('Username is already taken');
@@ -258,6 +257,8 @@ describe('AuthService', () => {
         describe('handleForgotPassword', () => {
             it('should return success and token for valid active user', async () => {
                 vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+                const { generateResetToken } = await import('../../shared/lib/resetToken.js');
+                vi.mocked(generateResetToken).mockReturnValue({ token: 'mock-reset-token', expiresAt: new Date() } as any);
 
                 const result = await handleForgotPassword(mockUser.email);
 
@@ -286,7 +287,7 @@ describe('AuthService', () => {
 
         describe('handleResetPassword', () => {
             it('should successfully update password with valid token', async () => {
-                const { verifyResetToken } = await import('../../shared/lib/resetToken');
+                const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
                 vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email } as any);
                 vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
                 vi.mocked(bcrypt.hash).mockResolvedValue('new_hashed_password' as never);
@@ -301,7 +302,7 @@ describe('AuthService', () => {
             });
 
             it('should throw error generic if token is invalid or expired', async () => {
-                const { verifyResetToken } = await import('../../shared/lib/resetToken');
+                const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
                 vi.mocked(verifyResetToken).mockReturnValue({ valid: false });
 
                 await expect(handleResetPassword('invalid-token', 'new_password123')).rejects.toThrow(AppError);
@@ -309,7 +310,7 @@ describe('AuthService', () => {
             });
 
             it('should throw error if user belonging to token is not found', async () => {
-                const { verifyResetToken } = await import('../../shared/lib/resetToken');
+                const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
                 vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: 'ghost@example.com' } as any);
                 vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
 
@@ -318,7 +319,7 @@ describe('AuthService', () => {
             });
 
             it('should throw error if user belonging to token is deactivated', async () => {
-                const { verifyResetToken } = await import('../../shared/lib/resetToken');
+                const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
                 vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email } as any);
                 vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as any);
 
