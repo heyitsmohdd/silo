@@ -99,51 +99,57 @@ const DMChatWindow = () => {
 
         fetchInitialData();
 
-        // Socket logic using global context
-        const socket = socketService.getSocket();
-        if (!socket) {
-            console.error('❌ [DMChatWindow] Global socket not found.');
-            return;
-        }
-
-        socketRef.current = socket;
-
-        // Emit immediately if already connected
-        if (socket.connected) {
-            socket.emit('join_dm', { conversationId });
-        }
-
-        const handleConnect = () => {
-            socket.emit('join_dm', { conversationId });
-        };
-
-        const handleReceiveDm = (message: DirectMessage) => {
-            console.log('📬 [DMChatWindow] Received socket message:', message);
-            // Only append if it belongs to this room
-            if (message.conversationId === conversationId) {
-                setMessages(prev => [message, ...prev.filter(m => m.id !== message.id)]);
-                scrollToBottom();
+        // Socket logic using global context subscription
+        const unsubscribe = socketService.onConnectionChange((socket) => {
+            if (!socket) {
+                console.warn('⚠️ [DMChatWindow] Global socket not ready yet, waiting...');
+                return;
             }
-        };
 
-        const handleError = (data: { message: string }) => {
-            if (data.message === 'Message cannot be delivered') {
-                setErrorMessage('You cannot send a message to this user.');
-                setTimeout(() => setErrorMessage(null), 4000);
-            } else if (data.message === 'Too many messages, please slow down.') {
-                setErrorMessage('Slow down! You are sending messages too fast.');
-                setTimeout(() => setErrorMessage(null), 4000);
+            socketRef.current = socket;
+
+            // Emit immediately if already connected
+            if (socket.connected) {
+                socket.emit('join_dm', { conversationId });
             }
-        };
 
-        socket.on('connect', handleConnect);
-        socket.on('receive_dm', handleReceiveDm);
-        socket.on('error', handleError);
+            const handleConnect = () => {
+                socket.emit('join_dm', { conversationId });
+            };
+
+            const handleReceiveDm = (message: DirectMessage) => {
+                console.log('📬 [DMChatWindow] Received socket message:', message);
+                // Only append if it belongs to this room
+                if (message.conversationId === conversationId) {
+                    setMessages(prev => [message, ...prev.filter(m => m.id !== message.id)]);
+                    scrollToBottom();
+                }
+            };
+
+            const handleError = (data: { message: string }) => {
+                if (data.message === 'Message cannot be delivered') {
+                    setErrorMessage('You cannot send a message to this user.');
+                    setTimeout(() => setErrorMessage(null), 4000);
+                } else if (data.message === 'Too many messages, please slow down.') {
+                    setErrorMessage('Slow down! You are sending messages too fast.');
+                    setTimeout(() => setErrorMessage(null), 4000);
+                }
+            };
+
+            socket.on('connect', handleConnect);
+            socket.on('receive_dm', handleReceiveDm);
+            socket.on('error', handleError);
+
+            // Cleanup nested listener bindings on change/unmount
+            return () => {
+                socket.off('connect', handleConnect);
+                socket.off('receive_dm', handleReceiveDm);
+                socket.off('error', handleError);
+            };
+        });
 
         return () => {
-            socket.off('connect', handleConnect);
-            socket.off('receive_dm', handleReceiveDm);
-            socket.off('error', handleError);
+            unsubscribe();
         };
     }, [conversationId, user, fetchMessages]);
 
