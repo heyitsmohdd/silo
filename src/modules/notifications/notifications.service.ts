@@ -1,4 +1,5 @@
 import { prisma } from '../../shared/lib/prisma.js';
+import { NotificationType } from '@prisma/client';
 import webpush from 'web-push';
 
 const mailto = process.env['EMAIL_USER'] || 'test@test.com';
@@ -49,7 +50,7 @@ export const createNotification = async (
         data: {
             userId,
             actorId,
-            type: type as any,
+            type: type as NotificationType,
             message,
             resourceId,
         },
