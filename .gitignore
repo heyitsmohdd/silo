@@ -40,3 +40,7 @@ client/dist/
 .tmp/
 *.tmp
 AGENT.md
+
+# Test Coverage
+coverage/
+client/coverage/
