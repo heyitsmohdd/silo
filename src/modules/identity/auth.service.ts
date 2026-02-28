@@ -73,8 +73,15 @@ export const registerUser = async (data: {
     });
 
 
-    const token = generateToken(user as unknown as any);
-
+    const token = generateToken({
+        id: user.id,
+        email: user.email,
+        role: user.role as Role,
+        year: user.year,
+        branch: user.branch,
+        username: user.username,
+        firstName: user.firstName ?? undefined,
+    });
 
     const { password: _, ...safeUser } = user;
 
@@ -110,7 +117,15 @@ export const loginUser = async (
     }
 
 
-    const token = generateToken(user as any);
+    const token = generateToken({
+        id: user.id,
+        email: user.email,
+        role: user.role as Role,
+        year: user.year,
+        branch: user.branch,
+        username: user.username,
+        firstName: user.firstName ?? undefined,
+    });
 
     const { password: _, ...safeUser } = user;
 
@@ -127,6 +142,7 @@ const generateToken = (user: {
     year: number;
     branch: string;
     username?: string | null;
+    firstName?: string | null;
 }): string => {
     const payload: JWTPayload = {
         userId: user.id,
@@ -135,6 +151,7 @@ const generateToken = (user: {
         year: user.year,
         branch: user.branch,
         username: user.username || undefined,
+        firstName: user.firstName || undefined,
     };
 
     return jwt.sign(payload, JWT_SECRET!, { expiresIn: JWT_EXPIRES_IN });
@@ -263,7 +280,7 @@ export const updateUserProfile = async (
     }
 
     // If username is being updated, validate restrictions
-    if (data.username && data.username !== (user as any).username) {
+    if (data.username && data.username !== user.username) {
         // Check if username is already taken
         const existingUser = await prisma.user.findUnique({
             where: { username: data.username },
@@ -274,7 +291,7 @@ export const updateUserProfile = async (
         }
 
         // Check 6-month restriction
-        const lastChange = (user as any).lastUsernameChange;
+        const lastChange = user.lastUsernameChange;
         if (lastChange) {
             const sixMonthsAgo = new Date();
             sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -297,7 +314,7 @@ export const updateUserProfile = async (
             email: data.email || user.email,
             firstName: data.firstName !== undefined ? data.firstName : user.firstName,
             lastName: data.lastName !== undefined ? data.lastName : user.lastName,
-            ...(data.username && data.username !== (user as any).username && {
+            ...(data.username && data.username !== user.username && {
                 username: data.username,
                 lastUsernameChange: new Date(),
             }),
