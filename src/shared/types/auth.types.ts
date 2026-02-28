@@ -29,6 +29,7 @@ export interface JWTPayload {
     year: number;
     branch: string;
     username?: string;
+    firstName?: string;
     iat?: number;
     exp?: number;
 }
