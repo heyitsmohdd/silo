@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { registerUser, loginUser, updateUserProfile, handleForgotPassword, handleVerifyResetToken, handleResetPassword } from './auth.service';
 import { prisma } from '../../shared/lib/prisma';
+import { User } from '@prisma/client';
+import { Role } from '../../shared/types/auth.types';
 import { AppError } from '../../shared/middleware/error.middleware';
 
 // Mock dependencies
@@ -61,7 +63,7 @@ describe('AuthService', () => {
             password: 'password123',
             year: 1,
             branch: 'CSE',
-            role: 'STUDENT' as const,
+            role: Role.STUDENT,
             firstName: 'Test',
             lastName: 'User',
         };
@@ -71,8 +73,9 @@ describe('AuthService', () => {
             vi.mocked(prisma.allowedEmail.findUnique).mockResolvedValue({
                 id: '1',
                 email: 'test@example.com',
+                addedBy: null,
                 createdAt: new Date(),
-            } as any);
+            });
 
             // Mock user existence check (user does not exist)
             vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
@@ -91,7 +94,7 @@ describe('AuthService', () => {
                 lastUsernameChange: null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-            } as any);
+            } as unknown as User);
 
             const result = await registerUser(validUserData);
 
@@ -119,13 +122,14 @@ describe('AuthService', () => {
             vi.mocked(prisma.allowedEmail.findUnique).mockResolvedValue({
                 id: '1',
                 email: 'test@example.com',
+                addedBy: null,
                 createdAt: new Date(),
-            } as any);
+            });
 
             // Mock user existence check (user exists)
             vi.mocked(prisma.user.findUnique).mockResolvedValue({
                 id: 'existing-user-id',
-            } as any);
+            } as unknown as User);
 
             await expect(registerUser(validUserData)).rejects.toThrow(AppError);
             await expect(registerUser(validUserData)).rejects.toThrow('User with this email already exists');
@@ -144,14 +148,14 @@ describe('AuthService', () => {
             password: 'hashed_password',
             year: 1,
             branch: 'CSE',
-            role: 'STUDENT',
+            role: Role.STUDENT,
             firstName: 'Test',
             lastName: 'User',
             isDeleted: false,
         };
 
         it('should login successfully with valid credentials', async () => {
-            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as unknown as User);
             vi.mocked(bcrypt.compare).mockResolvedValue(true as never);
 
             const result = await loginUser(loginData.email, loginData.password);
@@ -170,14 +174,14 @@ describe('AuthService', () => {
         });
 
         it('should throw error if account is deactivated', async () => {
-            vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as any);
+            vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as unknown as User);
 
             await expect(loginUser(loginData.email, loginData.password)).rejects.toThrow(AppError);
             await expect(loginUser(loginData.email, loginData.password)).rejects.toThrow('This account has been deactivated');
         });
 
         it('should throw error if password is invalid', async () => {
-            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as unknown as User);
             vi.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
             await expect(loginUser(loginData.email, 'wrongpassword')).rejects.toThrow(AppError);
@@ -197,12 +201,12 @@ describe('AuthService', () => {
         };
 
         it('should update profile fields successfully', async () => {
-            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+            vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as unknown as User);
             vi.mocked(prisma.user.update).mockResolvedValue({
                 ...mockUser,
                 firstName: 'New',
                 lastName: 'Name',
-            } as any);
+            } as unknown as User);
 
             const result = await updateUserProfile('user-123', { firstName: 'New' });
 
@@ -215,9 +219,9 @@ describe('AuthService', () => {
         it('should throw error if new email is already taken', async () => {
             // First findUnique returns current user
             vi.mocked(prisma.user.findUnique)
-                .mockResolvedValueOnce(mockUser as any)
+                .mockResolvedValueOnce(mockUser as unknown as User)
                 // Second findUnique returns the colliding user
-                .mockResolvedValueOnce({ id: 'other-user', email: 'taken@example.com' } as any);
+                .mockResolvedValueOnce({ id: 'other-user', email: 'taken@example.com' } as unknown as User);
 
             await expect(updateUserProfile('user-123', { email: 'taken@example.com' }))
                 .rejects.toThrow('Email is already in use');
@@ -225,9 +229,9 @@ describe('AuthService', () => {
 
         it('should throw error if new username is already taken', async () => {
             vi.mocked(prisma.user.findUnique)
-                .mockResolvedValueOnce(mockUser as any) // auth user check
+                .mockResolvedValueOnce(mockUser as unknown as User) // auth user check
                 // No email check since data.email is undefined
-                .mockResolvedValueOnce({ id: 'other-user', username: 'taken-username' } as any); // username uniqueness check
+                .mockResolvedValueOnce({ id: 'other-user', username: 'taken-username' } as unknown as User); // username uniqueness check
 
             await expect(updateUserProfile('user-123', { username: 'taken-username' }))
                 .rejects.toThrow('Username is already taken');
@@ -238,7 +242,7 @@ describe('AuthService', () => {
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
             vi.mocked(prisma.user.findUnique)
-                .mockResolvedValueOnce({ ...mockUser, lastUsernameChange: threeMonthsAgo } as any) // auth user
+                .mockResolvedValueOnce({ ...mockUser, lastUsernameChange: threeMonthsAgo } as unknown as User) // auth user
                 .mockResolvedValueOnce(null) // username check
 
             await expect(updateUserProfile('user-123', { username: 'new-username' }))
@@ -256,9 +260,9 @@ describe('AuthService', () => {
 
         describe('handleForgotPassword', () => {
             it('should return success and token for valid active user', async () => {
-                vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+                vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as unknown as User);
                 const { generateResetToken } = await import('../../shared/lib/resetToken.js');
-                vi.mocked(generateResetToken).mockReturnValue({ token: 'mock-reset-token', expiresAt: new Date() } as any);
+                vi.mocked(generateResetToken).mockReturnValue({ token: 'mock-reset-token', expiresAt: new Date() });
 
                 const result = await handleForgotPassword(mockUser.email);
 
@@ -276,7 +280,7 @@ describe('AuthService', () => {
             });
 
             it('should return success but NO token for deactivated user to prevent enumeration', async () => {
-                vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as any);
+                vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as unknown as User);
 
                 const result = await handleForgotPassword(mockUser.email);
 
@@ -288,8 +292,8 @@ describe('AuthService', () => {
         describe('handleResetPassword', () => {
             it('should successfully update password with valid token', async () => {
                 const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
-                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email } as any);
-                vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email });
+                vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as unknown as User);
                 vi.mocked(bcrypt.hash).mockResolvedValue('new_hashed_password' as never);
 
                 const result = await handleResetPassword('valid-token', 'new_password123');
@@ -311,7 +315,7 @@ describe('AuthService', () => {
 
             it('should throw error if user belonging to token is not found', async () => {
                 const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
-                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: 'ghost@example.com' } as any);
+                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: 'ghost@example.com' });
                 vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
 
                 await expect(handleResetPassword('valid-token', 'new_password123')).rejects.toThrow(AppError);
@@ -320,8 +324,8 @@ describe('AuthService', () => {
 
             it('should throw error if user belonging to token is deactivated', async () => {
                 const { verifyResetToken } = await import('../../shared/lib/resetToken.js');
-                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email } as any);
-                vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as any);
+                vi.mocked(verifyResetToken).mockReturnValue({ valid: true, email: mockUser.email });
+                vi.mocked(prisma.user.findUnique).mockResolvedValue({ ...mockUser, isDeleted: true } as unknown as User);
 
                 await expect(handleResetPassword('valid-token', 'new_password123')).rejects.toThrow(AppError);
                 await expect(handleResetPassword('valid-token', 'new_password123')).rejects.toThrow('This account has been deactivated');
