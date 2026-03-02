@@ -23,7 +23,14 @@ const MessagesPage = () => {
                             <MessageSquare className="w-8 h-8 text-zinc-600" />
                         </div>
                         <h3 className="text-lg font-medium text-zinc-300 mb-2">Your Messages</h3>
-                        <p className="text-sm">Select a conversation from the sidebar to start chatting</p>
+                        <p className="text-sm">Select a conversation from the sidebar to start chatting.</p>
+
+                        <div className="mt-8 bg-zinc-900 border border-zinc-800 rounded-xl p-4 max-w-sm text-center">
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                                <span className="font-semibold text-zinc-300 block mb-1">Want to start a new chat?</span>
+                                You can message anyone directly by clicking on their avatar or profile anywhere in the Dashboard.
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>
