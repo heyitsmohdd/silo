@@ -1,19 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, HelpCircle, MessageSquare, User } from 'lucide-react';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { Home, HelpCircle, MessageSquare, FileText } from 'lucide-react';
 
 export const BottomNav = () => {
     const location = useLocation();
-    const { user } = useAuthStore();
-
-    // Safety check for user ID to map profile correctly
-    const profileId = user?.userId || '';
 
     const navItems = [
         { path: '/', icon: Home, label: 'Home' },
         { path: '/qna', icon: HelpCircle, label: 'Q&A' },
+        { path: '/notes', icon: FileText, label: 'Notes' },
         { path: '/messages', icon: MessageSquare, label: 'Messages' },
-        { path: `/profile/${profileId}`, icon: User, label: 'Profile' },
     ];
 
     return (
