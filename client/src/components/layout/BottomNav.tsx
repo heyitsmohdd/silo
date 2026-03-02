@@ -7,7 +7,7 @@ export const BottomNav = () => {
     const navItems = [
         { path: '/qna?tab=articles', matchPath: '/qna', icon: BookOpen, label: 'Articles' },
         { path: '/qna', matchPath: '/qna', icon: Library, label: 'Q&A' },
-        { path: '/chat', matchPath: '/chat', icon: Users, label: 'Channels' },
+        { path: '/chat', matchPath: '/chat', icon: Users, label: 'Batch Chat' },
         { path: '/messages', matchPath: '/messages', icon: MessageSquare, label: 'DM' },
         { path: '/profile', matchPath: '/profile', icon: UserCircle, label: 'Profile' },
     ];
