@@ -5,7 +5,6 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { getIdentity } from '@/lib/identity';
 import { Link, useParams } from 'react-router-dom';
 import socketService from '@/lib/socket';
-import { X, Info } from 'lucide-react';
 
 const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -24,7 +23,6 @@ const formatTimeAgo = (dateString: string) => {
 const DMSidebar = () => {
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [showPrompt, setShowPrompt] = useState(true);
     const { user } = useAuthStore();
     const { id: activeConversationId } = useParams();
 
@@ -133,27 +131,6 @@ const DMSidebar = () => {
                     })
                 )}
             </div>
-
-            {/* Mobile Helper Popup */}
-            {showPrompt && (
-                <div className="md:hidden fixed bottom-20 left-4 right-4 bg-zinc-900 border border-zinc-700 shadow-2xl rounded-xl p-4 z-50 animate-in slide-in-from-bottom-5">
-                    <button
-                        onClick={() => setShowPrompt(false)}
-                        className="absolute top-2 right-2 p-1 text-zinc-500 hover:text-zinc-300 transition-colors bg-zinc-800/50 rounded-full"
-                    >
-                        <X className="w-4 h-4" />
-                    </button>
-                    <div className="flex gap-3 items-start">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                            <Info className="w-4 h-4 text-emerald-500" />
-                        </div>
-                        <p className="text-xs text-zinc-300 leading-relaxed pr-2">
-                            <span className="font-semibold text-white block mb-0.5 text-[13px]">How to start a chat</span>
-                            You can message anyone directly by clicking on their avatar or profile anywhere in the Dashboard.
-                        </p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
