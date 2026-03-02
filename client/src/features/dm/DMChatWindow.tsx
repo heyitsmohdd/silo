@@ -99,6 +99,9 @@ const DMChatWindow = () => {
 
         fetchInitialData();
 
+        let currentSocket: any = null;
+        let localHandlers: any = {};
+
         // Socket logic using global context subscription
         const unsubscribe = socketService.onConnectionChange((socket) => {
             if (!socket) {
@@ -106,6 +109,7 @@ const DMChatWindow = () => {
                 return;
             }
 
+            currentSocket = socket;
             socketRef.current = socket;
 
             // Emit immediately if already connected
@@ -113,11 +117,11 @@ const DMChatWindow = () => {
                 socket.emit('join_dm', { conversationId });
             }
 
-            const handleConnect = () => {
+            localHandlers.handleConnect = () => {
                 socket.emit('join_dm', { conversationId });
             };
 
-            const handleReceiveDm = (message: DirectMessage) => {
+            localHandlers.handleReceiveDm = (message: DirectMessage) => {
                 console.log('📬 [DMChatWindow] Received socket message:', message);
                 // Only append if it belongs to this room
                 if (message.conversationId === conversationId) {
@@ -126,7 +130,7 @@ const DMChatWindow = () => {
                 }
             };
 
-            const handleError = (data: { message: string }) => {
+            localHandlers.handleError = (data: { message: string }) => {
                 if (data.message === 'Message cannot be delivered') {
                     setErrorMessage('You cannot send a message to this user.');
                     setTimeout(() => setErrorMessage(null), 4000);
@@ -136,19 +140,18 @@ const DMChatWindow = () => {
                 }
             };
 
-            socket.on('connect', handleConnect);
-            socket.on('receive_dm', handleReceiveDm);
-            socket.on('error', handleError);
-
-            // Cleanup nested listener bindings on change/unmount
-            return () => {
-                socket.off('connect', handleConnect);
-                socket.off('receive_dm', handleReceiveDm);
-                socket.off('error', handleError);
-            };
+            socket.on('connect', localHandlers.handleConnect);
+            socket.on('receive_dm', localHandlers.handleReceiveDm);
+            socket.on('error', localHandlers.handleError);
         });
 
+        // Cleanup nested listener bindings on change/unmount
         return () => {
+            if (currentSocket) {
+                if (localHandlers.handleConnect) currentSocket.off('connect', localHandlers.handleConnect);
+                if (localHandlers.handleReceiveDm) currentSocket.off('receive_dm', localHandlers.handleReceiveDm);
+                if (localHandlers.handleError) currentSocket.off('error', localHandlers.handleError);
+            }
             unsubscribe();
         };
     }, [conversationId, user, fetchMessages]);
