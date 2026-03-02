@@ -100,7 +100,7 @@ const DMChatWindow = () => {
         fetchInitialData();
 
         let currentSocket: any = null;
-        let localHandlers: any = {};
+        const localHandlers: any = {};
 
         // Socket logic using global context subscription
         const unsubscribe = socketService.onConnectionChange((socket) => {
