@@ -135,7 +135,7 @@ const DMSidebar = () => {
             </div>
 
             {/* Mobile Helper Popup */}
-            {conversations.length === 0 && showPrompt && (
+            {showPrompt && (
                 <div className="md:hidden fixed bottom-20 left-4 right-4 bg-zinc-900 border border-zinc-700 shadow-2xl rounded-xl p-4 z-50 animate-in slide-in-from-bottom-5">
                     <button
                         onClick={() => setShowPrompt(false)}
