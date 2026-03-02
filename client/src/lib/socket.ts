@@ -13,7 +13,7 @@ class SocketService {
 
     // 
     // Get singleton instance
-    
+
     public static getInstance(): SocketService {
         if (!SocketService.instance) {
             SocketService.instance = new SocketService();
@@ -23,7 +23,7 @@ class SocketService {
 
     // 
     // Subscribe to socket connection changes
-    
+
     public onConnectionChange(callback: (socket: Socket | null) => void) {
         this.listeners.push(callback);
         // Immediately verify current state
@@ -40,7 +40,7 @@ class SocketService {
     // 
     // Connect to Socket.io server with JWT authentication
     // @param token - JWT token from auth store
-    
+
     public connect(token: string): Socket {
         if (this.socket?.connected) {
             return this.socket;
@@ -67,17 +67,14 @@ class SocketService {
 
         this.socket.on('connect', () => {
             console.log('✅ [Socket] Connected:', this.socket?.id);
-            this.notifyListeners();
         });
 
         this.socket.on('connect_error', (err) => {
             console.error('❌ [Socket] Connection Error:', err.message);
-            this.notifyListeners();
         });
 
         this.socket.on('disconnect', (reason) => {
             console.log('⚠️ [Socket] Disconnected:', reason);
-            this.notifyListeners();
         });
 
         this.notifyListeners();
@@ -86,7 +83,7 @@ class SocketService {
 
     // 
     // Disconnect and clean up socket connection
-    
+
     public disconnect(): void {
         if (this.socket) {
             this.socket.removeAllListeners();
@@ -98,7 +95,7 @@ class SocketService {
 
     // 
     // Get current socket instance
-    
+
     public getSocket(): Socket | null {
         return this.socket;
     }
