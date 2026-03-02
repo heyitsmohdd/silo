@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -43,6 +43,11 @@ const QuestionList = () => {
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
     // Read ?tab= param from URL so the BottomNav Articles link deep-links correctly
     const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'for-you');
+
+    // Sync tab whenever URL search params change (e.g. navigating Articles ↔ Q&A)
+    useEffect(() => {
+        setActiveTab(searchParams.get('tab') || 'for-you');
+    }, [searchParams]);
 
     // Questions Query
     const { data: questionsData, isLoading: isLoadingQuestions, isError: isErrorQuestions, refetch: refetchQuestions } = useQuery({
