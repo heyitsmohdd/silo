@@ -6,7 +6,7 @@ import ChatWindow from './ChatWindow';
 
 const ChatPage = () => {
   return (
-    <div className="h-[100dvh] flex flex-col">
+    <div className="h-[calc(100dvh-152px)] md:h-[calc(100vh-120px)] w-full flex flex-col min-h-0">
       <ChatWindow />
     </div>
   );

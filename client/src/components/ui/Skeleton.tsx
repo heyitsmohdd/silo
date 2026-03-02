@@ -45,4 +45,4 @@ const ListSkeleton = ({ count = 3 }: { count?: number }) => {
   );
 };
 
-export { Skeleton, CardSkeleton, ListSkeleton };
+export { Skeleton, CardSkeleton, ListSkeleton, Skeleton as Pulse };

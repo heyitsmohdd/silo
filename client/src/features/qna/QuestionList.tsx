@@ -6,6 +6,7 @@ import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
+import { PostSkeleton } from '@/components/ui/PostSkeleton';
 import axiosClient from '@/lib/axios';
 
 
@@ -151,9 +152,11 @@ const QuestionList = () => {
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <div className="h-8 w-32 rounded bg-zinc-800 animate-pulse" />
-                    <div className="h-10 w-40 rounded-lg bg-zinc-800 animate-pulse" />
+                    <div className="h-10 w-40 rounded-lg bg-zinc-800 animate-pulse hidden md:block" />
                 </div>
-                <ListSkeleton count={3} />
+                {[...Array(5)].map((_, i) => (
+                    <PostSkeleton key={i} />
+                ))}
             </div>
         );
     }
@@ -207,14 +210,14 @@ const QuestionList = () => {
     };
 
     return (
-        <div>
+        <div className="max-w-3xl mx-auto w-full">
             <div className="flex flex-col gap-6 mb-8">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion</h1>
                     {activeTab !== 'news' && (
                         <button
                             onClick={() => setShowModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors"
+                            className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors shadow-sm"
                         >
                             <Plus className="w-4 h-4" />
                             New Post
@@ -351,6 +354,17 @@ const QuestionList = () => {
                         refetchQuestions();
                     }}
                 />
+            )}
+
+            {/* Mobile Floating Action Button (FAB) */}
+            {activeTab !== 'news' && (
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="md:hidden fixed bottom-24 right-4 z-40 bg-emerald-500 text-zinc-950 p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform"
+                    aria-label="New Post"
+                >
+                    <Plus className="w-6 h-6" />
+                </button>
             )}
         </div>
     );

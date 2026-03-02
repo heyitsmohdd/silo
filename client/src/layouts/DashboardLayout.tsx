@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, Menu, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
+import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
+import { BottomNav } from '@/components/layout/BottomNav';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
 import UserMenu from '@/components/UserMenu';
@@ -10,48 +11,22 @@ import WeeklyStarsWidget from '@/components/leaderboard/WeeklyStarsWidget';
 import { siteConfig } from '@/config/site';
 
 const DashboardLayout = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   // Initialize global socket connection
   useSocketConnection();
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
-
   return (
-    <div className="flex h-screen bg-zinc-950 relative">
-      <aside className="hidden md:flex flex-col m-4 glass-sidebar rounded-2xl group w-[4.5rem] hover:w-64 transition-all duration-300 ease-in-out z-50">
-        <SidebarContent onNavigate={closeMobileMenu} />
+    <div className="flex bg-zinc-950 relative min-h-screen pb-16 md:pb-0">
+      {/* 1. Left Sidebar (Hidden on Mobile) */}
+      <aside className="hidden md:flex flex-col m-4 glass-sidebar rounded-2xl group w-[4.5rem] hover:w-64 transition-all duration-300 ease-in-out z-50 sticky top-4 h-[calc(100vh-2rem)]">
+        <SidebarContent />
       </aside>
 
-      {isMobileMenuOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-            onClick={closeMobileMenu}
-          />
-
-          <aside className="fixed left-0 top-0 bottom-0 w-64 glass-sidebar z-50 md:hidden flex flex-col group">
-            <SidebarContent onNavigate={closeMobileMenu} isMobile />
-          </aside>
-        </>
-      )}
-
-      <div className="flex-1 flex flex-col relative z-0">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col relative z-0 min-w-0 md:pl-0">
         <header className="h-14 glass-header sticky top-0 z-40 border-b border-white/5">
           <div className="h-full flex items-center justify-between px-4 md:px-6">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 rounded-md hover:bg-zinc-800/40 transition-colors"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
-              </button>
-
+              <Link to="/" className="md:hidden w-8 h-8 flex items-center justify-center bg-emerald-500 rounded text-black font-bold text-xs shrink-0">S</Link>
               <div className="text-sm font-medium text-zinc-100">
                 Dashboard
               </div>
@@ -66,22 +41,26 @@ const DashboardLayout = () => {
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 relative">
           <div className="max-w-[1600px] mx-auto flex gap-6 h-full">
+
+            {/* Center Feed Outlet */}
             <div className="flex-1 min-w-0 h-full">
               <Outlet />
             </div>
 
-
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 };
 
 
-// Sidebar Content Component (shared between desktop and mobile)
+// Sidebar Content Component (Desktop strictly)
 interface SidebarContentProps {
-  onNavigate: () => void;
+  onNavigate?: () => void;
   isMobile?: boolean;
 }
 
@@ -105,7 +84,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
             {siteConfig.name}
           </h1>
         </Link>
-        {isMobile && (
+        {isMobile && onNavigate && (
           <button
             onClick={onNavigate}
             className="ml-auto p-1.5 rounded-md hover:bg-zinc-800/40 transition-colors"
@@ -142,7 +121,6 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
             isMobile={isMobile}
           />
         </div>
-
       </nav>
     </>
   );

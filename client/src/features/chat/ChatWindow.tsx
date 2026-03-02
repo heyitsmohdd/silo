@@ -17,9 +17,17 @@ const ChatWindow = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedUser, setSelectedUser] = useState<{ id: string; identity: any } | null>(null);
 
-  // Auto-scroll to bottom on new messages
+  // Auto-scroll to bottom on new messages, but wait for initial mount to avoid jumping the page
+  const isInitialMount = useRef(true);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      // Just snap down on first load
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
+    } else {
+      // Smooth scroll on subsequent messages
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
   }, [messages]);
 
   const handleSearchResultClick = (messageId: string) => {
