@@ -4,14 +4,13 @@ import { BookOpen, Library, Users, MessageSquare, UserCircle } from 'lucide-reac
 export const BottomNav = () => {
     const location = useLocation();
 
-    // Helper function for active state, using the new definition from the instruction
     const isPathActive = (path: string) => location.pathname === path;
 
     const navItems = [
-        { path: '/', icon: BookOpen, label: 'Articles' },
+        { path: '/?tab=articles', icon: BookOpen, label: 'Articles' },
         { path: '/qna', icon: Library, label: 'Q&A' },
         { path: '/channels', icon: Users, label: 'Batch Chat', highlight: true },
-        { path: '/messages', icon: MessageSquare, label: 'Notes' },
+        { path: '/messages', icon: MessageSquare, label: 'DM' },
         { path: '/profile', icon: UserCircle, label: 'Profile' },
     ];
 

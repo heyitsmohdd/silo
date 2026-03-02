@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
 import EmptyState from '@/components/ui/EmptyState';
@@ -36,11 +36,13 @@ interface Question {
 
 const QuestionList = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState('');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
-    const [activeTab, setActiveTab] = useState('for-you');
+    // Read ?tab= param from URL so the BottomNav Articles link deep-links correctly
+    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'for-you');
 
     // Questions Query
     const { data: questionsData, isLoading: isLoadingQuestions, isError: isErrorQuestions, refetch: refetchQuestions } = useQuery({

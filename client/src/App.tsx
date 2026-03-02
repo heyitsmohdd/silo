@@ -20,6 +20,7 @@ import ChatPage from '@/features/chat/ChatPage';
 import ProfilePage from '@/features/profile/ProfilePage';
 import SettingsPage from '@/pages/SettingsPage';
 import ChannelView from '@/features/channels/ChannelView';
+import ChannelListPage from '@/features/channels/ChannelListPage';
 import LeaderboardPage from '@/pages/LeaderboardPage';
 import MessagesPage from '@/features/dm/MessagesPage';
 import WriteArticlePage from '@/features/articles/WriteArticlePage';
@@ -95,6 +96,7 @@ const router = createBrowserRouter(
             </AcademicLayout>
           }
         />
+        <Route path="channels" element={<ChannelListPage />} />
         <Route path="channels/:channelId" element={<ChannelView />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="messages" element={<MessagesPage />} />
