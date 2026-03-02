@@ -368,9 +368,9 @@ const QuestionList = () => {
             {/* Mobile Floating Action Button (FAB) */}
             {activeTab !== 'news' && (
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={() => activeTab === 'articles' ? navigate('/write') : setShowModal(true)}
                     className="md:hidden fixed bottom-24 right-4 z-40 bg-emerald-500 text-zinc-950 p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform"
-                    aria-label="New Post"
+                    aria-label={activeTab === 'articles' ? 'Write Article' : 'New Post'}
                 >
                     <Plus className="w-6 h-6" />
                 </button>
