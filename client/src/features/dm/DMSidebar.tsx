@@ -29,18 +29,18 @@ const DMSidebar = () => {
     useEffect(() => {
         fetchConversations();
 
-        // Real-time refresh: re-fetch sidebar when a new DM is received
-        // using onConnectionChange to wait for the socket if it's not ready yet
+        let currentSocket: any = null;
         const unsubscribe = socketService.onConnectionChange((socket) => {
             if (socket) {
+                currentSocket = socket;
                 socket.on('receive_dm', fetchConversations);
-                return () => {
-                    socket.off('receive_dm', fetchConversations);
-                };
             }
         });
 
         return () => {
+            if (currentSocket) {
+                currentSocket.off('receive_dm', fetchConversations);
+            }
             unsubscribe();
         };
     }, []);
