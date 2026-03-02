@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Library, MessageSquare, UserCircle, PenSquare } from 'lucide-react';
+import { BookOpen, Library, Users, MessageSquare, UserCircle } from 'lucide-react';
 
 export const BottomNav = () => {
     const location = useLocation();
@@ -8,9 +8,9 @@ export const BottomNav = () => {
     const isPathActive = (path: string) => location.pathname === path;
 
     const navItems = [
-        { path: '/', icon: Home, label: 'Feed' },
+        { path: '/', icon: BookOpen, label: 'Articles' },
         { path: '/qna', icon: Library, label: 'Q&A' },
-        { path: '/write', icon: PenSquare, label: 'Write', highlight: true },
+        { path: '/channels', icon: Users, label: 'Batch Chat', highlight: true },
         { path: '/messages', icon: MessageSquare, label: 'Notes' },
         { path: '/profile', icon: UserCircle, label: 'Profile' },
     ];
