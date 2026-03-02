@@ -22,6 +22,8 @@ import SettingsPage from '@/pages/SettingsPage';
 import ChannelView from '@/features/channels/ChannelView';
 import LeaderboardPage from '@/pages/LeaderboardPage';
 import MessagesPage from '@/features/dm/MessagesPage';
+import WriteArticlePage from '@/features/articles/WriteArticlePage';
+import ArticlePage from '@/features/articles/ArticlePage';
 
 import NewLandingPage from '@/pages/LandingPage';
 import InstallPrompt from '@/components/InstallPrompt';
@@ -99,6 +101,18 @@ const router = createBrowserRouter(
         <Route path="messages/:id" element={<MessagesPage />} />
       </Route>
 
+      {/* Full-Page Text Editor Route */}
+      <Route
+        path="/write"
+        element={
+          <ProtectedRoute>
+            <WriteArticlePage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Dynamic Article Reading Route (Public/Mixed Auth) */}
+      <Route path="/article/:id" element={<ArticlePage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </>

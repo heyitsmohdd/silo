@@ -16,6 +16,8 @@ interface ConfirmationModalProps {
     variant?: 'danger' | 'warning' | 'info';
     // specifices if the action is currently loading
     isLoading?: boolean;
+    // hide the cancel button for simple alert/info usage
+    hideCancel?: boolean;
 }
 
 const ConfirmationModal = ({
@@ -28,6 +30,7 @@ const ConfirmationModal = ({
     cancelText = 'Cancel',
     variant = 'danger',
     isLoading = false,
+    hideCancel = false,
 }: ConfirmationModalProps) => {
 
     // Variant styles
@@ -77,14 +80,16 @@ const ConfirmationModal = ({
                     </div>
 
                     <div className="flex w-full gap-3">
-                        <Button
-                            variant="ghost"
-                            onClick={onClose}
-                            disabled={isLoading}
-                            className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300"
-                        >
-                            {cancelText}
-                        </Button>
+                        {!hideCancel && (
+                            <Button
+                                variant="ghost"
+                                onClick={onClose}
+                                disabled={isLoading}
+                                className="flex-1 border border-zinc-700 hover:bg-zinc-800 text-zinc-300"
+                            >
+                                {cancelText}
+                            </Button>
+                        )}
                         <Button
                             onClick={onConfirm}
                             disabled={isLoading}

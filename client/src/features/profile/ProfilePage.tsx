@@ -6,10 +6,13 @@ import axiosClient from '@/lib/axios';
 import EditProfileModal from './EditProfileModal';
 import ChangePassword from './ChangePassword';
 import { getIdentity } from '@/lib/identity';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
 const ProfilePage = () => {
   const { user, logout } = useAuthStore();
   const [activeModal, setActiveModal] = useState<'edit' | 'password' | 'delete' | null>(null);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   // Guard: don't render if user is null
   if (!user) {
@@ -18,26 +21,23 @@ const ProfilePage = () => {
 
   const identity = getIdentity(user.userId, user.username);
 
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you want to log out?')) {
-      logout();
-      window.location.href = '/login';
-    }
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    window.location.href = '/login';
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm(
-      'Are you sure you want to delete your account? This action is permanent and cannot be undone.'
-    )) {
-      return;
-    }
-
     try {
       await axiosClient.delete('/auth/account');
       logout();
       window.location.href = '/login';
     } catch {
-      alert('Failed to delete account. Please try again.');
+      setActiveModal(null);
+      setAlertMessage('Failed to delete account. Please try again.');
     }
   };
 
@@ -78,7 +78,7 @@ const ProfilePage = () => {
           </div>
 
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors font-medium mt-4 sm:mt-0"
           >
             Sign Out
@@ -238,6 +238,29 @@ const ProfilePage = () => {
           </div>
         </>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        title="Sign Out"
+        description="Are you sure you want to sign out of your account?"
+        confirmText="Sign Out"
+        variant="info"
+      />
+
+      {/* Error/Alert Modal */}
+      <ConfirmationModal
+        isOpen={!!alertMessage}
+        onClose={() => setAlertMessage(null)}
+        onConfirm={() => setAlertMessage(null)}
+        title="Error"
+        description={alertMessage || ''}
+        confirmText="OK"
+        variant="danger"
+        hideCancel
+      />
     </div>
   );
 };

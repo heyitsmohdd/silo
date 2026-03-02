@@ -124,3 +124,17 @@ select:focus-visible {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
+
+/* Tiptap Editor Custom Styles */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #52525b;
+  /* Tailwind text-zinc-600 */
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap {
+  outline: none !important;
+}

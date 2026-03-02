@@ -30,7 +30,7 @@ const DashboardPlaceholder = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-emerald-400">→</span>
-                            <span>Chat with your batch in <strong>Chat</strong></span>
+                            <span>Write a story in <strong>Articles</strong></span>
                         </div>
                     </div>
                 </div>

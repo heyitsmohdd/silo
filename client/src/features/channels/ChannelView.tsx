@@ -15,6 +15,7 @@ import { useSocket } from '@/hooks/useSocket';
 import { TypingIndicator } from '@/components/ui/TypingIndicator';
 import { useBlocker } from 'react-router-dom';
 import LeaveChannelModal from '@/components/channels/LeaveChannelModal';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
 interface TypingUser {
     userId: string;
@@ -40,6 +41,7 @@ export default function ChannelView() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
     const [showJoinModal, setShowJoinModal] = useState(false);
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
     const typingTimeoutRef = useRef<any>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -169,7 +171,7 @@ export default function ChannelView() {
             navigate('/channels');
         } catch (error) {
             console.error('Failed to delete channel:', error);
-            alert('Failed to delete channel');
+            setAlertMessage('Failed to delete channel');
             setIsDeleting(false);
         }
     };
@@ -482,6 +484,17 @@ export default function ChannelView() {
                 channelName={channel?.name || ''}
                 onClose={handleCancelLeave}
                 onConfirm={handleConfirmLeave}
+            />
+
+            <ConfirmationModal
+                isOpen={!!alertMessage}
+                onClose={() => setAlertMessage(null)}
+                onConfirm={() => setAlertMessage(null)}
+                title="Error"
+                description={alertMessage || ''}
+                confirmText="OK"
+                variant="danger"
+                hideCancel
             />
         </div>
     );
