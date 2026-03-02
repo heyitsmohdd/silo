@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axiosClient from '@/lib/axios';
 import Button from '@/components/ui/Button';
@@ -22,6 +22,7 @@ const LoginForm = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { login } = useAuthStore();
 
@@ -37,7 +38,13 @@ const LoginForm = () => {
       });
 
       login(response.data.token);
-      navigate('/');
+
+      const redirectTo = searchParams.get('redirectTo');
+      if (redirectTo) {
+        navigate(redirectTo);
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       const errorMessage = getAuthErrorMessage(err);
       setError(errorMessage);
