@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import LogoutConfirmationModal from '@/components/LogoutConfirmationModal';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import { getIdentity } from '@/lib/identity';
 
 
@@ -12,6 +13,7 @@ const SettingsPage = () => {
     const { user, logout } = useAuthStore();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
     // Derived State
     const alias = user?.userId ? getIdentity(user.userId, user.username).name : '';
@@ -25,8 +27,7 @@ const SettingsPage = () => {
     const handleConfirmDelete = () => {
         // In a real app, calling an API endpoint would happen here
         setShowDeleteModal(false);
-        alert('Account deletion logic executed. Goodbye!');
-        logout(); // Assuming we want to logout the user after simulated deletion
+        setAlertMessage('Account deletion logic executed. Goodbye!');
     };
 
     const handleConfirmLogout = () => {
@@ -92,6 +93,17 @@ const SettingsPage = () => {
                 isOpen={showLogoutModal}
                 onClose={() => setShowLogoutModal(false)}
                 onConfirm={handleConfirmLogout}
+            />
+
+            <ConfirmationModal
+                isOpen={!!alertMessage}
+                onClose={() => { setAlertMessage(null); logout(); }}
+                onConfirm={() => { setAlertMessage(null); logout(); }}
+                title="Account Deleted"
+                description={alertMessage || ''}
+                confirmText="OK"
+                variant="info"
+                hideCancel
             />
         </div >
     );

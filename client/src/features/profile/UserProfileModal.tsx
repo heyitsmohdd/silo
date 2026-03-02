@@ -4,6 +4,7 @@ import axiosClient from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 
 interface UserProfileModalProps {
     userId: string;
@@ -18,6 +19,7 @@ const UserProfileModal = ({ userId, identity, onClose }: UserProfileModalProps) 
     const { user } = useAuthStore();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
     // Don't show modal if clicking own avatar
     const isSelf = user?.userId === userId;
@@ -41,7 +43,7 @@ const UserProfileModal = ({ userId, identity, onClose }: UserProfileModalProps) 
         } catch (error: any) {
             console.error('Failed to initiate conversation:', error);
             const msg = error.response?.data?.error || 'Failed to start conversation. Please try again.';
-            alert(msg);
+            setAlertMessage(msg);
         } finally {
             setIsLoading(false);
         }
@@ -106,6 +108,17 @@ const UserProfileModal = ({ userId, identity, onClose }: UserProfileModalProps) 
                     )}
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={!!alertMessage}
+                onClose={() => setAlertMessage(null)}
+                onConfirm={() => setAlertMessage(null)}
+                title="Error"
+                description={alertMessage || ''}
+                confirmText="OK"
+                variant="danger"
+                hideCancel
+            />
         </div>
     );
 };

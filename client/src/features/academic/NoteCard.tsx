@@ -3,6 +3,7 @@ import { FileText, ExternalLink, Clock, User as UserIcon, MoreVertical, Edit, Tr
 import { useAuthStore } from '@/stores/useAuthStore';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import axiosClient from '@/lib/axios';
 
 interface Note {
@@ -33,6 +34,8 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
   const [editContent, setEditContent] = useState(note.content);
   const [isSaving, setIsSaving] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const canEdit = isProfessor || user?.userId === note.authorId;
 
@@ -76,16 +79,19 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
     setIsEditing(false);
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
-      return;
-    }
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
 
+  const confirmDelete = async () => {
     try {
+      setIsDeleting(true);
       await axiosClient.delete(`/academic/notes/${note.id}`);
+      setIsDeleteModalOpen(false);
       onDelete?.();
     } catch (error) {
       console.error('Failed to delete note:', error);
+      setIsDeleting(false);
     }
   };
 
@@ -161,7 +167,7 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
                 </button>
                 <button
                   onClick={() => {
-                    handleDelete();
+                    handleDeleteClick();
                     setShowMenu(false);
                   }}
                   className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 text-left transition-colors"
@@ -213,6 +219,17 @@ const NoteCard = ({ note, onUpdate, onDelete }: NoteCardProps) => {
           </a>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Note"
+        description="Are you sure you want to delete this note? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };
