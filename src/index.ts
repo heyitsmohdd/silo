@@ -24,6 +24,7 @@ import { initializeSocketHandlers } from './modules/comm/socket.handlers.js';
 import { initializeChannelCleanup } from './modules/channels/channel-cleanup.service.js';
 import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
 import newsRoutes from './modules/news/news.routes.js';
+import articleRoutes from './modules/articles/article.routes.js';
 import { logger } from './shared/utils/logger.js';
 import { prisma } from './shared/lib/prisma.js';
 
@@ -147,6 +148,7 @@ app.use('/api/channels', channelRoutes);
 app.use('/api/dm', dmRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/articles', articleRoutes);
 
 // ============================================================================
 // ERROR HANDLING

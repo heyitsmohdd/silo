@@ -74,6 +74,7 @@ model User {
   questions Question[]
   answers   Answer[]
   reactions Reaction[]
+  articles  Article[]
   channelMessages ChannelMessage[]
   ownedChannels   Channel[] @relation("ChannelOwner")
   
@@ -528,4 +529,37 @@ enum NewsCategory {
   TECH
   EVENT
   BLOG
+}
+
+// ============================================================================
+// ARTICLE MODEL (Long-Form Publishing)
+// ============================================================================
+
+model Article {
+  id        String   @id @default(uuid()) @db.Uuid
+  
+  // Content
+  title     String
+  content   String   @db.Text
+  readTime  Int      @map("read_time") // Estimated read time in minutes
+  coverImageUrl String? @db.Text
+  
+  // Batch Context (Enforced Isolation)
+  year      Int
+  branch    String
+  
+  // Ownership
+  authorId  String   @map("author_id") @db.Uuid
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Soft Delete
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([year, branch])
+  @@index([authorId])
+  @@map("articles")
 }
