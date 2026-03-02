@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
+import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send, PenSquare } from 'lucide-react';
 import { BottomNav } from '@/components/layout/BottomNav';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
@@ -15,7 +15,7 @@ const DashboardLayout = () => {
   useSocketConnection();
 
   return (
-    <div className="flex bg-zinc-950 relative min-h-screen pb-16 md:pb-0">
+    <div className="flex bg-zinc-950 relative h-screen overflow-hidden pb-16 md:pb-0">
       {/* 1. Left Sidebar (Hidden on Mobile) */}
       <aside className="hidden md:flex flex-col m-4 glass-sidebar rounded-2xl group w-[4.5rem] hover:w-64 transition-all duration-300 ease-in-out z-50 sticky top-4 h-[calc(100vh-2rem)]">
         <SidebarContent />
@@ -96,6 +96,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-x-hidden overflow-y-auto custom-scrollbar">
+        <NavLink to="/write" icon={PenSquare} label="Write Article" onClick={onNavigate} isMobile={isMobile} />
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} isMobile={isMobile} />
         <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} isMobile={isMobile} />
         <NavLink to="/chat" icon={MessageSquare} label="Batch Chat" onClick={onNavigate} isMobile={isMobile} />

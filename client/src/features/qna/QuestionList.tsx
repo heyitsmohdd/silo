@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { ListSkeleton } from '@/components/ui/Skeleton';
 import { PostSkeleton } from '@/components/ui/PostSkeleton';
 import axiosClient from '@/lib/axios';
+import ArticleFeed from '@/features/articles/ArticleFeed';
 
 
 interface Question {
@@ -70,7 +71,7 @@ const QuestionList = () => {
     }, [questionsData]);
 
     const filteredQuestions = useMemo(() => {
-        if (!questionsList.length || activeTab === 'news') return [];
+        if (!questionsList.length || activeTab === 'news' || activeTab === 'articles') return [];
 
         let filtered = [...questionsList];
 
@@ -141,10 +142,11 @@ const QuestionList = () => {
 
     const tabs = [
         { id: 'for-you', label: 'For You' },
+        { id: 'articles', label: 'Articles' },
         { id: 'trending', label: 'Trending' },
         { id: 'tech', label: 'Tech' },
         { id: 'events', label: 'Events' },
-        { id: 'news', label: 'News' },
+        { id: 'news', label: 'News' }
     ];
 
     if (isLoadingQuestions) {
@@ -214,7 +216,7 @@ const QuestionList = () => {
             <div className="flex flex-col gap-6 mb-8">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion</h1>
-                    {activeTab !== 'news' && (
+                    {activeTab !== 'news' && activeTab !== 'articles' && (
                         <button
                             onClick={() => setShowModal(true)}
                             className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors shadow-sm"
@@ -225,7 +227,7 @@ const QuestionList = () => {
                     )}
                 </div>
 
-                {questionsList.length > 0 && activeTab !== 'news' && (
+                {questionsList.length > 0 && activeTab !== 'news' && activeTab !== 'articles' && (
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1">
                             <input
@@ -289,7 +291,12 @@ const QuestionList = () => {
                 </div>
             </div>
 
-            {activeTab === 'news' ? (
+            {/* Content Area */}
+            {activeTab === 'articles' ? (
+                <div className="-mt-4">
+                    <ArticleFeed />
+                </div>
+            ) : activeTab === 'news' ? (
                 <div className="space-y-3">
                     {isLoadingNews ? (
                         <ListSkeleton count={3} />
