@@ -80,8 +80,17 @@ const DMSidebar = () => {
 
             <div className="flex-1 overflow-y-auto">
                 {conversations.length === 0 ? (
-                    <div className="p-6 text-center text-zinc-500 text-sm">
-                        No conversations yet. Start chatting from someone's profile!
+                    <div className="p-6 flex flex-col items-center justify-center h-full text-center">
+                        <p className="text-zinc-500 text-sm mb-6">
+                            No conversations yet.
+                        </p>
+
+                        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 max-w-sm">
+                            <p className="text-xs text-zinc-400 leading-relaxed">
+                                <span className="font-semibold text-zinc-300 block mb-1">Want to start a new chat?</span>
+                                You can message anyone directly by clicking on their avatar or profile anywhere in the Dashboard.
+                            </p>
+                        </div>
                     </div>
                 ) : (
                     conversations.map((conv) => {
