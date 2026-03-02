@@ -480,6 +480,18 @@ export const initializeSocketHandlers = (io: Server) => {
                     createdAt: message.createdAt
                 });
 
+                // Explicitly push directly to the sender's active socket.
+                // Mobile OS PWAs frequently suspend WebSockets in the background. When waking up, 
+                // send buffers can occasionally flush before `join_dm` resolves, omitting the sender from the `io.to(dmRoom)` broadcast.
+                socket.emit('receive_dm', {
+                    id: message.id,
+                    content: message.content,
+                    conversationId: message.conversationId,
+                    senderId: message.senderId,
+                    sender: message.sender,
+                    createdAt: message.createdAt
+                });
+
                 // Fire notification to the target user
                 await createNotification(
                     targetUser.id,
