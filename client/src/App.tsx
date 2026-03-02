@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import { useAuthStore } from '@/stores/useAuthStore';
 import DashboardLayout from '@/layouts/DashboardLayout';
@@ -104,19 +105,42 @@ const router = createBrowserRouter(
   )
 );
 
-function App() {
+const App = () => {
+  // Setup auto-updating Service Worker for iOS PWAs
+  const {
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      if (r) {
+        // Auto-check for updates every 10 minutes
+        setInterval(() => {
+          r.update();
+        }, 10 * 60 * 1000);
+      }
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
+
+  // Silently trigger update sequence when new vite hash detected
+  if (needRefresh) {
+    updateServiceWorker(true);
+  }
+
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{siteConfig.name}</title>
-        <meta name="description" content={siteConfig.description} />
-      </Helmet>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <Helmet>
+          <title>{siteConfig.name}</title>
+          <meta name="description" content={siteConfig.description} />
+        </Helmet>
         <InstallPrompt />
         <RouterProvider router={router} />
-      </QueryClientProvider>
-    </HelmetProvider>
+      </HelmetProvider>
+    </QueryClientProvider>
   );
-}
+};
 
 export default App;

@@ -11,6 +11,13 @@ precacheAndRoute(self.__WB_MANIFEST)
 self.skipWaiting()
 clientsClaim()
 
+// Force cache-busting when a new layout is pushed
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
 // Listen for Push Events from the backend
 self.addEventListener('push', (event) => {
     if (!event.data) return
