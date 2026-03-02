@@ -205,9 +205,23 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                             <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                         )}
                     </div>
-                    <p className="text-sm text-zinc-400 line-clamp-3 leading-relaxed mb-4 break-words">
-                        {question.content}
-                    </p>
+                    <div className="relative">
+                        <p className="text-sm text-zinc-400 leading-relaxed break-words transition-all mb-4 line-clamp-3">
+                            {question.content}
+                        </p>
+
+                        {question.content.length > 200 && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (onClick) onClick();
+                                }}
+                                className="text-xs font-semibold text-emerald-500 hover:text-emerald-400 mt-1 mb-4"
+                            >
+                                Read more
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap text-xs text-zinc-500 mb-4">
