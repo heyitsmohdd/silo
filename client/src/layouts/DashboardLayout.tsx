@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, Menu, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
+import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send } from 'lucide-react';
 import { BottomNav } from '@/components/layout/BottomNav';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
@@ -11,9 +11,6 @@ import WeeklyStarsWidget from '@/components/leaderboard/WeeklyStarsWidget';
 import { siteConfig } from '@/config/site';
 
 const DashboardLayout = () => {
-  // Global states for sticky right-column components
-  const [isCreateChannelOpen, setIsCreateChannelOpen] = useState(false);
-
   // Initialize global socket connection
   useSocketConnection();
 
