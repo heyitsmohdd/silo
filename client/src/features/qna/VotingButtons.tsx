@@ -35,24 +35,41 @@ const VotingButtons = ({
     const handleVote = async (voteType: 'upvote' | 'downvote') => {
         if (isVoting) return;
 
+        // --- Optimistic State Application ---
+        const previousVote = userVote;
         setIsVoting(true);
+
+        // Calculate exact instant state mutations
+        if (userVote === voteType) {
+            // Un-clicking the exact same vote
+            setUserVote(null);
+            localStorage.removeItem(`vote_${itemId}`);
+        } else {
+            // New vote applied
+            setUserVote(voteType);
+            localStorage.setItem(`vote_${itemId}`, voteType);
+        }
+
+        // --- Background Validation ---
         try {
-            // Toggle logic: if clicking same vote, remove it
-            if (userVote === voteType) {
-                // Send opposite vote to cancel out
+            if (previousVote === voteType) {
+                // Background cancel
                 const cancelVote = voteType === 'upvote' ? 'downvote' : 'upvote';
                 await axiosClient.post(voteEndpoint, { voteType: cancelVote });
-                setUserVote(null);
-                localStorage.removeItem(`vote_${itemId}`);
             } else {
-                // New vote or changing vote
+                // Background execute
                 await axiosClient.post(voteEndpoint, { voteType });
-                setUserVote(voteType);
-                localStorage.setItem(`vote_${itemId}`, voteType);
             }
             onVoteSuccess();
         } catch (error) {
             console.error('Failed to vote:', error);
+            // Fallback: Restore exact previous state string on server failure
+            setUserVote(previousVote);
+            if (previousVote) {
+                localStorage.setItem(`vote_${itemId}`, previousVote);
+            } else {
+                localStorage.removeItem(`vote_${itemId}`);
+            }
         } finally {
             setIsVoting(false);
         }
