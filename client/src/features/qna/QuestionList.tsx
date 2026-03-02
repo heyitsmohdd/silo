@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -36,18 +36,13 @@ interface Question {
 
 const QuestionList = () => {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState('');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
-    // Read ?tab= param from URL so the BottomNav Articles link deep-links correctly
-    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'for-you');
-
-    // Sync tab whenever URL search params change (e.g. navigating Articles ↔ Q&A)
-    useEffect(() => {
-        setActiveTab(searchParams.get('tab') || 'for-you');
-    }, [searchParams]);
+    // Derive active tab directly from URL — no useState/useEffect needed
+    const activeTab = searchParams.get('tab') || 'for-you';
 
     // Questions Query
     const { data: questionsData, isLoading: isLoadingQuestions, isError: isErrorQuestions, refetch: refetchQuestions } = useQuery({
@@ -144,7 +139,7 @@ const QuestionList = () => {
         setSearchTerm('');
         setTagFilter('');
         setSortBy('newest');
-        setActiveTab('for-you');
+        setSearchParams({ tab: 'for-you' });
     };
 
     const tabs = [
@@ -283,7 +278,7 @@ const QuestionList = () => {
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => setSearchParams({ tab: tab.id })}
                             className={`
                                 flex-shrink-0 px-4 py-1.5 rounded-lg text-xs font-medium transition-all
                                 ${activeTab === tab.id
