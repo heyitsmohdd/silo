@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
+import { prisma } from '../../shared/lib/prisma.js';
 
-const prisma = new PrismaClient();
 
 // Setup DOMPurify to run safely within Node.js
 const window = new JSDOM('').window;
