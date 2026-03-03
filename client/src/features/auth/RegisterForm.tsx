@@ -27,13 +27,13 @@ interface RegisterResponse {
 
 const YEARS = [2022, 2023, 2024, 2025, 2026];
 const BRANCHES = ['CS', 'MECH', 'CIVIL', 'EC'];
-const ROLES = ['STUDENT', 'PROFESSOR'];
+// const ROLES = ['STUDENT', 'PROFESSOR'];
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'STUDENT' | 'PROFESSOR'>('STUDENT');
+  const [role] = useState<'STUDENT' | 'PROFESSOR'>('STUDENT');
   const [year, setYear] = useState(2026);
   const [branch, setBranch] = useState('CS');
   const [error, setError] = useState('');
@@ -118,13 +118,13 @@ const RegisterForm = () => {
           disabled={isLoading}
         />
 
-        <Select
+        {/* <Select
           label="Role"
           value={role}
           onChange={(e) => setRole(e.target.value as 'STUDENT' | 'PROFESSOR')}
           options={ROLES.map((r) => ({ value: r, label: r }))}
           disabled={isLoading}
-        />
+        /> */}
 
         <Select
           label="Year"
