@@ -13,21 +13,17 @@ export const BottomNav = () => {
     const isArticlesTab = location.pathname === '/qna' && location.search.includes('tab=articles');
     const isQnaTab = location.pathname === '/qna' && !location.search.includes('tab=articles');
 
-    const [unreadDMs, setUnreadDMs] = useState(false);
+    const [rawUnreadCount, setRawUnreadCount] = useState(0);
 
-    // Fetch unread DM count on mount + whenever location changes
+    // Fetch unread DM count whenever route changes (async-only — no sync setState)
     useEffect(() => {
         axios.get('/api/messages/unread-count')
-            .then(res => setUnreadDMs((res.data?.count ?? 0) > 0))
-            .catch(() => { }); // silently fail if endpoint doesn't exist yet
+            .then(res => setRawUnreadCount(res.data?.count ?? 0))
+            .catch(() => { });
     }, [location.pathname]);
 
-    // Clear DM badge when on messages page
-    useEffect(() => {
-        if (location.pathname.startsWith('/messages')) {
-            setUnreadDMs(false);
-        }
-    }, [location.pathname]);
+    // Derive badge: clear automatically when already on messages page
+    const unreadDMs = rawUnreadCount > 0 && !location.pathname.startsWith('/messages');
 
     const navItems = [
         {
