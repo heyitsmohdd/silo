@@ -3,8 +3,10 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from '@/lib/axios';
 import { ArrowLeft, Clock, CalendarDays, Trash2, Share2, Check } from 'lucide-react';
 import { format } from 'date-fns';
+import { Helmet } from 'react-helmet-async';
 import { useAuthStore } from '@/stores/useAuthStore';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
+import { siteConfig } from '@/config/site';
 
 interface ArticleData {
     id: string;
@@ -100,8 +102,22 @@ const ArticlePage = () => {
         );
     }
 
+    const plainTextContent = article.content.replace(/<[^>]+>/g, '').substring(0, 150) + (article.content.length > 150 ? '...' : '');
+    const currentUrl = window.location.href;
+    const coverImage = article.coverImageUrl || `${siteConfig.url}/pwa-512x512.png`;
+
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-zinc-800/50">
+            <Helmet>
+                <title>{`${article.title} | ${siteConfig.name}`}</title>
+                <meta name="description" content={plainTextContent} />
+                <meta property="og:title" content={article.title} />
+                <meta property="og:description" content={plainTextContent} />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content={currentUrl} />
+                <meta property="og:image" content={coverImage} />
+                <meta name="twitter:card" content="summary_large_image" />
+            </Helmet>
             {/* Top Navigation */}
             <div className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 transition-colors duration-300">
                 <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
