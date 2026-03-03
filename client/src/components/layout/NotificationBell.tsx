@@ -217,7 +217,7 @@ export const NotificationBell = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-zinc-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-zinc-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
                     <div className="px-4 py-3 border-b border-white/10">
                         <h3 className="text-sm font-semibold text-white">Notifications</h3>
                     </div>

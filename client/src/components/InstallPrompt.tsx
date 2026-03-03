@@ -94,7 +94,7 @@ export default function InstallPrompt() {
     if (!showPrompt || isStandalone) return null;
 
     return (
-        <div className="fixed bottom-4 left-4 right-4 z-50 animate-in slide-in-from-bottom-5 duration-500 md:left-auto md:right-4 md:w-96">
+        <div className="fixed bottom-20 left-4 right-4 z-[60] animate-in slide-in-from-bottom-5 duration-500 md:bottom-4 md:left-auto md:right-4 md:w-96">
             <div className="glass-card p-4 border border-white/10 shadow-2xl bg-zinc-950/90 backdrop-blur-xl relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl" />
 

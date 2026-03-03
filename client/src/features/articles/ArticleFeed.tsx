@@ -80,7 +80,8 @@ const ArticleFeed = () => {
                     <span className="bg-emerald-500 w-2 h-6 rounded-full inline-block"></span>
                     Latest Articles
                 </h2>
-                <Link to="/write" className="text-sm font-medium text-zinc-300 hover:text-white transition-colors bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full border border-white/5 shadow-sm">
+                {/* Hidden on mobile — use the + FAB button instead */}
+                <Link to="/write" className="hidden md:flex text-sm font-medium text-zinc-300 hover:text-white transition-colors bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full border border-white/5 shadow-sm">
                     Write Article
                 </Link>
             </div>
