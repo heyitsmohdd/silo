@@ -1,65 +1,75 @@
 import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, Library, Users, MessageSquare, Hash } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import axios from '@/lib/axios';
+import { useEffect } from 'react';
+import { isStale, markSeen } from '@/hooks/useNewContentDot';
 
 // Small red dot indicator
 const RedDot = () => (
-    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-zinc-950" />
+    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-zinc-950 animate-pulse" />
 );
+
+const KEYS = {
+    articles: 'articles',
+    qna: 'qna',
+    rooms: 'rooms',
+    dm: 'dm',
+    channels: 'channels',
+};
 
 export const BottomNav = () => {
     const location = useLocation();
     const isArticlesTab = location.pathname === '/qna' && location.search.includes('tab=articles');
     const isQnaTab = location.pathname === '/qna' && !location.search.includes('tab=articles');
+    const isRooms = location.pathname === '/chat' || location.pathname.startsWith('/chat/');
+    const isDM = location.pathname.startsWith('/messages');
+    const isChannels = location.pathname.startsWith('/channels');
 
-    const [rawUnreadCount, setRawUnreadCount] = useState(0);
-
-    // Fetch unread DM count whenever route changes (async-only — no sync setState)
+    // Mark current section as seen (localStorage write only — no setState)
     useEffect(() => {
-        axios.get('/api/messages/unread-count')
-            .then(res => setRawUnreadCount(res.data?.count ?? 0))
-            .catch(() => { });
-    }, [location.pathname]);
+        if (isArticlesTab) markSeen(KEYS.articles);
+        else if (isQnaTab) markSeen(KEYS.qna);
+        else if (isRooms) markSeen(KEYS.rooms);
+        else if (isDM) markSeen(KEYS.dm);
+        else if (isChannels) markSeen(KEYS.channels);
+    }, [location.pathname, location.search, isArticlesTab, isQnaTab, isRooms, isDM, isChannels]);
 
-    // Derive badge: clear automatically when already on messages page
-    const unreadDMs = rawUnreadCount > 0 && !location.pathname.startsWith('/messages');
-
+    // Compute dots inline — isStale() reads localStorage, no useState needed
+    // Dots are suppressed on the currently active section
     const navItems = [
         {
             path: '/qna?tab=articles',
             icon: BookOpen,
             label: 'Articles',
             isActive: isArticlesTab,
-            hasBadge: false, // articles badge driven by FAB interaction
+            hasBadge: !isArticlesTab && isStale(KEYS.articles),
         },
         {
             path: '/qna',
             icon: Library,
             label: 'Q&A',
             isActive: isQnaTab,
-            hasBadge: false,
+            hasBadge: !isQnaTab && isStale(KEYS.qna),
         },
         {
             path: '/chat',
             icon: Users,
             label: 'Rooms',
-            isActive: location.pathname === '/chat' || location.pathname.startsWith('/chat/'),
-            hasBadge: false,
+            isActive: isRooms,
+            hasBadge: !isRooms && isStale(KEYS.rooms),
         },
         {
             path: '/messages',
             icon: MessageSquare,
             label: 'DM',
-            isActive: location.pathname === '/messages' || location.pathname.startsWith('/messages/'),
-            hasBadge: unreadDMs,
+            isActive: isDM,
+            hasBadge: !isDM && isStale(KEYS.dm),
         },
         {
             path: '/channels',
             icon: Hash,
-            label: 'Rooms',
-            isActive: location.pathname === '/channels' || location.pathname.startsWith('/channels/'),
-            hasBadge: false,
+            label: 'Channels',
+            isActive: isChannels,
+            hasBadge: !isChannels && isStale(KEYS.channels),
         },
     ];
 

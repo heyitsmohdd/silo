@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { isStale, markSeen } from '@/hooks/useNewContentDot';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
 import EmptyState from '@/components/ui/EmptyState';
@@ -43,6 +44,11 @@ const QuestionList = () => {
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
     // Derive active tab directly from URL — no useState/useEffect needed
     const activeTab = searchParams.get('tab') || 'for-you';
+
+    // Mark current tab as seen whenever it changes
+    useEffect(() => {
+        markSeen('tab_' + activeTab);
+    }, [activeTab]);
 
     // Questions Query
     const { data: questionsData, isLoading: isLoadingQuestions, isError: isErrorQuestions, refetch: refetchQuestions } = useQuery({
@@ -280,7 +286,7 @@ const QuestionList = () => {
                             key={tab.id}
                             onClick={() => setSearchParams({ tab: tab.id })}
                             className={`
-                                flex-shrink-0 px-4 py-1.5 rounded-lg text-xs font-medium transition-all
+                                relative flex-shrink-0 px-4 py-1.5 rounded-lg text-xs font-medium transition-all
                                 ${activeTab === tab.id
                                     ? 'bg-zinc-800 text-zinc-100 border border-zinc-700 shadow-sm'
                                     : 'bg-zinc-900/40 text-zinc-400 border border-transparent hover:bg-zinc-800/60 hover:text-zinc-300'
@@ -288,6 +294,9 @@ const QuestionList = () => {
                             `}
                         >
                             {tab.label}
+                            {activeTab !== tab.id && isStale('tab_' + tab.id) && (
+                                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
+                            )}
                         </button>
                     ))}
                 </div>
