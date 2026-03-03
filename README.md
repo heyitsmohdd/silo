@@ -259,7 +259,7 @@ silo/
 
 ## Known Limitations (Beta)
 
-- Professor accounts disabled (students only)
+- Professor sign-ups are temporarily disabled; currently, Professor accounts must be added manually via the database.
 - Notes upload restricted to professors
 - No content moderation beyond rate limits
 - Manual user management via database
