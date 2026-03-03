@@ -43,7 +43,7 @@ export const BottomNav = () => {
         {
             path: '/chat',
             icon: Users,
-            label: 'Batch Chat',
+            label: 'Rooms',
             isActive: location.pathname === '/chat' || location.pathname.startsWith('/chat/'),
             hasBadge: false,
         },
