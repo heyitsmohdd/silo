@@ -97,9 +97,6 @@ export const createChannelHandler = async (
     res: Response
 ): Promise<void> => {
     try {
-        console.log('📝 Creating channel request body:', req.body);
-        console.log('👤 User creating channel:', req.user);
-
         // Validate request body
         const validation = createChannelSchema.safeParse(req.body);
 
@@ -115,8 +112,6 @@ export const createChannelHandler = async (
         const { name, description } = validation.data;
         const userId = req.user!.userId;
 
-        console.log(`🛠️ Creating channel "${name}" for owner ${userId}`);
-
         // Create channel
         const channel = await createChannel(
             name,
@@ -124,11 +119,8 @@ export const createChannelHandler = async (
             userId
         );
 
-        console.log('✅ Channel created successfully:', channel);
-
         // Emit socket event for real-time updates
         io.emit('channel_created', channel);
-        console.log(`📢 New channel created: #${channel.name} by user ${userId}`);
 
         res.status(201).json(channel);
     } catch (error: any) {

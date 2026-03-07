@@ -32,7 +32,6 @@ export const emitNotificationToUser = (io: Server, userId: string, notification:
     const socketId = userSockets.get(userId);
     if (socketId) {
         io.to(socketId).emit('notification:new', notification);
-        console.log(`🔔 Notification sent to user ${userId}`);
     }
 };
 
@@ -49,7 +48,6 @@ const emitChannelMemberList = async (io: Server, channelId: string) => {
 
     const members = await getChannelMembers(memberIds);
     io.to(`channel_${channelId}`).emit('update_member_list', { members });
-    console.log(`👥 Emitted member list for channel ${channelId}: ${members.length} members`);
 };
 
 // 
@@ -85,8 +83,6 @@ export const initializeSocketHandlers = (io: Server) => {
             return;
         }
 
-        console.log(`✅ User connected: ${user.email} (${user.year} ${user.branch})`);
-
         // Register user socket for notifications
         userSockets.set(user.userId, socket.id);
 
@@ -94,8 +90,6 @@ export const initializeSocketHandlers = (io: Server) => {
         const roomId = generateRoomId(user.year, user.branch);
         authSocket.roomId = roomId;
         socket.join(roomId);
-
-        console.log(`📍 User joined room: ${roomId}`);
 
         // Send welcome message
         socket.emit('connected', {
@@ -163,7 +157,6 @@ export const initializeSocketHandlers = (io: Server) => {
                     createdAt: message.createdAt,
                 });
 
-                console.log(`💬 Message sent to ${roomId}: ${message.content.substring(0, 50)}...`);
             } catch (error) {
                 console.error('Error sending message:', error);
                 socket.emit('error', { message: 'Failed to send message' });
@@ -244,8 +237,6 @@ export const initializeSocketHandlers = (io: Server) => {
                 // Clear deletion timeout if exists
                 clearChannelTimeout(channelId);
 
-                console.log(`📢 User ${user.email} joined channel: ${channelRoom}`);
-
                 // Emit updated member list to all users in channel
                 await emitChannelMemberList(io, channelId);
 
@@ -273,11 +264,8 @@ export const initializeSocketHandlers = (io: Server) => {
                 // Check if empty and start deletion timeout
                 const memberCount = channelMembers.get(channelId)?.size || 0;
                 if (memberCount === 0) {
-                    console.log(`⏱️  Channel ${channelId} is now empty, starting deletion timer`);
                     startChannelDeletionTimeout(channelId, io);
                 }
-
-                console.log(`📢 User ${user.email} left channel: ${channelRoom}`);
 
                 // Emit updated member list
                 await emitChannelMemberList(io, channelId);
@@ -342,7 +330,6 @@ export const initializeSocketHandlers = (io: Server) => {
                     createdAt: message.createdAt,
                 });
 
-                console.log(`💬 Channel message sent to ${channelRoom}: ${message.content.substring(0, 50)}...`);
             } catch (error) {
                 console.error('Error sending channel message:', error);
                 socket.emit('error', { message: 'Failed to send message' });
@@ -388,7 +375,6 @@ export const initializeSocketHandlers = (io: Server) => {
 
                 const dmRoom = `dm_${conversationId}`;
                 socket.join(dmRoom);
-                console.log(`🔒 User ${user.email} joined DM room: ${dmRoom}`);
 
                 socket.emit('dm_joined', { conversationId });
             } catch (error) {
@@ -468,7 +454,6 @@ export const initializeSocketHandlers = (io: Server) => {
                 ]);
 
                 const dmRoom = `dm_${conversationId}`;
-                console.log(`📣 [Socket] Broadcasting to room ${dmRoom}:`, { id: message.id, senderId: message.senderId });
 
                 // Broadcast to both users in the room
                 io.to(dmRoom).emit('receive_dm', {
@@ -519,13 +504,11 @@ export const initializeSocketHandlers = (io: Server) => {
         // Handle: Disconnect
         socket.on('disconnect', async () => {
             userSockets.delete(user.userId);
-            console.log(`❌ User disconnected: ${user.email}`);
 
             // Remove user from all channels they were part of
             for (const [channelId, members] of channelMembers.entries()) {
                 if (members.has(user.userId)) {
                     members.delete(user.userId);
-                    console.log(`info: Removed disconnected user ${user.email} from channel ${channelId}`);
 
                     // Check if empty and start deletion timeout
                     if (members.size === 0) {

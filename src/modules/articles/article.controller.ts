@@ -26,18 +26,11 @@ export class ArticleController {
             const { title, content, coverImageUrl } = req.body;
             const user = (req as any).user; // Decoded from JWT auth middleware
 
-            console.log('--- CREATE ARTICLE INITIATED ---');
-            console.log('Payload Title:', title);
-            console.log('Payload Content length:', content?.length);
-            console.log('JWT User Context:', user);
-
             if (!title || !content) {
-                console.log('Failed: Missing title or content');
                 return res.status(400).json({ error: 'Title and content are required' });
             }
 
             if (!user) {
-                console.log('Failed: Missing user object from JWT middleware');
                 return res.status(401).json({ error: 'Unauthorized: No user context found' });
             }
 
@@ -49,7 +42,6 @@ export class ArticleController {
 
             const readTime = calculateReadTime(sanitizedContent);
 
-            console.log('Executing Prisma article.create() ...');
             const article = await prisma.article.create({
                 data: {
                     title,
@@ -61,8 +53,6 @@ export class ArticleController {
                     authorId: user.userId,
                 },
             });
-
-            console.log('Success! Article created with ID:', article.id);
 
             return res.status(201).json({
                 message: 'Article published successfully',
@@ -149,8 +139,6 @@ export class ArticleController {
             const { id } = req.params;
             const user = (req as any).user;
 
-            console.log(`--- DELETE ARTICLE INITIATED: Article ID ${id} ---`);
-
             const article = await prisma.article.findUnique({
                 where: { id }
             });
@@ -161,7 +149,6 @@ export class ArticleController {
 
             // Verify authorship
             if (article.authorId !== user.userId) {
-                console.log(`Failed Delete: User ${user.userId} attempted to delete Article authored by ${article.authorId}`);
                 return res.status(403).json({ error: 'Unauthorized: You can only delete your own articles' });
             }
 
@@ -170,8 +157,6 @@ export class ArticleController {
                 where: { id },
                 data: { isDeleted: true }
             });
-
-            console.log(`Success! Article ${id} soft-deleted.`);
             return res.json({ message: 'Article deleted successfully' });
 
         } catch (error) {
