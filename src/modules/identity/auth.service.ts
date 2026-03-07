@@ -184,10 +184,6 @@ export const handleForgotPassword = async (email: string): Promise<{
 
     const { token } = generateResetToken(email);
 
-    // In production, send email with reset token
-    // For now, store in database or send via email service
-    console.log(`Password reset token for ${email}: ${token}`);
-
     // TODO: Integrate with email service (Nodemailer/SendGrid)
     // await sendPasswordResetEmail(email, token);
 
@@ -372,4 +368,3 @@ export const changeUserPassword = async (
 
     return { success: true };
 };
-
