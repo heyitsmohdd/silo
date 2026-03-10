@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { register, login, getCurrentUser, forgotPassword, verifyResetToken, resetPassword, updateProfile, changePassword, backfillUsernames } from './auth.controller.js';
-import { verifyJWT } from '../../shared/middleware/auth.middleware.js';
+import { verifyJWT, requireRole } from '../../shared/middleware/auth.middleware.js';
+import { Role } from '../../shared/types/auth.types.js';
 
 const router = Router();
 
@@ -107,9 +108,9 @@ router.put('/change-password', verifyJWT, async (req, res, next) => {
 
 // 
 // POST /auth/backfill
-// Backfill missing usernames
+// Backfill missing usernames (SUPER_ADMIN only)
 
-router.post('/backfill', async (req, res, next) => {
+router.post('/backfill', verifyJWT, requireRole(Role.SUPER_ADMIN), async (req, res, next) => {
     try {
         await backfillUsernames(req, res);
     } catch (error) {
