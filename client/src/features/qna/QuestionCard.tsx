@@ -206,9 +206,25 @@ const QuestionCard = ({ question, onClick, onUpdate, onDelete }: QuestionCardPro
                         )}
                     </div>
                     <div className="relative">
-                        <p className="text-sm text-zinc-400 leading-relaxed break-words transition-all mb-4 line-clamp-3">
-                            {question.content}
-                        </p>
+                        {(() => {
+                            const gifRegex = /!\[GIF\]\((https:\/\/media[^)]+\.giphy\.com[^)]+)\)/;
+                            const match = question.content.match(gifRegex);
+                            if (match) {
+                                const textPart = question.content.replace(gifRegex, '').trim();
+                                const gifUrl = match[1];
+                                return (
+                                    <div className="flex flex-col gap-2 mb-4">
+                                        {textPart && <p className="text-sm text-zinc-400 leading-relaxed break-words transition-all line-clamp-3">{textPart}</p>}
+                                        <img src={gifUrl} alt="GIF" className="rounded-lg max-w-[250px] object-cover" />
+                                    </div>
+                                );
+                            }
+                            return (
+                                <p className="text-sm text-zinc-400 leading-relaxed break-words transition-all mb-4 line-clamp-3">
+                                    {question.content}
+                                </p>
+                            );
+                        })()}
 
                         {question.content.length > 200 && (
                             <button

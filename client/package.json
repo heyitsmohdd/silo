@@ -12,6 +12,8 @@
     "test:ui": "mkdir -p tmp && TMPDIR=$(pwd)/tmp vitest --ui"
   },
   "dependencies": {
+    "@giphy/js-fetch-api": "^5.7.0",
+    "@giphy/react-components": "^10.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.90.20",
     "@tiptap/extension-placeholder": "^3.20.0",
@@ -28,8 +30,9 @@
     "react-helmet-async": "^2.0.4",
     "react-router-dom": "^7.13.0",
     "socket.io-client": "^4.8.3",
+    "styled-components": "^6.1.8",
     "tailwind-merge": "^3.4.0",
-    "vite-plugin-pwa": "^1.2.0",
+    "vite-plugin-pwa": "^0.19.8",
     "zustand": "^5.0.10"
   },
   "devDependencies": {

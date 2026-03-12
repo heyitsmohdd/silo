@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import axiosClient from '@/lib/axios';
+import { Image as ImageIcon } from 'lucide-react';
+import GifPicker from '@/components/ui/GifPicker';
 
 interface CreateQuestionFormProps {
     onSuccess: () => void;
@@ -14,6 +16,23 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
     const [tags, setTags] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const [showGifPicker, setShowGifPicker] = useState(false);
+    const pickerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+                setShowGifPicker(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleGifSelect = (gifUrl: string) => {
+        setContent(prev => prev + `\n![GIF](${gifUrl})`);
+        setShowGifPicker(false);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -111,7 +130,22 @@ const CreateQuestionForm = ({ onSuccess }: CreateQuestionFormProps) => {
                     </div>
                 )}
 
-                <div className="flex gap-3 justify-end pt-2">
+                <div className="flex gap-3 justify-between items-center pt-2 relative">
+                    <div className="flex items-center gap-2">
+                        {showGifPicker && (
+                            <div ref={pickerRef} className="absolute bottom-full left-0 mb-2 z-50">
+                                <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                            </div>
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => setShowGifPicker(!showGifPicker)}
+                            className="p-2 text-zinc-500 hover:text-emerald-400 hover:bg-zinc-800 rounded-md transition-colors"
+                            title="Add GIF"
+                        >
+                            <ImageIcon className="w-5 h-5" />
+                        </button>
+                    </div>
                     <Button
                         type="submit"
                         disabled={isSubmitting || !title.trim() || !content.trim() || !tags.trim()}

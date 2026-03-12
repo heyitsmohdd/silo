@@ -132,9 +132,21 @@ const ChatWindow = () => {
                       : 'bg-transparent'
                       }`}
                   >
-                    <p className="text-sm md:text-sm text-zinc-100 leading-relaxed">
-                      {message.content}
-                    </p>
+                    {(() => {
+                      const gifRegex = /!\[GIF\]\((https:\/\/media[^)]+\.giphy\.com[^)]+)\)/;
+                      const match = message.content.match(gifRegex);
+                      if (match) {
+                        const textPart = message.content.replace(gifRegex, '').trim();
+                        const gifUrl = match[1];
+                        return (
+                          <div className="flex flex-col gap-2">
+                            {textPart && <p className="text-sm md:text-sm text-zinc-100 leading-relaxed whitespace-pre-wrap">{textPart}</p>}
+                            <img src={gifUrl} alt="GIF" className="rounded-lg max-w-[250px] object-cover" />
+                          </div>
+                        );
+                      }
+                      return <p className="text-sm md:text-sm text-zinc-100 leading-relaxed whitespace-pre-wrap">{message.content}</p>;
+                    })()}
                   </div>
                 </div>
               </div>

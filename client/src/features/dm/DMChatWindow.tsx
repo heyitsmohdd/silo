@@ -4,7 +4,8 @@ import axiosClient from '@/lib/axios';
 import type { DirectMessage } from '@/types/dm.types';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getIdentity } from '@/lib/identity';
-import { ShieldAlert, Send } from 'lucide-react';
+import { ShieldAlert, Send, Image as ImageIcon } from 'lucide-react';
+import GifPicker from '@/components/ui/GifPicker';
 import type { Socket } from 'socket.io-client';
 import socketService from '@/lib/socket';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Dialog';
@@ -27,7 +28,29 @@ const DMChatWindow = () => {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [inputValue, setInputValue] = useState('');
+    const [showGifPicker, setShowGifPicker] = useState(false);
+    const pickerRef = useRef<HTMLDivElement>(null);
     const [isBlocked, setIsBlocked] = useState(false);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+                setShowGifPicker(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleGifSelect = (gifUrl: string) => {
+        if (isBlocked || !socketRef.current || !conversationId) return;
+        const payload = {
+            conversationId,
+            content: `\n![GIF](${gifUrl})`
+        };
+        socketRef.current.emit('send_dm', payload);
+        setShowGifPicker(false);
+    };
     const [blockedByMe, setBlockedByMe] = useState(false);
     const [blockedByThem, setBlockedByThem] = useState(false);
     const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
@@ -312,7 +335,21 @@ const DMChatWindow = () => {
                                     : 'bg-zinc-800 text-zinc-200 rounded-bl-sm border border-zinc-700/50'
                                     }`}
                             >
-                                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                                {(() => {
+                                    const gifRegex = /!\[GIF\]\((https:\/\/media[^)]+\.giphy\.com[^)]+)\)/;
+                                    const match = message.content.match(gifRegex);
+                                    if (match) {
+                                        const textPart = message.content.replace(gifRegex, '').trim();
+                                        const gifUrl = match[1];
+                                        return (
+                                            <div className="flex flex-col gap-2">
+                                                {textPart && <p className="text-sm whitespace-pre-wrap">{textPart}</p>}
+                                                <img src={gifUrl} alt="GIF" className="rounded-lg max-w-[250px] max-h-[250px] object-cover" />
+                                            </div>
+                                        );
+                                    }
+                                    return <p className="text-sm whitespace-pre-wrap">{message.content}</p>;
+                                })()}
                             </div>
                             <span className="text-[10px] text-zinc-500 mt-1 px-1">
                                 {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -327,11 +364,25 @@ const DMChatWindow = () => {
             </div>
 
             {/* Input Area */}
-            <div className="flex-shrink-0 p-4 border-t border-zinc-800/50 bg-zinc-950">
+            <div className="flex-shrink-0 p-4 border-t border-zinc-800/50 bg-zinc-950 relative">
+                {showGifPicker && (
+                    <div ref={pickerRef} className="absolute bottom-full left-4 mb-2 z-50">
+                        <GifPicker onGifSelect={handleGifSelect} onClose={() => setShowGifPicker(false)} />
+                    </div>
+                )}
                 <form
                     onSubmit={handleSendMessage}
                     className="flex items-end gap-2"
                 >
+                    <button
+                        type="button"
+                        onClick={() => setShowGifPicker(!showGifPicker)}
+                        disabled={isBlocked}
+                        className="h-[44px] w-[44px] rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-emerald-400 hover:border-emerald-500/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+                        title="Add GIF"
+                    >
+                        <ImageIcon className="w-5 h-5" />
+                    </button>
                     <textarea
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
