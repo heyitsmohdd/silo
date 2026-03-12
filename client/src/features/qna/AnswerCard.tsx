@@ -141,9 +141,25 @@ const AnswerCard = ({
                         )}
                     </div>
 
-                    <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3 break-words">
-                        {answer.content}
-                    </p>
+                    {(() => {
+                        const gifRegex = /!\[GIF\]\((https:\/\/media[^)]+\.giphy\.com[^)]+)\)/;
+                        const match = answer.content.match(gifRegex);
+                        if (match) {
+                            const textPart = answer.content.replace(gifRegex, '').trim();
+                            const gifUrl = match[1];
+                            return (
+                                <div className="flex flex-col gap-2 mb-3">
+                                    {textPart && <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">{textPart}</p>}
+                                    <img src={gifUrl} alt="GIF" className="rounded-lg max-w-[250px] object-cover" />
+                                </div>
+                            );
+                        }
+                        return (
+                            <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap mb-3 break-words">
+                                {answer.content}
+                            </p>
+                        );
+                    })()}
 
                     <div className="flex items-center gap-4">
                         <button
