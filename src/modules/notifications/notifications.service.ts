@@ -32,13 +32,13 @@ export const createNotification = async (
     // Don't notify self
     if (userId === actorId) return;
 
-    // Duplicate prevention for UPVOTE notifications
-    if (type === 'UPVOTE' && resourceId) {
+    // Duplicate prevention for UPVOTE and MENTION notifications
+    if ((type === 'UPVOTE' || type === 'MENTION') && resourceId) {
         const existing = await prisma.notification.findFirst({
             where: {
                 userId,
                 actorId,
-                type: 'UPVOTE',
+                type,
                 resourceId,
             }
         });
@@ -91,10 +91,14 @@ export const createNotification = async (
             where: { userId }
         });
 
+        const url = resourceId
+            ? (type === 'DIRECT_MESSAGE' ? `/messages/${resourceId}` : `/qna/${resourceId}`)
+            : '/';
+
         const payload = JSON.stringify({
             title: 'Silo',
             message: message,
-            url: resourceId ? `/qna/${resourceId}` : '/'
+            url,
         });
 
         // Send push to all registered devices of the user
@@ -127,28 +131,29 @@ export const createNotification = async (
 // Get user's notifications
 
 export const getUserNotifications = async (userId: string, limit = 20) => {
-    const notifications = await prisma.notification.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        include: {
-            actor: {
-                select: {
-                    id: true,
-                    username: true,
-                    firstName: true,
-                    lastName: true,
+    const [notifications, unreadCount] = await Promise.all([
+        prisma.notification.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'desc' },
+            take: limit,
+            include: {
+                actor: {
+                    select: {
+                        id: true,
+                        username: true,
+                        firstName: true,
+                        lastName: true,
+                    },
                 },
             },
-        },
-    });
-
-    const unreadCount = await prisma.notification.count({
-        where: {
-            userId,
-            isRead: false,
-        },
-    });
+        }),
+        prisma.notification.count({
+            where: {
+                userId,
+                isRead: false,
+            },
+        }),
+    ]);
 
     return { notifications, unreadCount };
 };
