@@ -60,8 +60,23 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/pm', '@tiptap/extension-placeholder'],
+          'vendor-socket': ['socket.io-client'],
+          'vendor-giphy': ['@giphy/js-fetch-api', '@giphy/react-components'],
+        },
+      },
+    },
+  },
   esbuild: {
-    pure: mode === 'production' ? ['console.log', 'console.info'] : [],
+    pure: mode === 'production' ? ['console.log', 'console.info', 'console.warn'] : [],
   },
 }))
 
