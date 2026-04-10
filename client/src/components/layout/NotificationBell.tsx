@@ -152,9 +152,11 @@ export const NotificationBell = () => {
     };
 
     const subscribeToPush = async () => {
+        // Request immediately to satisfy iOS Safari user-gesture requirements
+        const permissionPromise = Notification.requestPermission();
         setIsSubscribing(true);
         try {
-            const permission = await Notification.requestPermission();
+            const permission = await permissionPromise;
             setPushStatus(permission as typeof pushStatus);
 
             if (permission !== 'granted') return;
@@ -163,6 +165,11 @@ export const NotificationBell = () => {
 
             // Get public key from env
             const applicationServerKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+            
+            if (!applicationServerKey) {
+                console.error('VAPID public key not found in environment');
+                throw new Error('VAPID key is missing');
+            }
 
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
@@ -175,6 +182,7 @@ export const NotificationBell = () => {
 
         } catch (error) {
             console.error('Failed to subscribe to push notifications:', error);
+            alert('Failed to subscribe. If you are on iOS, please add this app to your Home Screen first.');
         } finally {
             setIsSubscribing(false);
         }
@@ -235,6 +243,14 @@ export const NotificationBell = () => {
                                 <BellRing className="w-3.5 h-3.5" />
                                 {isSubscribing ? 'Enabling...' : 'Enable Push Notifications'}
                             </button>
+                        </div>
+                    )}
+
+                    {pushStatus === 'unsupported' && (
+                        <div className="px-4 py-3 bg-yellow-500/10 border-b border-yellow-500/20 flex flex-col gap-2">
+                            <p className="text-xs text-yellow-200/80">
+                                Push notifications aren't supported in this browser. On iOS, you must add this app to your Home Screen first!
+                            </p>
                         </div>
                     )}
 
