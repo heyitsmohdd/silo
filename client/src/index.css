@@ -4,13 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth Theme Transitions */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
-}
-
 :root {
   /* Semantic Colors - Dark Mode Permanent Baseline */
   --background: 9 9 11;
@@ -57,19 +50,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Gradient Mesh Background */
-.dark body::before {
-  content: '';
-  position: fixed;
-  top: -50%;
-  right: -20%;
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(252, 211, 77, 0.05) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* Focus Styles */
 *:focus {
   outline: none;
@@ -85,8 +65,8 @@ select:focus-visible {
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -94,41 +74,143 @@ select:focus-visible {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--muted-foreground) / 0.2);
-  border-radius: 4px;
+  background: rgb(var(--muted-foreground) / 0.15);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--muted-foreground) / 0.3);
 }
 
-/* Glass Card Utility */
+/* Glass Morphism Utilities */
 .glass-card {
-  background-color: rgb(24 24 27 / 0.4);
-  /* zinc-900/40 */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(255 255 255 / 0.05);
+  background-color: rgb(24 24 27 / 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgb(255 255 255 / 0.06);
   border-radius: 1rem;
 }
 
 .glass-sidebar {
-  background-color: rgb(24 24 27 / 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(255 255 255 / 0.05);
+  background-color: rgb(24 24 27 / 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgb(255 255 255 / 0.06);
 }
 
 .glass-header {
-  background-color: rgb(24 24 27 / 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: rgb(24 24 27 / 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Smooth transitions only on interactive elements */
+a, button, input, textarea, select,
+.transition-colors, .transition-all, .transition-opacity, .transition-transform {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.95) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(16 185 129 / 0.4); }
+  50% { box-shadow: 0 0 12px 4px rgb(16 185 129 / 0.15); }
+}
+
+@keyframes notification-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.25s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.03) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-notification-pop {
+  animation: notification-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Staggered animation delays for lists */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* Glow effect for primary actions */
+.glow-emerald {
+  box-shadow: 0 0 20px -5px rgb(16 185 129 / 0.3);
+}
+
+.glow-emerald:hover {
+  box-shadow: 0 0 30px -5px rgb(16 185 129 / 0.5);
+}
+
+/* Gradient text utility */
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #34d399, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-violet {
+  background: linear-gradient(135deg, #a78bfa, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Tiptap Editor Custom Styles */
 .tiptap p.is-editor-empty:first-child::before {
   color: #52525b;
-  /* Tailwind text-zinc-600 */
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -137,4 +219,21 @@ select:focus-visible {
 
 .tiptap {
   outline: none !important;
+}
+
+/* Custom scrollbar for specific containers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.1);
+  border-radius: 999px;
+}
+
+/* Safe area padding for mobile PWA */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
