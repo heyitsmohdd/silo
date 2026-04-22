@@ -1,16 +1,16 @@
-/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 // https://vite.dev/config/
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineConfig(({ mode }) => ({
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
-  },
+  } as any,
   plugins: [
     react(),
     ...(mode !== 'test'
