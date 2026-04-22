@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-query': ['@tanstack/react-query'],
-          'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/pm', '@tiptap/extension-placeholder'],
+          'vendor-editor': ['@tiptap/react', '@tiptap/starter-kit', '@tiptap/extension-placeholder'],
           'vendor-socket': ['socket.io-client'],
           'vendor-giphy': ['@giphy/js-fetch-api', '@giphy/react-components'],
         },
