@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import { Bell, BellRing, CheckCheck, MessageSquare, ArrowUp, AtSign, Reply } from 'lucide-react';
 import axios from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
@@ -117,10 +118,15 @@ export const NotificationBell = () => {
         setIsOpen(prev => !prev);
     }, []);
 
-    // Close dropdown when clicking outside
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside both the bell button and the portal panel
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            const insideBell = dropdownRef.current?.contains(target);
+            const insidePanel = panelRef.current?.contains(target);
+            if (!insideBell && !insidePanel) {
                 setIsOpen(false);
             }
         };
@@ -209,6 +215,92 @@ export const NotificationBell = () => {
         }
     }, [pushStatus]);
 
+    const notificationContent = (
+        <>
+            {/* Panel header */}
+            <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between flex-shrink-0">
+                <h3 className="text-sm font-semibold text-white">Notifications</h3>
+                {unreadCount > 0 && (
+                    <button
+                        onClick={markAsRead}
+                        className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-emerald-400 transition-colors duration-200 px-2 py-1 rounded-lg hover:bg-white/5"
+                        title="Mark all as read"
+                    >
+                        <CheckCheck className="w-3.5 h-3.5" />
+                        <span>Mark all read</span>
+                    </button>
+                )}
+            </div>
+
+            {/* Push notification prompt */}
+            {pushStatus === 'default' && (
+                <div className="px-4 py-3 bg-emerald-500/5 border-b border-emerald-500/10 flex flex-col gap-2 flex-shrink-0">
+                    <p className="text-xs text-zinc-300">
+                        Get notified when someone replies or mentions you!
+                    </p>
+                    <button
+                        onClick={subscribeToPush}
+                        disabled={isSubscribing}
+                        className="flex items-center justify-center gap-2 w-full py-2 px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-all duration-200 disabled:opacity-50 active:scale-[0.98]"
+                    >
+                        <BellRing className="w-3.5 h-3.5" />
+                        {isSubscribing ? 'Enabling...' : 'Enable Push Notifications'}
+                    </button>
+                </div>
+            )}
+
+            {pushStatus === 'unsupported' && (
+                <div className="px-4 py-3 bg-amber-500/5 border-b border-amber-500/10 flex-shrink-0">
+                    <p className="text-xs text-amber-200/80">
+                        Push notifications aren't supported here. On iOS, add this app to your Home Screen first!
+                    </p>
+                </div>
+            )}
+
+            {/* Notification list */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar overscroll-contain">
+                {notifications.length === 0 ? (
+                    <div className="px-4 py-12 text-center">
+                        <Bell className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+                        <p className="text-sm text-zinc-500">No notifications yet</p>
+                        <p className="text-xs text-zinc-600 mt-1">We'll let you know when something happens</p>
+                    </div>
+                ) : (
+                    notifications.map((notification, index) => (
+                        <button
+                            key={notification.id}
+                            onClick={(e) => handleNotificationClick(e, notification)}
+                            className={`w-full px-4 py-3 text-left hover:bg-white/[0.04] active:bg-white/[0.06] transition-colors duration-150 border-b border-white/[0.03] last:border-0 animate-fade-in ${
+                                !notification.isRead ? 'bg-emerald-500/[0.04]' : ''
+                            }`}
+                            style={{ animationDelay: `${Math.min(index * 30, 150)}ms` }}
+                        >
+                            <div className="flex items-start gap-3">
+                                <div className={`flex-shrink-0 w-8 h-8 rounded-full ${notificationBg(notification.type)} flex items-center justify-center`}>
+                                    {notificationIcon(notification.type)}
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-zinc-200 leading-snug">
+                                        <span className="font-medium text-white">{getActorName(notification.actor)}</span>{' '}
+                                        <span className="text-zinc-400">{notification.message}</span>
+                                    </p>
+                                    <p className="text-[11px] text-zinc-500 mt-0.5">
+                                        {timeAgo(notification.createdAt)}
+                                    </p>
+                                </div>
+
+                                {!notification.isRead && (
+                                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400 mt-2 shadow-lg shadow-emerald-500/50" />
+                                )}
+                            </div>
+                        </button>
+                    ))
+                )}
+            </div>
+        </>
+    );
+
     return (
         <div className="relative" ref={dropdownRef}>
             <button
@@ -224,90 +316,32 @@ export const NotificationBell = () => {
                 )}
             </button>
 
-            {isOpen && (
-                <div className="absolute right-0 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden z-50 animate-fade-in-scale">
-                    {/* Header */}
-                    <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                        <h3 className="text-sm font-semibold text-white">Notifications</h3>
-                        {unreadCount > 0 && (
-                            <button
-                                onClick={markAsRead}
-                                className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-emerald-400 transition-colors duration-200 px-2 py-1 rounded-lg hover:bg-white/5"
-                                title="Mark all as read"
-                            >
-                                <CheckCheck className="w-3.5 h-3.5" />
-                                <span>Mark all read</span>
-                            </button>
-                        )}
+            {isOpen && ReactDOM.createPortal(
+                <div ref={panelRef}>
+                    {/* Mobile: backdrop + bottom sheet — portal ensures fixed positioning is relative to viewport, not the backdrop-filter header */}
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] md:hidden"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div
+                        className="fixed bottom-16 left-0 right-0 z-[90] md:hidden flex flex-col bg-zinc-900/98 backdrop-blur-xl border-t border-white/8 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
+                        style={{ maxHeight: 'calc(100dvh - 80px)' }}
+                    >
+                        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
+                            <div className="w-10 h-1 rounded-full bg-zinc-600" />
+                        </div>
+                        {notificationContent}
                     </div>
 
-                    {/* Push notification prompt */}
-                    {pushStatus === 'default' && (
-                        <div className="px-4 py-3 bg-emerald-500/5 border-b border-emerald-500/10 flex flex-col gap-2">
-                            <p className="text-xs text-zinc-300">
-                                Get notified when someone replies or mentions you!
-                            </p>
-                            <button
-                                onClick={subscribeToPush}
-                                disabled={isSubscribing}
-                                className="flex items-center justify-center gap-2 w-full py-2 px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-all duration-200 disabled:opacity-50 glow-emerald active:scale-[0.98]"
-                            >
-                                <BellRing className="w-3.5 h-3.5" />
-                                {isSubscribing ? 'Enabling...' : 'Enable Push Notifications'}
-                            </button>
-                        </div>
-                    )}
-
-                    {pushStatus === 'unsupported' && (
-                        <div className="px-4 py-3 bg-amber-500/5 border-b border-amber-500/10">
-                            <p className="text-xs text-amber-200/80">
-                                Push notifications aren't supported here. On iOS, add this app to your Home Screen first!
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Notification list */}
-                    <div className="max-h-[28rem] overflow-y-auto custom-scrollbar">
-                        {notifications.length === 0 ? (
-                            <div className="px-4 py-12 text-center">
-                                <Bell className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
-                                <p className="text-sm text-zinc-500">No notifications yet</p>
-                                <p className="text-xs text-zinc-600 mt-1">We'll let you know when something happens</p>
-                            </div>
-                        ) : (
-                            notifications.map((notification, index) => (
-                                <button
-                                    key={notification.id}
-                                    onClick={(e) => handleNotificationClick(e, notification)}
-                                    className={`w-full px-4 py-3 text-left hover:bg-white/[0.03] transition-colors duration-150 border-b border-white/[0.03] last:border-0 animate-fade-in ${
-                                        !notification.isRead ? 'bg-emerald-500/[0.03]' : ''
-                                    }`}
-                                    style={{ animationDelay: `${Math.min(index * 30, 150)}ms` }}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className={`flex-shrink-0 w-8 h-8 rounded-full ${notificationBg(notification.type)} flex items-center justify-center`}>
-                                            {notificationIcon(notification.type)}
-                                        </div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm text-zinc-200 leading-snug">
-                                                <span className="font-medium text-white">{getActorName(notification.actor)}</span>{' '}
-                                                <span className="text-zinc-400">{notification.message}</span>
-                                            </p>
-                                            <p className="text-[11px] text-zinc-600 mt-1">
-                                                {timeAgo(notification.createdAt)}
-                                            </p>
-                                        </div>
-
-                                        {!notification.isRead && (
-                                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-2 shadow-lg shadow-emerald-500/50" />
-                                        )}
-                                    </div>
-                                </button>
-                            ))
-                        )}
+                    {/* Desktop: fixed dropdown anchored below the header */}
+                    <div
+                        className="hidden md:flex md:flex-col fixed top-14 right-4 z-[90] w-[22rem] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden animate-fade-in-scale"
+                        style={{ maxHeight: 'min(32rem, calc(100dvh - 72px))' }}
+                    >
+                        {notificationContent}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
