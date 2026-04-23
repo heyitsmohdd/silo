@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import { Bell, BellRing, CheckCheck, MessageSquare, ArrowUp, AtSign, Reply } from 'lucide-react';
 import axios from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
@@ -117,10 +118,15 @@ export const NotificationBell = () => {
         setIsOpen(prev => !prev);
     }, []);
 
-    // Close dropdown when clicking outside
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside both the bell button and the portal panel
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            const insideBell = dropdownRef.current?.contains(target);
+            const insidePanel = panelRef.current?.contains(target);
+            if (!insideBell && !insidePanel) {
                 setIsOpen(false);
             }
         };
@@ -310,30 +316,32 @@ export const NotificationBell = () => {
                 )}
             </button>
 
-            {isOpen && (
-                <>
-                    {/* Mobile: full-screen overlay + bottom sheet */}
+            {isOpen && ReactDOM.createPortal(
+                <div ref={panelRef}>
+                    {/* Mobile: backdrop + bottom sheet — portal ensures fixed positioning is relative to viewport, not the backdrop-filter header */}
                     <div
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] md:hidden"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="fixed bottom-16 left-0 right-0 z-[90] md:hidden flex flex-col bg-zinc-900/98 backdrop-blur-xl border-t border-white/8 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
+                    <div
+                        className="fixed bottom-16 left-0 right-0 z-[90] md:hidden flex flex-col bg-zinc-900/98 backdrop-blur-xl border-t border-white/8 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
                         style={{ maxHeight: 'calc(100dvh - 80px)' }}
                     >
-                        {/* Drag handle */}
                         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
                             <div className="w-10 h-1 rounded-full bg-zinc-600" />
                         </div>
                         {notificationContent}
                     </div>
 
-                    {/* Desktop: absolute dropdown */}
-                    <div className="hidden md:flex md:flex-col absolute right-0 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden z-50 animate-fade-in-scale"
-                        style={{ maxHeight: 'min(32rem, calc(100dvh - 80px))' }}
+                    {/* Desktop: fixed dropdown anchored below the header */}
+                    <div
+                        className="hidden md:flex md:flex-col fixed top-14 right-4 z-[90] w-[22rem] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden animate-fade-in-scale"
+                        style={{ maxHeight: 'min(32rem, calc(100dvh - 72px))' }}
                     >
                         {notificationContent}
                     </div>
-                </>
+                </div>,
+                document.body
             )}
         </div>
     );
