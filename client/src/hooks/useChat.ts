@@ -41,10 +41,8 @@ export const useChat = () => {
       return;
     }
 
-    // Connect socket with token
+    // Use existing connection or connect fresh
     const socket = socketService.getSocket();
-
-    // Connect fresh if needed
     let newSocket = socket;
     if (!socket?.connected) {
       newSocket = socketService.connect(token);
@@ -52,43 +50,29 @@ export const useChat = () => {
 
     if (!newSocket) return;
 
-    // Remove any existing listeners to prevent duplicates
-    newSocket.removeAllListeners('connect');
-    newSocket.removeAllListeners('disconnect');
-    newSocket.removeAllListeners('connect_error');
-    newSocket.removeAllListeners('newMessage');
-    newSocket.removeAllListeners('messageHistory');
-    newSocket.removeAllListeners('userTyping');
-
-    // Connection state handlers
-    newSocket.on('connect', () => {
+    const handleConnect = () => {
       setIsConnected(true);
-
-      // Load message history on connect
       if (!hasLoadedHistory.current) {
-        newSocket.emit('getMessages', { limit: 50 });
+        newSocket!.emit('getMessages', { limit: 50 });
         hasLoadedHistory.current = true;
       }
-    });
+    };
 
-    newSocket.on('disconnect', () => {
-      setIsConnected(false);
-    });
+    const handleDisconnect = () => setIsConnected(false);
 
-    newSocket.on('connect_error', (error) => {
+    const handleConnectError = (error: Error) => {
       console.error('[Chat] Connection error:', error);
-    });
+    };
 
-    // Message handlers
-    newSocket.on('messageHistory', (data: { roomId: string; messages: Message[] }) => {
+    const handleMessageHistory = (data: { roomId: string; messages: Message[] }) => {
       setMessages(data.messages);
-    });
+    };
 
-    newSocket.on('newMessage', (message: Message) => {
+    const handleNewMessage = (message: Message) => {
       setMessages((prev) => [...prev, message]);
-    });
+    };
 
-    newSocket.on('userTyping', (data: { userId: string; firstName: string; isTyping: boolean }) => {
+    const handleUserTyping = (data: { userId: string; firstName: string; isTyping: boolean }) => {
       setTypingUsers((prev) => {
         if (data.isTyping) {
           if (prev.some(u => u.userId === data.userId)) return prev;
@@ -97,12 +81,29 @@ export const useChat = () => {
           return prev.filter(u => u.userId !== data.userId);
         }
       });
-    });
+    };
 
-    // Cleanup on unmount
+    newSocket.on('connect', handleConnect);
+    newSocket.on('disconnect', handleDisconnect);
+    newSocket.on('connect_error', handleConnectError);
+    newSocket.on('messageHistory', handleMessageHistory);
+    newSocket.on('newMessage', handleNewMessage);
+    newSocket.on('userTyping', handleUserTyping);
+
+    // Socket already connected — emit getMessages immediately instead of waiting for 'connect'
+    if (newSocket.connected && !hasLoadedHistory.current) {
+      newSocket.emit('getMessages', { limit: 50 });
+      hasLoadedHistory.current = true;
+    }
+
     return () => {
-      socketService.disconnect();
-      setIsConnected(false);
+      newSocket!.off('connect', handleConnect);
+      newSocket!.off('disconnect', handleDisconnect);
+      newSocket!.off('connect_error', handleConnectError);
+      newSocket!.off('messageHistory', handleMessageHistory);
+      newSocket!.off('newMessage', handleNewMessage);
+      newSocket!.off('userTyping', handleUserTyping);
+      hasLoadedHistory.current = false;
     };
   }, [token]);
 
