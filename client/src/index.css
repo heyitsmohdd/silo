@@ -131,6 +131,11 @@ a, button, input, textarea, select,
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slide-up-sheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -161,6 +166,10 @@ a, button, input, textarea, select,
 
 .animate-slide-up {
   animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-slide-up-sheet {
+  animation: slide-up-sheet 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }
 
 .animate-shimmer {
