@@ -7,7 +7,6 @@ import UserMenu from '@/components/UserMenu';
 import { NotificationBell } from '@/components/layout/NotificationBell';
 import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
 import { useSocketConnection } from '@/hooks/useSocketConnection';
-import WeeklyStarsWidget from '@/components/leaderboard/WeeklyStarsWidget';
 import { siteConfig } from '@/config/site';
 
 const DashboardLayout = () => {
@@ -128,10 +127,6 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           <Bug className="w-5 h-5 flex-shrink-0" />
           <span className={`${isMobile ? 'ml-3' : 'w-0 opacity-0 overflow-hidden md:group-hover:w-auto md:group-hover:opacity-100 md:group-hover:ml-3 transition-all duration-200 delay-75 whitespace-nowrap'}`}>Contact</span>
         </button>
-
-        <div className="pt-2">
-          <WeeklyStarsWidget isMobile={isMobile} />
-        </div>
 
         <div className="pt-4 mt-4 border-t border-white/5">
           <ChannelListHeader onCreateClick={() => setIsCreateChannelOpen(true)} isMobile={isMobile} />
