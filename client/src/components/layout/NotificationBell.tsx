@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-import { Bell, BellRing, CheckCheck, MessageSquare, ArrowUp, AtSign, Reply } from 'lucide-react';
+import { Bell, BellRing, CheckCheck, MessageSquare, ArrowUp, AtSign, Reply, X } from 'lucide-react';
 import axios from '@/lib/axios';
 import { useNavigate } from 'react-router-dom';
 import socketService from '@/lib/socket';
@@ -327,8 +327,16 @@ export const NotificationBell = () => {
                         className="fixed bottom-16 left-0 right-0 z-[90] md:hidden flex flex-col bg-zinc-900/98 backdrop-blur-xl border-t border-white/8 rounded-t-3xl shadow-2xl animate-slide-up-sheet"
                         style={{ maxHeight: 'calc(100dvh - 80px)' }}
                     >
-                        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-                            <div className="w-10 h-1 rounded-full bg-zinc-600" />
+                        <div className="flex items-center justify-between px-4 pt-3 pb-1 flex-shrink-0">
+                            <div className="w-10 h-1 rounded-full bg-zinc-600 mx-auto absolute left-1/2 -translate-x-1/2" />
+                            <div className="w-8" />
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="ml-auto p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                                aria-label="Close notifications"
+                            >
+                                <X className="w-4 h-4 text-zinc-400" />
+                            </button>
                         </div>
                         {notificationContent}
                     </div>
