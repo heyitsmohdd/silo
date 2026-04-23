@@ -129,7 +129,7 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         </button>
 
         <div className="pt-4 mt-4 border-t border-white/5">
-          <ChannelListHeader onCreateClick={() => setIsCreateChannelOpen(true)} isMobile={isMobile} />
+          <ChannelListHeader onCreateClick={() => { if (isMobile && onNavigate) onNavigate(); setIsCreateChannelOpen(true); }} isMobile={isMobile} />
           <ChannelList
             isModalOpen={isCreateChannelOpen}
             onModalClose={() => setIsCreateChannelOpen(false)}
