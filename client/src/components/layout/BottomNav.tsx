@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Library, Users, MessageSquare, Hash } from 'lucide-react';
+import { BookOpen, Library, Users, MessageSquare } from 'lucide-react';
 import { useEffect } from 'react';
 import { isStale, markSeen } from '@/hooks/useNewContentDot';
 
@@ -13,7 +13,6 @@ const KEYS = {
     qna: 'qna',
     rooms: 'rooms',
     dm: 'dm',
-    channels: 'channels',
 };
 
 export const BottomNav = () => {
@@ -30,7 +29,6 @@ export const BottomNav = () => {
         else if (isQnaTab) markSeen(KEYS.qna);
         else if (isRooms) markSeen(KEYS.rooms);
         else if (isDM) markSeen(KEYS.dm);
-        else if (isChannels) markSeen(KEYS.channels);
     }, [location.pathname, location.search, isArticlesTab, isQnaTab, isRooms, isDM, isChannels]);
 
     // Compute dots inline — isStale() reads localStorage, no useState needed
@@ -63,13 +61,6 @@ export const BottomNav = () => {
             label: 'DM',
             isActive: isDM,
             hasBadge: !isDM && isStale(KEYS.dm),
-        },
-        {
-            path: '/channels',
-            icon: Hash,
-            label: 'Channels',
-            isActive: isChannels,
-            hasBadge: !isChannels && isStale(KEYS.channels),
         },
     ];
 
