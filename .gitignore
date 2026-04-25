@@ -42,6 +42,10 @@ tmp/
 *.tmp
 AGENT.md
 
+# Local session context (not for public)
+context.md
+CLAUDE.md
+
 # Test Coverage
 coverage/
 client/coverage/
