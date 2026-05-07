@@ -8,6 +8,7 @@ import { NotificationBell } from '@/components/layout/NotificationBell';
 import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
 import { useSocketConnection } from '@/hooks/useSocketConnection';
 import { siteConfig } from '@/config/site';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const DashboardLayout = () => {
   // Initialize global socket connection
@@ -85,6 +86,7 @@ interface SidebarContentProps {
 const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isCreateChannelOpen, setIsCreateChannelOpen] = useState(false);
+  const { isProfessor } = useAuthStore();
 
   return (
     <>
@@ -114,12 +116,17 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-x-hidden overflow-y-auto custom-scrollbar">
-        <NavLink to="/write" icon={PenSquare} label="Write Article" onClick={onNavigate} isMobile={isMobile} />
+        {!isProfessor && <NavLink to="/write" icon={PenSquare} label="Write Article" onClick={onNavigate} isMobile={isMobile} />}
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} isMobile={isMobile} />
-        <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} isMobile={isMobile} />
-        <NavLink to="/chat" icon={MessageSquare} label="Batch Chat" onClick={onNavigate} isMobile={isMobile} />
-        <NavLink to="/messages" icon={Send} label="Messages" onClick={onNavigate} isMobile={isMobile} />
-        <NavLink to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={onNavigate} isMobile={isMobile} />
+        
+        {!isProfessor && (
+          <>
+            <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} isMobile={isMobile} />
+            <NavLink to="/chat" icon={MessageSquare} label="Batch Chat" onClick={onNavigate} isMobile={isMobile} />
+            <NavLink to="/messages" icon={Send} label="Messages" onClick={onNavigate} isMobile={isMobile} />
+            <NavLink to="/leaderboard" icon={Trophy} label="Leaderboard" onClick={onNavigate} isMobile={isMobile} />
+          </>
+        )}
         <button
           onClick={() => setIsContactModalOpen(true)}
           className={`w-full relative flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200`}
@@ -128,14 +135,16 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           <span className={`${isMobile ? 'ml-3' : 'w-0 opacity-0 overflow-hidden md:group-hover:w-auto md:group-hover:opacity-100 md:group-hover:ml-3 transition-all duration-200 delay-75 whitespace-nowrap'}`}>Contact</span>
         </button>
 
-        <div className="pt-4 mt-4 border-t border-white/5">
-          <ChannelListHeader onCreateClick={() => { if (isMobile && onNavigate) onNavigate(); setIsCreateChannelOpen(true); }} isMobile={isMobile} />
-          <ChannelList
-            isModalOpen={isCreateChannelOpen}
-            onModalClose={() => setIsCreateChannelOpen(false)}
-            isMobile={isMobile}
-          />
-        </div>
+        {!isProfessor && (
+          <div className="pt-4 mt-4 border-t border-white/5">
+            <ChannelListHeader onCreateClick={() => { if (isMobile && onNavigate) onNavigate(); setIsCreateChannelOpen(true); }} isMobile={isMobile} />
+            <ChannelList
+              isModalOpen={isCreateChannelOpen}
+              onModalClose={() => setIsCreateChannelOpen(false)}
+              isMobile={isMobile}
+            />
+          </div>
+        )}
       </nav>
     </>
   );

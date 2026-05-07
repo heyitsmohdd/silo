@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, Library, Users, MessageSquare } from 'lucide-react';
 import { useEffect } from 'react';
 import { isStale, markSeen } from '@/hooks/useNewContentDot';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 // Small red dot indicator
 const RedDot = () => (
@@ -30,6 +31,9 @@ export const BottomNav = () => {
         else if (isRooms) markSeen(KEYS.rooms);
         else if (isDM) markSeen(KEYS.dm);
     }, [location.pathname, location.search, isArticlesTab, isQnaTab, isRooms, isDM, isChannels]);
+
+    const { isProfessor } = useAuthStore();
+    if (isProfessor) return null;
 
     // Compute dots inline — isStale() reads localStorage, no useState needed
     // Dots are suppressed on the currently active section
