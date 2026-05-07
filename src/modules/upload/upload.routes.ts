@@ -1,7 +1,6 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { requireAuth } from '../../shared/middleware/auth.middleware.js';
-import path from 'path';
 import fs from 'fs';
 
 const router = Router();
@@ -13,10 +12,10 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
         cb(null, uploadDir);
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         // Replace spaces with underscores for safer URLs
         const safeName = file.originalname.replace(/\s+/g, '_');
@@ -31,7 +30,7 @@ const upload = multer({
     }
 });
 
-router.post('/', requireAuth, upload.single('file'), (req, res) => {
+router.post('/', requireAuth, upload.single('file'), (req: Request, res: Response): void => {
     if (!req.file) {
         res.status(400).json({ error: 'No file uploaded' });
         return;
