@@ -49,4 +49,10 @@ CLAUDE.md
 # Test Coverage
 coverage/
 client/coverage/
+
+# Local uploads
 uploads/
+
+# Tooling and Local Config
+.claude/
+client/.vercel/
