@@ -63,7 +63,7 @@ export const registerUser = async (data: {
             role,
             firstName: firstName ?? null,
             lastName: lastName ?? null,
-            username: uniqueNamesGenerator({
+            username: role === 'PROFESSOR' ? null : uniqueNamesGenerator({
                 dictionaries: [adjectives, animals],
                 separator: '-',
                 style: 'capital',

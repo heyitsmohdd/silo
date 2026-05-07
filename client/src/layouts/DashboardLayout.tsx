@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send, PenSquare, Menu } from 'lucide-react';
+import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send, PenSquare, Menu, BookOpen } from 'lucide-react';
 import { BottomNav } from '@/components/layout/BottomNav';
 import ContactModal from '@/components/ContactModal';
 import { useState } from 'react';
@@ -116,10 +116,12 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
       </div>
 
       <nav className="flex-1 p-3 space-y-1 overflow-x-hidden overflow-y-auto custom-scrollbar">
-        {!isProfessor && <NavLink to="/write" icon={PenSquare} label="Write Article" onClick={onNavigate} isMobile={isMobile} />}
+        <NavLink to="/write" icon={PenSquare} label="Write Article" onClick={onNavigate} isMobile={isMobile} />
         <NavLink to="/notes" icon={FileText} label="Notes" onClick={onNavigate} isMobile={isMobile} />
         
-        {!isProfessor && (
+        {isProfessor ? (
+          <NavLink to="/qna" icon={BookOpen} label="Articles" onClick={onNavigate} isMobile={isMobile} />
+        ) : (
           <>
             <NavLink to="/qna" icon={HelpCircle} label="Q&A" onClick={onNavigate} isMobile={isMobile} />
             <NavLink to="/chat" icon={MessageSquare} label="Batch Chat" onClick={onNavigate} isMobile={isMobile} />

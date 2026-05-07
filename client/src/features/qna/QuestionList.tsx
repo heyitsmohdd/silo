@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { isStale, markSeen } from '@/hooks/useNewContentDot';
+import { useAuthStore } from '@/stores/useAuthStore';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
 import EmptyState from '@/components/ui/EmptyState';
@@ -42,8 +43,9 @@ const QuestionList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState('');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'upvotes'>('newest');
+    const { isProfessor } = useAuthStore();
     // Derive active tab directly from URL — no useState/useEffect needed
-    const activeTab = searchParams.get('tab') || 'for-you';
+    const activeTab = searchParams.get('tab') || (isProfessor ? 'articles' : 'for-you');
 
     // Mark current tab as seen whenever it changes
     useEffect(() => {
@@ -148,7 +150,7 @@ const QuestionList = () => {
         setSearchParams({ tab: 'for-you' });
     };
 
-    const tabs = [
+    const allTabs = [
         { id: 'for-you', label: 'For You' },
         { id: 'articles', label: 'Articles' },
         { id: 'trending', label: 'Trending' },
@@ -156,6 +158,8 @@ const QuestionList = () => {
         { id: 'events', label: 'Events' },
         { id: 'news', label: 'News' }
     ];
+    
+    const tabs = isProfessor ? [{ id: 'articles', label: 'Articles' }] : allTabs;
 
     if (isLoadingQuestions) {
         return (
