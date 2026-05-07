@@ -25,6 +25,7 @@ import { initializeChannelCleanup } from './modules/channels/channel-cleanup.ser
 import leaderboardRoutes from './modules/academic/leaderboard.routes.js';
 import newsRoutes from './modules/news/news.routes.js';
 import articleRoutes from './modules/articles/article.routes.js';
+import uploadRoutes from './modules/upload/upload.routes.js';
 import { logger } from './shared/utils/logger.js';
 import { prisma } from './shared/lib/prisma.js';
 
@@ -149,6 +150,10 @@ app.use('/api/dm', dmRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Serve uploads directory statically
+app.use('/uploads', express.static('uploads'));
 
 // ============================================================================
 // ERROR HANDLING

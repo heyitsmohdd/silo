@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosClient from '@/lib/axios';
-import { X, Upload } from 'lucide-react';
+import { X, Upload, FileUp, Loader2 } from 'lucide-react';
 
 interface CreateNotePayload {
     title: string;
@@ -20,8 +20,30 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
     const [subject, setSubject] = useState('');
     const [content, setContent] = useState('');
     const [fileUrl, setFileUrl] = useState('');
+    const [isDragging, setIsDragging] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadedFileName, setUploadedFileName] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const queryClient = useQueryClient();
+
+    const handleFileUpload = async (file: File) => {
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const response = await axiosClient.post('/api/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setFileUrl(response.data.fileUrl);
+            setUploadedFileName(response.data.filename);
+        } catch (error) {
+            console.error('File upload failed', error);
+            alert('Failed to upload file. Please try again.');
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     const mutation = useMutation({
         mutationFn: async (newNote: CreateNotePayload) => {
@@ -81,13 +103,44 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">File URL</label>
-                        <input
-                            value={fileUrl}
-                            onChange={(e) => setFileUrl(e.target.value)}
-                            placeholder="https://..."
-                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all"
-                        />
+                        <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">File Attachment</label>
+                        <div
+                            className={`border-2 border-dashed rounded-lg px-4 py-2 flex flex-col items-center justify-center cursor-pointer transition-colors h-[44px] overflow-hidden ${
+                                isDragging ? 'border-emerald-500 bg-emerald-500/10' : 'border-zinc-800 bg-zinc-950 hover:border-zinc-700'
+                            }`}
+                            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                            onDragLeave={() => setIsDragging(false)}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                setIsDragging(false);
+                                const file = e.dataTransfer.files[0];
+                                if (file) handleFileUpload(file);
+                            }}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handleFileUpload(file);
+                                }}
+                                className="hidden"
+                            />
+                            {isUploading ? (
+                                <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                                    <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
+                                </div>
+                            ) : uploadedFileName ? (
+                                <span className="text-emerald-400 text-sm truncate w-full text-center" title={uploadedFileName}>
+                                    {uploadedFileName}
+                                </span>
+                            ) : (
+                                <div className="flex items-center gap-2 text-zinc-500 text-sm">
+                                    <FileUp className="w-4 h-4" /> Drop or click to upload
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
