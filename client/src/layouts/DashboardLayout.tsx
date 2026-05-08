@@ -20,7 +20,7 @@ const DashboardLayout = () => {
   return (
     <div className="flex bg-zinc-950 relative h-screen overflow-hidden pb-16 md:pb-0">
       {/* 1. Left Sidebar (Hidden on Mobile unless open) */}
-      <aside className={`fixed inset-y-0 left-0 z-[60] w-64 bg-zinc-950 transform transition-transform duration-300 ease-in-out flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 md:m-4 md:w-[4.5rem] md:hover:w-64 md:h-[calc(100vh-2rem)] md:rounded-2xl glass-sidebar overflow-hidden group`}>
+      <aside className={`fixed inset-y-0 left-0 z-[60] w-64 bg-zinc-950 transform transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 md:m-4 md:w-[4.5rem] md:hover:w-64 md:h-[calc(100vh-2rem)] md:rounded-2xl glass-sidebar overflow-hidden group`}>
         <SidebarContent onNavigate={closeMobileMenu} isMobile={isMobileMenuOpen} />
       </aside>
 
@@ -99,9 +99,21 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
         <div className="w-10 flex justify-center pl-1 shrink-0">
           <Link to="/" className="w-6 h-6 flex items-center justify-center bg-emerald-500 rounded text-black font-bold text-xs" title={siteConfig.name}>S</Link>
         </div>
-        <Link to="/" className={`hover:opacity-70 transition-opacity ${isMobile ? '' : 'w-0 opacity-0 overflow-hidden md:group-hover:w-auto md:group-hover:opacity-100 md:group-hover:ml-3 transition-all duration-200 delay-100 whitespace-nowrap'}`}>
-          <h1 className="text-sm font-bold text-white font-['Press_Start_2P']">
-            {siteConfig.name}
+        <Link to="/" className={`group/logo flex items-center transition-opacity ${isMobile ? '' : 'w-0 opacity-0 overflow-hidden md:group-hover:w-auto md:group-hover:opacity-100 md:group-hover:ml-3 transition-all duration-300 ease-out whitespace-nowrap'}`}>
+          <h1 className="text-sm font-bold text-white font-['Press_Start_2P'] flex gap-[1px]">
+            {(siteConfig.name || 'Silo').split('').map((char, i) => {
+              const scatterClasses = [
+                'group-hover/logo:-translate-y-1 group-hover/logo:-translate-x-0.5 group-hover/logo:-rotate-6 text-emerald-400',
+                'group-hover/logo:translate-y-0.5 group-hover/logo:-rotate-3 text-white',
+                'group-hover/logo:-translate-y-0.5 group-hover/logo:translate-x-0.5 group-hover/logo:rotate-6 text-emerald-400',
+                'group-hover/logo:translate-y-1 group-hover/logo:translate-x-1 group-hover/logo:rotate-3 text-white'
+              ];
+              return (
+                <span key={i} className={`inline-block transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${scatterClasses[i % scatterClasses.length]}`}>
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              );
+            })}
           </h1>
         </Link>
         {isMobile && onNavigate && (

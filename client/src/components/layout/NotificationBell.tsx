@@ -305,10 +305,10 @@ export const NotificationBell = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={toggleDropdown}
-                className="relative p-2 text-zinc-400 hover:text-white transition-colors duration-200 rounded-xl hover:bg-white/5 active:scale-95"
+                className="relative p-2 text-zinc-400 hover:text-white transition-colors duration-200 rounded-xl hover:bg-white/5 active:scale-95 group"
                 aria-label="Notifications"
             >
-                <Bell className="w-5 h-5" />
+                <Bell className="w-5 h-5 group-hover:animate-wiggle origin-top" />
                 {unreadCount > 0 && (
                     <span className="absolute top-0.5 right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-emerald-500 rounded-full animate-notification-pop shadow-lg shadow-emerald-500/30">
                         {unreadCount > 99 ? '99+' : unreadCount}
@@ -343,7 +343,7 @@ export const NotificationBell = () => {
 
                     {/* Desktop: fixed dropdown anchored below the header */}
                     <div
-                        className="hidden md:flex md:flex-col fixed top-14 right-4 z-[90] w-[22rem] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden animate-fade-in-scale"
+                        className="hidden md:flex md:flex-col fixed top-14 right-4 z-[90] w-[22rem] bg-zinc-900/95 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden animate-fade-in-scale origin-top-right"
                         style={{ maxHeight: 'min(32rem, calc(100dvh - 72px))' }}
                     >
                         {notificationContent}
