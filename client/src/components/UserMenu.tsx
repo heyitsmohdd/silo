@@ -45,7 +45,12 @@ const UserMenu = () => {
     if (!user) return null;
 
     return (
-        <div className="relative" ref={menuRef}>
+        <div 
+            className="relative" 
+            ref={menuRef}
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+        >
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 hover:ring-2 hover:ring-emerald-500/20 transition-all group"
@@ -56,16 +61,16 @@ const UserMenu = () => {
                     className="w-8 h-8 rounded-full bg-zinc-900 ring-2 ring-zinc-700 group-hover:ring-emerald-500/50 transition-all"
                 />
                 <ChevronDown
-                    className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${isOpen ? 'rotate-180' : ''
+                    className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''
                         }`}
                 />
             </button>
 
             {isOpen && (
                 <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                    <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsOpen(false)} />
 
-                    <div className="absolute right-0 mt-2 w-72 z-50 rounded-xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-72 z-50 rounded-xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden animate-fade-in-scale origin-top-right transition-all duration-300">
                         <div className="p-5 border-b border-zinc-800 bg-gradient-to-br from-zinc-800/80 to-zinc-900">
                             <div className="flex items-center gap-4">
                                 <img
