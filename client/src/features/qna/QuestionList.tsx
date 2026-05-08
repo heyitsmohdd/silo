@@ -328,7 +328,7 @@ const QuestionList = () => {
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="block p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/50 hover:bg-zinc-800/60 hover:border-zinc-700 transition-all group"
+                                className={`block p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/50 hover:bg-zinc-800/60 hover:-translate-y-1 hover:border-zinc-700 hover:shadow-lg transition-all group animate-fade-in-scale stagger-${(idx % 5) + 1}`}
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div>
@@ -356,14 +356,15 @@ const QuestionList = () => {
             ) : (
                 filteredQuestions.length === 0 ? renderEmptyState() : (
                     <div className="space-y-3">
-                        {filteredQuestions.map((question: Question) => (
-                            <QuestionCard
-                                key={question.id}
-                                question={question}
-                                onClick={() => navigate(`/qna/${question.id}`)}
-                                onUpdate={refetchQuestions}
-                                onDelete={refetchQuestions}
-                            />
+                        {filteredQuestions.map((question: Question, index: number) => (
+                            <div key={question.id} className={`animate-fade-in-scale stagger-${(index % 5) + 1}`}>
+                                <QuestionCard
+                                    question={question}
+                                    onClick={() => navigate(`/qna/${question.id}`)}
+                                    onUpdate={refetchQuestions}
+                                    onDelete={refetchQuestions}
+                                />
+                            </div>
                         ))}
                     </div>
                 )

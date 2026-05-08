@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 const DashboardLayout = () => {
   // Initialize global socket connection
   useSocketConnection();
+  const location = useLocation();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -62,8 +63,10 @@ const DashboardLayout = () => {
           <div className="max-w-[1600px] mx-auto flex gap-6 h-full">
 
             {/* Center Feed Outlet */}
-            <div className="flex-1 min-w-0 h-full">
-              <Outlet />
+            <div className="flex-1 min-w-0 h-full relative">
+              <div key={location.pathname} className="animate-fade-in h-full w-full">
+                <Outlet />
+              </div>
             </div>
 
           </div>
@@ -169,7 +172,7 @@ const NavLink = ({ to, icon: Icon, label, onClick, isMobile }: NavLinkProps) => 
     <Link
       to={to}
       onClick={onClick}
-      className={`relative flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
+      className={`relative flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isActive
         ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-500 shadow-lg shadow-emerald-500/10'
         : 'text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 border-l-2 border-transparent'
         }`}
