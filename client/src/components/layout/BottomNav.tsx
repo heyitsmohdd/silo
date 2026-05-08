@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 
 // Small red dot indicator
 const RedDot = () => (
-    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-zinc-950 animate-pulse" />
+    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-zinc-950 animate-pulse animate-fade-in-scale" />
 );
 
 const KEYS = {
@@ -79,11 +79,16 @@ export const BottomNav = () => {
                         className={`relative flex items-center justify-center p-3 rounded-xl transition-all duration-200
                             ${isActive ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}
                     >
-                        <Icon
-                            className={`w-5 h-5 ${isActive ? 'fill-emerald-400/20' : ''}`}
-                            strokeWidth={isActive ? 2.5 : 2}
-                        />
-                        {hasBadge && <RedDot />}
+                        <div className="relative group transition-transform duration-200 hover:-translate-y-1 hover:scale-110 active:scale-95 flex items-center justify-center">
+                            <Icon
+                                className={`w-5 h-5 transition-colors duration-200 ${isActive ? 'fill-emerald-400/20 text-emerald-400' : ''}`}
+                                strokeWidth={isActive ? 2.5 : 2}
+                            />
+                            {hasBadge && <RedDot />}
+                        </div>
+                        {isActive && (
+                            <div className="absolute bottom-1 w-1 h-1 bg-emerald-400 rounded-full animate-fade-in-scale" />
+                        )}
                     </Link>
                 ))}
             </div>

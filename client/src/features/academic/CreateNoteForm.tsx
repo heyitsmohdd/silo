@@ -67,7 +67,7 @@ const CreateNoteForm = ({ onSuccess, onClose }: CreateNoteFormProps) => {
     };
 
     return (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden animate-slide-up">
             <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/50">
                 <h2 className="text-xl font-bold text-white">Upload Academic Note</h2>
                 <button
