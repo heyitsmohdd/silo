@@ -10,7 +10,22 @@ const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
+
+    const handleMouseEnter = () => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+        setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        closeTimeoutRef.current = setTimeout(() => {
+            setIsOpen(false);
+        }, 150); // Small buffer to move mouse to dropdown
+    };
 
     const identity = user ? getIdentity(user.userId, user.username) : { name: '', avatar: '' };
 
@@ -46,10 +61,10 @@ const UserMenu = () => {
 
     return (
         <div 
-            className="relative" 
+            className="relative pb-2" 
             ref={menuRef}
-            onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -70,7 +85,7 @@ const UserMenu = () => {
                 <>
                     <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsOpen(false)} />
 
-                    <div className="absolute right-0 mt-2 w-72 z-50 rounded-xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden animate-fade-in-scale origin-top-right transition-all duration-300">
+                    <div className="absolute right-0 top-full w-72 z-50 rounded-xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden animate-fade-in-scale origin-top-right transition-all duration-300">
                         <div className="p-5 border-b border-zinc-800 bg-gradient-to-br from-zinc-800/80 to-zinc-900">
                             <div className="flex items-center gap-4">
                                 <img
