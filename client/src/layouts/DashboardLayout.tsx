@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FileText, MessageSquare, X, HelpCircle, Bug, Trophy, Send, PenSquare, Menu, BookOpen } from 'lucide-react';
 import { BottomNav } from '@/components/layout/BottomNav';
 import ContactModal from '@/components/ContactModal';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import UserMenu from '@/components/UserMenu';
 import { NotificationBell } from '@/components/layout/NotificationBell';
 import ChannelList, { ChannelListHeader } from '@/components/channels/ChannelList';
@@ -90,6 +90,18 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isCreateChannelOpen, setIsCreateChannelOpen] = useState(false);
   const { isProfessor } = useAuthStore();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleContactEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsContactModalOpen(true);
+  };
+
+  const handleContactLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsContactModalOpen(false);
+    }, 150);
+  };
 
   return (
     <>
@@ -141,9 +153,9 @@ const SidebarContent = ({ onNavigate, isMobile }: SidebarContentProps) => {
           </>
         )}
         <div 
-          className="relative"
-          onMouseEnter={() => setIsContactModalOpen(true)}
-          onMouseLeave={() => setIsContactModalOpen(false)}
+          className="relative pr-4"
+          onMouseEnter={handleContactEnter}
+          onMouseLeave={handleContactLeave}
         >
           <button
             onClick={() => setIsContactModalOpen(!isContactModalOpen)}
