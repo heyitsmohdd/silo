@@ -383,7 +383,7 @@ const QuestionList = () => {
             {activeTab !== 'news' && (
                 <button
                     onClick={() => activeTab === 'articles' ? navigate('/write') : setShowModal(true)}
-                    className="md:hidden fixed bottom-24 right-4 z-40 bg-emerald-500 text-zinc-950 p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform"
+                    className="md:hidden fixed bottom-20 right-5 z-[100] bg-emerald-500 text-zinc-950 p-4 rounded-full shadow-2xl shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all duration-200"
                     aria-label={activeTab === 'articles' ? 'Write Article' : 'New Post'}
                 >
                     <Plus className="w-6 h-6" />
