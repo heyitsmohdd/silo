@@ -67,9 +67,9 @@ const AskQuestionModal = ({ onClose, onSuccess }: AskQuestionModalProps) => {
                 onClick={onClose}
             />
 
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4">
                 <div
-                    className="w-full max-w-2xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col max-h-[90vh]"
+                    className="w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-zinc-950 md:bg-zinc-900/95 md:backdrop-blur-md border-0 md:border md:border-zinc-800 rounded-none md:rounded-xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex items-center justify-between p-6 border-b border-zinc-800 flex-shrink-0">
