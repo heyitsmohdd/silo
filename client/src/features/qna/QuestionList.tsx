@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -379,15 +380,16 @@ const QuestionList = () => {
                 />
             )}
 
-            {/* Mobile Floating Action Button (FAB) */}
-            {activeTab !== 'news' && (
+            {/* Mobile Floating Action Button (FAB) — portal to body to escape transform containing block */}
+            {activeTab !== 'news' && createPortal(
                 <button
                     onClick={() => activeTab === 'articles' ? navigate('/write') : setShowModal(true)}
                     className="md:hidden fixed bottom-24 right-4 z-40 bg-emerald-500 text-zinc-950 p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform"
                     aria-label={activeTab === 'articles' ? 'Write Article' : 'New Post'}
                 >
                     <Plus className="w-6 h-6" />
-                </button>
+                </button>,
+                document.body
             )}
         </div>
     );
