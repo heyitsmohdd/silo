@@ -59,7 +59,7 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 relative">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-24 md:p-8 relative">
           <div className="max-w-[1600px] mx-auto flex gap-6 h-full">
 
             {/* Center Feed Outlet */}

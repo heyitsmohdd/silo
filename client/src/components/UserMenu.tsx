@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -10,22 +11,7 @@ const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
-
-    const handleMouseEnter = () => {
-        if (closeTimeoutRef.current) {
-            clearTimeout(closeTimeoutRef.current);
-            closeTimeoutRef.current = null;
-        }
-        setIsOpen(true);
-    };
-
-    const handleMouseLeave = () => {
-        closeTimeoutRef.current = setTimeout(() => {
-            setIsOpen(false);
-        }, 150); // Small buffer to move mouse to dropdown
-    };
 
     const identity = user ? getIdentity(user.userId, user.username) : { name: '', avatar: '' };
 
@@ -60,12 +46,7 @@ const UserMenu = () => {
     if (!user) return null;
 
     return (
-        <div 
-            className="relative pb-2" 
-            ref={menuRef}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
+        <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-800/40 border border-zinc-700 hover:border-zinc-500 hover:ring-2 hover:ring-emerald-500/20 transition-all group"
@@ -83,7 +64,10 @@ const UserMenu = () => {
 
             {isOpen && (
                 <>
-                    <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsOpen(false)} />
+                    {createPortal(
+                        <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsOpen(false)} />,
+                        document.body
+                    )}
 
                     <div className="absolute right-0 top-full w-72 z-50 rounded-xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden animate-fade-in-scale origin-top-right transition-all duration-300">
                         <div className="p-5 border-b border-zinc-800 bg-gradient-to-br from-zinc-800/80 to-zinc-900">
