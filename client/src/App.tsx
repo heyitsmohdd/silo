@@ -12,7 +12,8 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import InstallPrompt from '@/components/InstallPrompt';
 
 // Lazy-loaded route components — each becomes its own chunk
-const NewLandingPage = lazy(() => import('@/pages/LandingPage'));
+// const NewLandingPage = lazy(() => import('@/pages/LandingPage'));
+const VelorahPage = lazy(() => import('@/pages/VelorahPage'));
 const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const LegalPage = lazy(() => import('@/pages/LegalPage'));
 const LoginForm = lazy(() => import('@/features/auth/LoginForm'));
@@ -68,7 +69,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/welcome" element={<S><NewLandingPage /></S>} />
+      <Route path="/welcome" element={<S><VelorahPage /></S>} />
       <Route path="/about" element={<S><AboutPage /></S>} />
       <Route path="/legal" element={<S><LegalPage /></S>} />
 
