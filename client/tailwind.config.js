@@ -38,6 +38,8 @@ export default {
           DEFAULT: 'rgb(var(--popover) / <alpha-value>)',
           foreground: 'rgb(var(--popover-foreground) / <alpha-value>)',
         },
+        cream: '#EFF4FF',
+        neon: '#6FFF00',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -46,6 +48,8 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        grotesk: ['Anton', 'sans-serif'],
+        condiment: ['Condiment', 'cursive'],
       },
       boxShadow: {
         'soft': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
