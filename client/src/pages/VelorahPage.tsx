@@ -69,7 +69,7 @@ export default function VelorahPage() {
             className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed animate-fade-rise-delay"
             style={{ color: MUTED }}
           >
-            Built for students who take their work seriously. Notes, discussions, and your batch — all in one focused space. No distractions. Just progress.
+            The anonymous network for your campus.
           </p>
 
           <Link to="/register" className="bg-black/75 backdrop-blur-md border border-white/50 text-white font-semibold rounded-full px-14 py-5 text-base mt-12 hover:bg-black/90 hover:scale-[1.03] transition-all animate-fade-rise-delay-2">
