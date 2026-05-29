@@ -10,10 +10,20 @@ import { useSocketConnection } from '@/hooks/useSocketConnection';
 import { siteConfig } from '@/config/site';
 import { useAuthStore } from '@/stores/useAuthStore';
 
+const PAGE_TITLES: Record<string, string> = {
+  '/qna': 'Discussion',
+  '/leaderboard': 'Leaderboard',
+  '/write': 'Write',
+  '/notes': 'Notes',
+  '/chat': 'Rooms',
+  '/messages': 'Messages',
+};
+
 const DashboardLayout = () => {
-  // Initialize global socket connection
   useSocketConnection();
   const location = useLocation();
+
+  const pageTitle = PAGE_TITLES[location.pathname] ?? 'Dashboard';
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -48,7 +58,7 @@ const DashboardLayout = () => {
               </button>
               <Link to="/" className="md:hidden w-8 h-8 hidden items-center justify-center bg-emerald-500 rounded text-black font-bold text-xs shrink-0">S</Link>
               <div className="text-sm font-medium text-zinc-100 hidden sm:block">
-                Dashboard
+                {pageTitle}
               </div>
             </div>
 
@@ -185,6 +195,7 @@ const NavLink = ({ to, icon: Icon, label, onClick, isMobile }: NavLinkProps) => 
     <Link
       to={to}
       onClick={onClick}
+      title={label}
       className={`relative flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 hover:scale-105 active:scale-95 ${isActive
         ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-500 shadow-lg shadow-emerald-500/10'
         : 'text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 border-l-2 border-transparent'
