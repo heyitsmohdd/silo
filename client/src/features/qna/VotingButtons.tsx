@@ -86,16 +86,11 @@ const VotingButtons = ({
                     handleVote('upvote');
                 }}
                 disabled={isVoting}
-                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'upvote'
-                    ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
-                    : 'hover:bg-zinc-800'
-                    }`}
+                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 hover:bg-zinc-800/60`}
                 aria-label="Upvote"
             >
                 <ArrowUp
-                    className={`${iconSize} transition-colors ${userVote === 'upvote' ? 'text-emerald-500' : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
-                    fill={userVote === 'upvote' ? 'currentColor' : 'none'}
+                    className={`${iconSize} transition-colors ${userVote === 'upvote' ? 'text-emerald-400' : 'text-zinc-500'}`}
                 />
             </button>
 
@@ -116,16 +111,11 @@ const VotingButtons = ({
                     handleVote('downvote');
                 }}
                 disabled={isVoting}
-                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 ${userVote === 'downvote'
-                    ? 'bg-emerald-500/10 hover:bg-emerald-500/20'
-                    : 'hover:bg-zinc-800'
-                    }`}
+                className={`${buttonSize} rounded-md transition-all flex items-center justify-center disabled:opacity-50 hover:bg-zinc-800/60`}
                 aria-label="Downvote"
             >
                 <ArrowDown
-                    className={`${iconSize} transition-colors ${userVote === 'downvote' ? 'text-emerald-500' : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
-                    fill={userVote === 'downvote' ? 'currentColor' : 'none'}
+                    className={`${iconSize} transition-colors ${userVote === 'downvote' ? 'text-red-400' : 'text-zinc-500'}`}
                 />
             </button>
         </div>
