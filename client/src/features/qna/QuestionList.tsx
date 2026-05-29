@@ -219,8 +219,8 @@ const QuestionList = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto w-full">
-            <div className="flex flex-col gap-6 mb-8">
+        <div className="max-w-3xl mx-auto w-full pb-24 md:pb-8">
+            <div className="flex flex-col gap-6 mb-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Discussion</h1>
                     {activeTab !== 'news' && activeTab !== 'articles' && (
