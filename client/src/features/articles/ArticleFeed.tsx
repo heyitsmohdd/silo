@@ -4,6 +4,17 @@ import axios from '@/lib/axios';
 import { Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { getIdentity } from '@/lib/identity';
+import { Pulse } from '@/components/ui/Skeleton';
+
+const ArticleSkeleton = () => (
+    <div className="space-y-3">
+        {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-zinc-900 border border-zinc-800/80 rounded-lg overflow-hidden">
+                <Pulse className="w-full h-52 bg-zinc-800/60" />
+            </div>
+        ))}
+    </div>
+);
 
 interface ArticleData {
     id: string;
@@ -47,13 +58,7 @@ const ArticleFeed = () => {
         fetchArticles();
     }, []);
 
-    if (isLoading) {
-        return (
-            <div className="w-full flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500" />
-            </div>
-        );
-    }
+    if (isLoading) return <ArticleSkeleton />;
 
     if (error) {
         return (
