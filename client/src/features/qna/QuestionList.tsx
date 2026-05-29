@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { isStale, markSeen } from '@/hooks/useNewContentDot';
 import { useAuthStore } from '@/stores/useAuthStore';
 import QuestionCard from './QuestionCard';
 import AskQuestionModal from './AskQuestionModal';
@@ -47,11 +46,6 @@ const QuestionList = () => {
     const { isProfessor } = useAuthStore();
     // Derive active tab directly from URL — no useState/useEffect needed
     const activeTab = searchParams.get('tab') || (isProfessor ? 'articles' : 'for-you');
-
-    // Mark current tab as seen whenever it changes
-    useEffect(() => {
-        markSeen('tab_' + activeTab);
-    }, [activeTab]);
 
     // Questions Query
     const { data: questionsData, isLoading: isLoadingQuestions, isError: isErrorQuestions, refetch: refetchQuestions } = useQuery({
@@ -299,9 +293,6 @@ const QuestionList = () => {
                             `}
                         >
                             {tab.label}
-                            {activeTab !== tab.id && isStale('tab_' + tab.id) && (
-                                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
-                            )}
                         </button>
                     ))}
                 </div>
